@@ -6,4 +6,5 @@ description = "Semantic Map Editor - UI"
 
 dependencies {
 
+    implementation project(":sme-application-service")
 }

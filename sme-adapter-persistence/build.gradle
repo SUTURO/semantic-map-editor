@@ -6,4 +6,6 @@ description = "Semantic Map Editor - Persistence Adapter"
 
 dependencies {
 
+    implementation project(":sme-domain-model")
+    implementation project(":sme-domain-service")
 }

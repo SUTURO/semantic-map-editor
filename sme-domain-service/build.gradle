@@ -6,4 +6,5 @@ description = "Semantic Map Editor - Domain Service"
 
 dependencies {
 
+    implementation project(":sme-domain-model")
 }

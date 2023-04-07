@@ -7,4 +7,10 @@ description = "Semantic Map Editor - Application"
 
 dependencies {
 
+    implementation project(":sme-ui")
+    implementation project(":sme-domain-model")
+    implementation project(":sme-domain-service")
+    implementation project(":sme-application-service")
+    implementation project(":sme-adapter-persistence")
+    implementation project(":sme-adapter-integration")
 }
