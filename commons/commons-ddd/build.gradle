@@ -1,0 +1,13 @@
+plugins {
+    id 'sme.java-library'
+}
+
+description = "Semantic Map Editor - Commons Domain Driven Design"
+
+dependencies {
+
+}
+
+configurations {
+    implementation.exclude module: 'commons-ddd'
+}

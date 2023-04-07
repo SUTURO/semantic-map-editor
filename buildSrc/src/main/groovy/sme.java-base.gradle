@@ -34,6 +34,10 @@ configurations {
 
 dependencies {
 
+    // Semantic Map Editor Commons
+    implementation project(":commons-commons")
+    implementation project(":commons-ddd")
+
     // Lombok
     compileOnly "org.projectlombok:lombok:${versions.lombok}"
     annotationProcessor "org.projectlombok:lombok:${versions.lombok}"
@@ -42,6 +46,9 @@ dependencies {
 
     // Google Guava
     implementation "com.google.guava:guava:${versions.guava}"
+
+    // Google Guice for Dependency Injection
+    implementation "com.google.inject:guice:${versions.guice}"
 
     // Logging
     implementation "org.slf4j:slf4j-api:${versions.sl4j}"

@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run Semantic Map Editor" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.malte3d.suturo.sme.Launcher" />
-    <module name="SemanticMapEditor.sme-application.main" />
+    <module name="semantic-map-editor.sme-application.main" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.malte3d.suturo.sme.*" />

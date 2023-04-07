@@ -1,5 +1,5 @@
 plugins {
-    id 'sme.java-base'
+    id 'sme.java-library'
 }
 
 description = "Semantic Map Editor - Integration Adapter"

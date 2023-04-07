@@ -1,4 +1,10 @@
-rootProject.name = 'SemanticMapEditor'
+rootProject.name = 'semantic-map-editor'
+
+/* Commons */
+file('commons').eachDir {dir ->
+    include dir.name
+    project(":${dir.name}").projectDir = dir
+}
 
 /* Semantic Map Editor (sme) */
 include 'sme-adapter-integration'

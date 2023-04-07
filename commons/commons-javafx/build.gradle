@@ -1,0 +1,20 @@
+plugins {
+    id 'sme.java-library'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+}
+
+description = "Semantic Map Editor - Commons JavaX"
+
+javafx {
+    version = "${versions.javafx}"
+    modules = ["javafx.fxml", "javafx.controls", "javafx.web"]
+}
+
+dependencies {
+
+    implementation project(":commons-commons")
+    implementation project(":commons-ddd")
+
+    implementation "org.jfxtras:jmetro:${versions.jmetro}"
+    implementation "org.controlsfx:controlsfx:${versions.controlsfx}"
+}

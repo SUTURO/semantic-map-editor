@@ -1,4 +1,4 @@
-# Semantic Map Editor
+# semantic-map-editor
 
 [![Build and Test](https://github.com/malte3d/semantic-map-editor/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/malte3d/semantic-map-editor/actions/workflows/build-and-test.yml)
 

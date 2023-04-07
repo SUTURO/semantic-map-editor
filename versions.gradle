@@ -7,7 +7,11 @@ ext {
     versions.javaTarget     = 17
 
     versions.assertj        = "3.24.2"
+    versions.controlsfx     = "11.1.2"
     versions.guava          = "31.1-jre"
+    versions.guice          = "5.1.0"
+    versions.javafx         = "19"
+    versions.jmetro         = "11.6.16"
     versions.junit          = "5.9.2"
     versions.log4j          = "2.20.0"
     versions.lombok         = "1.18.26"

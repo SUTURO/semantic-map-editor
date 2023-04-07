@@ -1,0 +1,8 @@
+plugins {
+    id 'sme.java-base'
+    id 'java-library'
+}
+
+java {
+    withSourcesJar()
+}

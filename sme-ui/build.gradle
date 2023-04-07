@@ -1,10 +1,12 @@
 plugins {
-    id 'sme.java-base'
+    id 'sme.java-library'
 }
 
 description = "Semantic Map Editor - UI"
 
 dependencies {
+
+    implementation project(":commons-javafx")
 
     implementation project(":sme-application-service")
 }
