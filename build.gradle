@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'com.palantir.git-version' version '3.0.0'
+}
+
+apply from: "versions.gradle"
+
+sourceCompatibility = versions.javaTarget
+targetCompatibility = versions.javaTarget
+
+repositories {
+    mavenCentral()
+}
+
+allprojects {
+
+    group 'com.malte3d.suturo'
+    version = gitVersion()
+}

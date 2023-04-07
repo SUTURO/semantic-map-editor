@@ -1,0 +1,9 @@
+dependencies {
+
+    // Logging via Log4J
+
+    implementation "org.apache.logging.log4j:log4j-api:${versions.log4j}"
+
+    runtimeOnly "org.apache.logging.log4j:log4j-core:${versions.log4j}"
+    runtimeOnly "org.apache.logging.log4j:log4j-slf4j2-impl:${versions.log4j}"
+}

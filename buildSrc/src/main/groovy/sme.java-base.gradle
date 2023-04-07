@@ -1,0 +1,76 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'java-test-fixtures'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+
+    // Tools for developers only are separate
+    dev {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+configurations {
+
+    // dev has access to everything from main
+    devImplementation.extendsFrom implementation
+    devAnnotationProcessor.extendsFrom annotationProcessor
+    devCompileOnly.extendsFrom compileOnly
+    devRuntimeOnly.extendsFrom runtimeOnly
+
+    // testFixtures has access to everything from main
+    testFixturesImplementation.extendsFrom implementation
+    testFixturesAnnotationProcessor.extendsFrom annotationProcessor
+    testFixturesCompileOnly.extendsFrom compileOnly
+    testFixturesRuntimeOnly.extendsFrom runtimeOnly
+}
+
+dependencies {
+
+    // Lombok
+    compileOnly "org.projectlombok:lombok:${versions.lombok}"
+    annotationProcessor "org.projectlombok:lombok:${versions.lombok}"
+    testCompileOnly "org.projectlombok:lombok:${versions.lombok}"
+    testAnnotationProcessor "org.projectlombok:lombok:${versions.lombok}"
+
+    // Google Guava
+    implementation "com.google.guava:guava:${versions.guava}"
+
+    // Logging
+    implementation "org.slf4j:slf4j-api:${versions.sl4j}"
+    implementation "org.slf4j:jcl-over-slf4j:${versions.sl4j}"
+    implementation "org.slf4j:jul-to-slf4j:${versions.sl4j}"
+
+    // Unit Tests
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${versions.junit}"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:${versions.junit}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${versions.junit}"
+
+    testImplementation "org.mockito:mockito-core:${versions.mockito}"
+    testImplementation "org.assertj:assertj-core:${versions.assertj}"
+}
+
+jar {
+
+    manifest {
+        attributes "Implementation-Title": project.name
+        attributes "Implementation-Group": project.group
+        attributes "Implementation-Version": project.version
+    }
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}

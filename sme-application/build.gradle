@@ -1,0 +1,10 @@
+plugins {
+    id 'sme.java-base'
+    id 'sme.java-logging'
+}
+
+description = "Semantic Map Editor - Application"
+
+dependencies {
+
+}

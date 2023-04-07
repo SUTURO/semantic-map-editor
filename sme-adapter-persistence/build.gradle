@@ -1,0 +1,9 @@
+plugins {
+    id 'sme.java-base'
+}
+
+description = "Semantic Map Editor - Persistence Adapter"
+
+dependencies {
+
+}

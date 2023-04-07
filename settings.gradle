@@ -1,0 +1,11 @@
+rootProject.name = 'SemanticMapEditor'
+
+/* Semantic Map Editor (sme) */
+include 'sme-adapter-integration'
+include 'sme-adapter-persistence'
+include 'sme-application'
+include 'sme-application-service'
+include 'sme-domain-model'
+include 'sme-domain-service'
+include 'sme-ui'
+
