@@ -35,8 +35,10 @@ configurations {
 dependencies {
 
     // Semantic Map Editor Commons
-    implementation project(":commons-commons")
-    implementation project(":commons-ddd")
+    if (!project.name.startsWith("commons-")) {
+        implementation project(":commons-commons")
+        implementation project(":commons-ddd")
+    }
 
     // Lombok
     compileOnly "org.projectlombok:lombok:${versions.lombok}"
