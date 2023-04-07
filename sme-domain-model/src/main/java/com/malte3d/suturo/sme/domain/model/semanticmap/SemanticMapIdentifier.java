@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.Value;
 
 @ValueObject
+
 @Value(staticConstructor = "of")
 public class SemanticMapIdentifier {
     @NonNull
