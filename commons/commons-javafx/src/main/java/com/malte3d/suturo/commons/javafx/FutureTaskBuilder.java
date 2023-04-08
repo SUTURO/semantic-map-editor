@@ -1,10 +1,10 @@
 package com.malte3d.suturo.commons.javafx;
 
-import java.util.concurrent.Executor;
-import java.util.function.Supplier;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+
+import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 public class FutureTaskBuilder<T> {
@@ -12,7 +12,7 @@ public class FutureTaskBuilder<T> {
     @NonNull
     private final Executor executor;
 
-    private String debugInfo;
+    private String debugInfo = "";
     private String errorMessageKey;
 
     public FutureTaskBuilder<T> withDebugInfo(@NonNull String debugInfo) {
