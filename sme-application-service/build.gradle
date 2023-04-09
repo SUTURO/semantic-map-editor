@@ -8,6 +8,4 @@ dependencies {
 
     implementation project(":sme-domain-model")
     implementation project(":sme-domain-service")
-    implementation project(":sme-adapter-persistence")
-    implementation project(":sme-adapter-integration")
 }
