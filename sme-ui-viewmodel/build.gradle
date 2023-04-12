@@ -1,0 +1,15 @@
+plugins {
+    id 'sme.java-library'
+    id 'sme.java-javafx'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+}
+
+description = "Semantic Map Editor - UI Viewmodel"
+
+dependencies {
+
+    implementation project(":commons-javafx")
+    
+    implementation project(":sme-application-service")
+    implementation project(":sme-domain-model")
+}

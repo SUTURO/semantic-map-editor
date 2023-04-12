@@ -10,8 +10,8 @@ dependencies {
 
     implementation project(":commons-javafx")
 
-    implementation project(":sme-application-service")
-    implementation project(":sme-domain-model")
+    implementation project(":sme-ui-view")
+    implementation project(":sme-ui-viewmodel")
 
     // Debugging JavaFx Views
     implementation 'io.github.palexdev:scenicview:17.0.2'
