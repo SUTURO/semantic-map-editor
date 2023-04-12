@@ -2,15 +2,11 @@ plugins {
     id 'application'
     id 'sme.java-base'
     id 'sme.java-logging'
+    id 'sme.java-javafx'
     id 'org.openjfx.javafxplugin' version '0.0.13'
 }
 
 description = "Semantic Map Editor - Application"
-
-javafx {
-    version = "$versions.javafx"
-    modules = ["javafx.fxml"]
-}
 
 dependencies {
 

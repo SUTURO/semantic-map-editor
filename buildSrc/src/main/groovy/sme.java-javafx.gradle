@@ -1,0 +1,13 @@
+dependencies {
+
+    implementation "org.jfxtras:jmetro:${versions.jmetro}"
+    implementation "org.controlsfx:controlsfx:${versions.controlsfx}"
+}
+
+project.afterEvaluate {
+
+    project.javafx {
+        version = "$versions.javafx"
+        modules = ["javafx.fxml", "javafx.graphics", "javafx.controls", "javafx.web"]
+    }
+}
