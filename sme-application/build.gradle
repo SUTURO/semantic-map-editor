@@ -22,4 +22,6 @@ dependencies {
     implementation project(":sme-application-service")
     implementation project(":sme-adapter-persistence")
     implementation project(":sme-adapter-integration")
+
+    implementation "commons-cli:commons-cli:${versions.commonsCli}"
 }

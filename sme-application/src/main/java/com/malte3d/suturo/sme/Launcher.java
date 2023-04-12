@@ -23,11 +23,14 @@ public class Launcher {
 
     public static void main(String[] args) {
 
+        Locale.setDefault(Language.ENGLISH.locale);
+        
+        LauncherOptions options = LauncherOptions.parse(args);
+
         Set<Module> applicationModules = createApplicationModules();
         Injector injector = Guice.createInjector(applicationModules);
 
         FxmlLoaderUtil.init(injector);
-        Locale.setDefault(Language.ENGLISH.locale);
 
         MainApplication application = injector.getInstance(MainApplication.class);
         application.run(args);
