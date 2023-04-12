@@ -3,12 +3,12 @@
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout disableAnsi="false"
-                           pattern="%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}  %highlight{%-5level %logger{36}: %msg%n}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=black, DEBUG=green bold, TRACE=blue}" />
+                           pattern="%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss}}  %highlight{%-5level %logger{36}: %msg%n}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=black, DEBUG=green bold, TRACE=blue}"/>
         </Console>
     </Appenders>
     <Loggers>
         <Root level="DEBUG">
-            <AppenderRef ref="Console" level="DEBUG" />
+            <AppenderRef ref="Console" level="DEBUG"/>
         </Root>
     </Loggers>
 </Configuration>
