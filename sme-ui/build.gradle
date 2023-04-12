@@ -1,12 +1,25 @@
 plugins {
     id 'sme.java-library'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
 }
 
 description = "Semantic Map Editor - UI"
+
+javafx {
+    version = "$versions.javafx"
+    modules = ["javafx.fxml", "javafx.controls", "javafx.web"]
+}
 
 dependencies {
 
     implementation project(":commons-javafx")
 
     implementation project(":sme-application-service")
+    implementation project(":sme-domain-model")
+
+    implementation "org.jfxtras:jmetro:$versions.jmetro"
+    implementation "org.controlsfx:controlsfx:$versions.controlsfx"
+
+    // Debugging JavaFx Views
+    implementation 'io.github.palexdev:scenicview:17.0.2'
 }

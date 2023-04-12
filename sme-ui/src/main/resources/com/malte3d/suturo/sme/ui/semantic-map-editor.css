@@ -1,0 +1,76 @@
+.root {
+
+    primary_color: #032536;
+    secondary_color: #d50b2e;
+    warning_color: #d65c0b;
+    error_color: #d50b2e;
+    light_color: #fafafa;
+    gray_color: #888a8c;
+    dark_color: #060608;
+
+    accent_color: secondary_color !important;
+
+    background_color: light_color !important;
+    dialog_background_color: white !important;
+    tab_pane_background_color: light_color !important;
+}
+
+.button {
+    border_hover_default_color: derive(primary_color, -40%) !important;
+}
+
+.button:default {
+    -fx-background-color: primary_color !important;
+}
+
+.button:default:pressed {
+    -fx-background-color: derive(primary_color, -40%) !important;
+}
+
+.toggle-button {
+    border_hover_selected_color: derive(primary_color, -40%) !important;
+}
+
+.toggle-button:selected {
+    -fx-background-color: primary_color !important;
+}
+
+.toggle-button:selected:pressed {
+    -fx-background-color: derive(primary_color, -40%) !important;
+}
+
+.hyperlink {
+    hyperlink_color: primary_color !important;
+    hyperlink_hover_color: derive(primary_color, -25%) !important;
+    hyperlink_pressed_color: derive(primary_color, -70%) !important;
+}
+
+.tool-bar .toggle-button:selected {
+    -fx-background-color: primary_color;
+}
+
+.tool-bar .toggle-button:selected:hover {
+    -fx-background-color: derive(primary_color, 40%);
+}
+
+.tool-bar .toggle-button:selected:pressed {
+    -fx-background-color: derive(primary_color, -40%);
+}
+
+.tab-pane {
+    tab_text_hover_color: primary_color !important;
+    tab_text_selected_hover_color: derive(primary_color, 30%) !important;
+    ;
+}
+
+.tab-pane>.tab-header-area>.headers-region>.tab:selected>.tab-container>.tab-label {
+    -fx-text-fill: primary_color !important;
+}
+
+.footer {
+    -fx-background-color: white;
+}
+
+.spinner {
+    -fx-border-width: 0px !important;
+}

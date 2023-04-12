@@ -9,6 +9,7 @@ import com.malte3d.suturo.sme.adapter.integration.IntegrationAdapterModule;
 import com.malte3d.suturo.sme.adapter.persistence.PersistenceAdapterModule;
 import com.malte3d.suturo.sme.application.service.ApplicationServiceModule;
 import com.malte3d.suturo.sme.domain.service.DomainServiceModule;
+import com.malte3d.suturo.sme.ui.MainApplication;
 import com.malte3d.suturo.sme.ui.UiModule;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,10 @@ public class Launcher {
         Injector injector = Guice.createInjector(applicationModules);
 
         FxmlLoaderUtil.init(injector);
-        Locale.setDefault(Language.GERMAN.locale);
+        Locale.setDefault(Language.ENGLISH.locale);
 
-        log.info("Hello World!");
+        MainApplication application = injector.getInstance(MainApplication.class);
+        application.run(args);
     }
 
     private static Set<Module> createApplicationModules() {
