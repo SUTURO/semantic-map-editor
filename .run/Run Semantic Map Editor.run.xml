@@ -2,7 +2,7 @@
   <configuration default="false" name="Run Semantic Map Editor" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.malte3d.suturo.sme.Launcher" />
     <module name="semantic-map-editor.sme-application.main" />
-    <option name="PROGRAM_PARAMETERS" value="-derg" />
+    <option name="PROGRAM_PARAMETERS" value="-d" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.malte3d.suturo.sme.*" />
