@@ -1,13 +1,14 @@
 package com.malte3d.suturo.commons.messages;
 
-import java.text.MessageFormat;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import com.malte3d.suturo.commons.i18n.I18N;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.helpers.MessageFormatter;
+
+import java.text.MessageFormat;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Utility class, for internationalization.
@@ -71,6 +72,10 @@ public final class Messages {
         } catch (NoSuchFieldException e) {
             throw new IllegalStateException("This exception should never occur! An enum always has a field with its name.", e);
         }
+    }
+
+    public static String format(@NonNull String messagePattern, Object... args) {
+        return MessageFormatter.format(messagePattern, args).getMessage();
     }
 
     public static Language getLanguage() {

@@ -3,12 +3,14 @@ package com.malte3d.suturo.sme;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.malte3d.suturo.commons.javafx.FxmlLoaderUtil;
 import com.malte3d.suturo.commons.messages.Language;
 import com.malte3d.suturo.sme.adapter.integration.IntegrationAdapterModule;
 import com.malte3d.suturo.sme.adapter.persistence.PersistenceAdapterModule;
 import com.malte3d.suturo.sme.application.service.ApplicationServiceModule;
+import com.malte3d.suturo.sme.domain.model.application.settings.Settings;
+import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
 import com.malte3d.suturo.sme.domain.service.DomainServiceModule;
+import com.malte3d.suturo.sme.domain.service.application.settings.SettingsRepository;
 import com.malte3d.suturo.sme.ui.MainApplication;
 import com.malte3d.suturo.sme.ui.UiModule;
 import lombok.experimental.UtilityClass;
@@ -24,16 +26,24 @@ public class Launcher {
     public static void main(String[] args) {
 
         Locale.setDefault(Language.ENGLISH.locale);
-        
-        LauncherOptions options = LauncherOptions.parse(args);
 
         Set<Module> applicationModules = createApplicationModules();
         Injector injector = Guice.createInjector(applicationModules);
 
-        FxmlLoaderUtil.init(injector);
+        initLauncherOptions(injector, args);
 
-        MainApplication application = injector.getInstance(MainApplication.class);
-        application.run(args);
+        MainApplication.launch(injector, args);
+    }
+
+    private static void initLauncherOptions(Injector injector, String[] args) {
+
+        LauncherOptions options = LauncherOptions.parse(args);
+
+        SettingsRepository settingsRepository = injector.getInstance(SettingsRepository.class);
+        Settings settings = settingsRepository.load();
+        Settings newSettings = settings.withAdvancedSettings(settings.advancedSettings().withDebugMode(DebugMode.of(options.isDebugMode())));
+
+        settingsRepository.save(newSettings);
     }
 
     private static Set<Module> createApplicationModules() {
