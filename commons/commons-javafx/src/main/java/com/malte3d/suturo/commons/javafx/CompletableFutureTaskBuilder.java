@@ -7,7 +7,7 @@ import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
-public class FutureTaskBuilder<T> {
+public class CompletableFutureTaskBuilder<T> {
 
     @NonNull
     private final Executor executor;
@@ -15,17 +15,17 @@ public class FutureTaskBuilder<T> {
     private String debugInfo = "";
     private String errorMessageKey;
 
-    public FutureTaskBuilder<T> withDebugInfo(@NonNull String debugInfo) {
+    public CompletableFutureTaskBuilder<T> withDebugInfo(@NonNull String debugInfo) {
         this.debugInfo = debugInfo;
         return this;
     }
 
-    public FutureTaskBuilder<T> withErrorMessageKey(@NonNull String messageKey) {
+    public CompletableFutureTaskBuilder<T> withErrorMessageKey(@NonNull String messageKey) {
         this.errorMessageKey = messageKey;
         return this;
     }
 
-    public FutureTask<T> withTask(@NonNull Supplier<T> task) {
-        return new FutureTask<>(new UiServiceTask<>(task, debugInfo), executor);
+    public CompletableFutureTask<T> withTask(@NonNull Supplier<T> task) {
+        return new CompletableFutureTask<>(new UiServiceTask<>(task, debugInfo), executor);
     }
 }

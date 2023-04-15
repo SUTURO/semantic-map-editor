@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
-public class FutureTask<T> {
+public class CompletableFutureTask<T> {
 
     private final Task<T> task;
 
@@ -25,7 +25,7 @@ public class FutureTask<T> {
     private T value;
     private Throwable exception;
 
-    public FutureTask(@NonNull Task<T> task, @NonNull Executor executor) {
+    public CompletableFutureTask(@NonNull Task<T> task, @NonNull Executor executor) {
 
         this.task = task;
 
@@ -53,14 +53,14 @@ public class FutureTask<T> {
         task.cancel(mayInterruptIfRunning);
     }
 
-    public FutureTask<T> thenConsume(@NonNull Consumer<T> succeeded) {
+    public CompletableFutureTask<T> thenConsume(@NonNull Consumer<T> succeeded) {
 
         onSucceed(() -> succeeded.accept(value));
 
         return this;
     }
 
-    public FutureTask<T> thenConsume(@NonNull Consumer<T> succeeded, @NonNull Consumer<Throwable> failed) {
+    public CompletableFutureTask<T> thenConsume(@NonNull Consumer<T> succeeded, @NonNull Consumer<Throwable> failed) {
 
         onSucceed(() -> succeeded.accept(value));
         onFail(() -> failed.accept(exception));
@@ -68,14 +68,14 @@ public class FutureTask<T> {
         return this;
     }
 
-    public FutureTask<T> thenRun(@NonNull Runnable succeeded) {
+    public CompletableFutureTask<T> thenRun(@NonNull Runnable succeeded) {
 
         onSucceed(succeeded);
 
         return this;
     }
 
-    public FutureTask<T> thenRun(@NonNull Runnable succeeded, @NonNull Runnable failed) {
+    public CompletableFutureTask<T> thenRun(@NonNull Runnable succeeded, @NonNull Runnable failed) {
 
         onSucceed(succeeded);
         onFail(failed);
