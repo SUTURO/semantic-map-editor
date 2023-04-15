@@ -85,7 +85,7 @@ public class CompletableFutureTask<T> {
 
     private synchronized void complete() {
 
-        final boolean taskIsCompleted = task.getState() != Worker.State.SUCCEEDED && task.getState() != Worker.State.FAILED && task.getState() != Worker.State.CANCELLED;
+        final boolean taskIsCompleted = task.getState() == Worker.State.SUCCEEDED || task.getState() == Worker.State.FAILED || task.getState() == Worker.State.CANCELLED;
         Preconditions.checkState(taskIsCompleted, "Task should be SUCCEEDED, FAILED or CANCELLED when this Method is invoked!");
 
         this.value = task.getValue();
