@@ -12,11 +12,14 @@ public class CompletableFutureTaskBuilder<T> {
     @NonNull
     private final Executor executor;
 
-    private String debugInfo = "";
+    private String loggerErrorMessage = "";
+    private Object[] loggerErrorMessageArgs;
+
     private String errorMessageKey;
 
-    public CompletableFutureTaskBuilder<T> withDebugInfo(@NonNull String debugInfo) {
-        this.debugInfo = debugInfo;
+    public CompletableFutureTaskBuilder<T> withLoggerMessageOnError(@NonNull String errorMessage, Object... args) {
+        this.loggerErrorMessage = errorMessage;
+        this.loggerErrorMessageArgs = args;
         return this;
     }
 
@@ -26,6 +29,6 @@ public class CompletableFutureTaskBuilder<T> {
     }
 
     public CompletableFutureTask<T> withTask(@NonNull Supplier<T> task) {
-        return new CompletableFutureTask<>(new UiServiceTask<>(task, debugInfo), executor);
+        return new CompletableFutureTask<>(new UiServiceTask<>(task, loggerErrorMessage, loggerErrorMessageArgs), executor);
     }
 }
