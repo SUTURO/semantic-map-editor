@@ -1,11 +1,11 @@
 package com.malte3d.suturo.commons.javafx;
 
-import java.util.function.Supplier;
-
 import javafx.concurrent.Task;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.function.Supplier;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -15,7 +15,8 @@ public class UiServiceTask<T> extends Task<T> {
     private final Supplier<T> supplier;
 
     @NonNull
-    private final String debugInfo;
+    private final String errorMessage;
+    private final Object[] errorMessageArgs;
 
     @Override
     protected T call() {
@@ -27,6 +28,6 @@ public class UiServiceTask<T> extends Task<T> {
 
         Throwable throwable = getException();
 
-        log.error("Error in UiServiceTask \"{}\"", debugInfo, throwable);
+        log.error(errorMessage, errorMessageArgs, throwable);
     }
 }

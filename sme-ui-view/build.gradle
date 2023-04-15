@@ -9,4 +9,5 @@ description = "Semantic Map Editor - UI View"
 dependencies {
 
     implementation project(":sme-ui-viewmodel")
+    implementation project(":sme-domain-model")
 }

@@ -6,8 +6,10 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 <VBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-      prefHeight="800.0" prefWidth="1200.0"
-      fx:controller="com.malte3d.suturo.sme.ui.MainController">
+      prefWidth="1200.0" prefHeight="800.0"
+      stylesheets="@main-view.css"
+      fx:id="mainView"
+      fx:controller="com.malte3d.suturo.sme.ui.view.MainView">
 
     <MenuBar VBox.vgrow="NEVER">
         <Menu mnemonicParsing="false" text="File">
