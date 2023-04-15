@@ -43,7 +43,7 @@ public class MainApplication extends Application {
 
         if (debugMode.isEnabled())
             ScenicView.show(scene);
-        
+
         JMetro jMetro = new JMetro(scene, UiSettings.getStyle());
         jMetro.getOverridingStylesheets().add(Objects.requireNonNull(MainApplication.class.getResource("semantic-map-editor.css")).toExternalForm());
 
@@ -60,13 +60,13 @@ public class MainApplication extends Application {
         System.exit(0);
     }
 
-    public static void launch(@NonNull Injector injector, String[] args) {
+    public static void launch(@NonNull MainApplicationOptions options) {
 
-        MainApplication.injector = injector;
+        MainApplication.injector = options.getInjector();
 
         FxmlLoaderUtil.init(injector);
 
-        launch(args);
+        launch(options.getArgs());
     }
 
 }

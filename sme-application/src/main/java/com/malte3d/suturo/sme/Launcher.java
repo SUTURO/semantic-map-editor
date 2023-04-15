@@ -12,6 +12,7 @@ import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMo
 import com.malte3d.suturo.sme.domain.service.DomainServiceModule;
 import com.malte3d.suturo.sme.domain.service.application.settings.SettingsRepository;
 import com.malte3d.suturo.sme.ui.MainApplication;
+import com.malte3d.suturo.sme.ui.MainApplicationOptions;
 import com.malte3d.suturo.sme.ui.UiModule;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -30,12 +31,12 @@ public class Launcher {
         Set<Module> applicationModules = createApplicationModules();
         Injector injector = Guice.createInjector(applicationModules);
 
-        initLauncherOptions(injector, args);
+        MainApplicationOptions options = createMainApplicationOptions(injector, args);
 
-        MainApplication.launch(injector, args);
+        MainApplication.launch(options);
     }
 
-    private static void initLauncherOptions(Injector injector, String[] args) {
+    private static MainApplicationOptions createMainApplicationOptions(Injector injector, String[] args) {
 
         LauncherOptions options = LauncherOptions.parse(args);
 
@@ -44,6 +45,8 @@ public class Launcher {
         Settings newSettings = settings.withAdvancedSettings(settings.advancedSettings().withDebugMode(DebugMode.of(options.isDebugMode())));
 
         settingsRepository.save(newSettings);
+
+        return new MainApplicationOptions(injector, args);
     }
 
     private static Set<Module> createApplicationModules() {
