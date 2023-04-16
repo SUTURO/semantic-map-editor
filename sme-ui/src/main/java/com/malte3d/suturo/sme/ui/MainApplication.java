@@ -16,16 +16,19 @@ import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 import lombok.NonNull;
 import org.scenicview.ScenicView;
 
+import java.util.Objects;
 import java.util.concurrent.Executor;
 
 public class MainApplication extends Application {
 
     private static Injector injector;
 
-    private final MainViewFactory viewFactory;
+    private final MainApplicationViewFactory viewFactory;
     private final SettingsRepository settingsRepository;
 
     private CompletableFutureTask<Parent> mainViewFuture;
@@ -36,7 +39,7 @@ public class MainApplication extends Application {
 
         Executor globalExecutor = injector.getInstance(Key.get(Executor.class, GlobalExecutor.class));
 
-        this.viewFactory = new MainViewFactory(globalExecutor);
+        this.viewFactory = new MainApplicationViewFactory(globalExecutor, getHostServices());
         this.settingsRepository = injector.getInstance(SettingsRepository.class);
     }
 
@@ -58,14 +61,19 @@ public class MainApplication extends Application {
 
         mainViewFuture.thenConsume(mainView -> {
 
-            Scene scene = new Scene(mainView);
+            Scene scene = new Scene(mainView, 1200, 800);
             scene.setRoot(mainView);
+
+            JMetro jMetro = new JMetro(scene, Style.LIGHT);
+            jMetro.getOverridingStylesheets().add(Objects.requireNonNull(MainView.class.getResource("sme-base.css")).toExternalForm());
+
+            stage.setScene(scene);
+            stage.show();
 
             if (debugMode.isEnabled())
                 ScenicView.show(mainView);
 
-            stage.setScene(scene);
-            stage.show();
+            stage.toFront();
         });
     }
 

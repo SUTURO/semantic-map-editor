@@ -1,10 +1,10 @@
 package com.malte3d.suturo.sme.ui;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
 import com.malte3d.suturo.commons.javafx.GlobalExecutor;
 import com.malte3d.suturo.sme.ui.service.MainApplicationUiService;
 
+import javax.inject.Singleton;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 

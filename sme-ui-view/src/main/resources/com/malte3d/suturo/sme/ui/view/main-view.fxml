@@ -6,36 +6,35 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 <VBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-      prefWidth="1200.0" prefHeight="800.0"
       stylesheets="@main-view.css"
       fx:id="mainView"
       fx:controller="com.malte3d.suturo.sme.ui.view.MainView">
 
-    <MenuBar VBox.vgrow="NEVER">
-        <Menu mnemonicParsing="false" text="File">
-            <MenuItem mnemonicParsing="false" text="New"/>
-            <MenuItem mnemonicParsing="false" text="Open..."/>
-            <Menu mnemonicParsing="false" text="Open Recent"/>
+    <MenuBar fx:id="menuBar" VBox.vgrow="NEVER">
+        <Menu fx:id="menuFile" mnemonicParsing="false" text="%Application.Menu.Main.File">
+            <MenuItem fx:id="menuFileNew" mnemonicParsing="false" text="%Application.Menu.Main.File.New"/>
+            <MenuItem fx:id="menuFileOpen" mnemonicParsing="false" text="%Application.Menu.Main.File.Open"/>
+            <Menu fx:id="menuFileOpenRecent" mnemonicParsing="false" text="%Application.Menu.Main.File.OpenRecent"/>
             <SeparatorMenuItem mnemonicParsing="false"/>
-            <MenuItem mnemonicParsing="false" text="Close"/>
-            <MenuItem mnemonicParsing="false" text="Save"/>
-            <MenuItem mnemonicParsing="false" text="Save As"/>
+            <MenuItem fx:id="menuFileClose" mnemonicParsing="false" text="%Application.Menu.Main.File.Close"/>
+            <MenuItem fx:id="menuFileSave" mnemonicParsing="false" text="%Application.Menu.Main.File.Save"/>
+            <MenuItem fx:id="menuFileSaveAs" mnemonicParsing="false" text="%Application.Menu.Main.File.SaveAs"/>
             <SeparatorMenuItem mnemonicParsing="false"/>
-            <MenuItem mnemonicParsing="false" text="Preferences"/>
+            <MenuItem fx:id="menuFileSettings" mnemonicParsing="false" text="%Application.Menu.Main.File.Settings"/>
             <SeparatorMenuItem mnemonicParsing="false"/>
-            <MenuItem mnemonicParsing="false" text="Exit"/>
+            <MenuItem fx:id="menuFileExit" mnemonicParsing="false" text="%Application.Menu.Main.File.Exit"/>
         </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
-            <MenuItem mnemonicParsing="false" text="Undo"/>
-            <MenuItem mnemonicParsing="false" text="Redo"/>
+        <Menu fx:id="menuEdit" mnemonicParsing="false" text="%Application.Menu.Main.Edit">
+            <MenuItem fx:id="menuEditUndo" mnemonicParsing="false" text="%Application.Menu.Main.Edit.Undo"/>
+            <MenuItem fx:id="menuEditRedo" mnemonicParsing="false" text="%Application.Menu.Main.Edit.Redo"/>
             <SeparatorMenuItem mnemonicParsing="false"/>
-            <MenuItem mnemonicParsing="false" text="Cut"/>
-            <MenuItem mnemonicParsing="false" text="Copy"/>
-            <MenuItem mnemonicParsing="false" text="Paste"/>
-            <MenuItem mnemonicParsing="false" text="Delete"/>
+            <MenuItem fx:id="menuEditCut" mnemonicParsing="false" text="%Application.Menu.Main.Edit.Cut"/>
+            <MenuItem fx:id="menuEditCopy" mnemonicParsing="false" text="%Application.Menu.Main.Edit.Copy"/>
+            <MenuItem fx:id="menuEditPaste" mnemonicParsing="false" text="%Application.Menu.Main.Edit.Paste"/>
+            <MenuItem fx:id="menuEditDelete" mnemonicParsing="false" text="%Application.Menu.Main.Edit.Delete"/>
         </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-            <MenuItem mnemonicParsing="false" text="%Application.Menu.Main.Help.About"/>
+        <Menu fx:id="menuHelp" mnemonicParsing="false" text="%Application.Menu.Main.Help">
+            <MenuItem fx:id="menuHelpAbout" mnemonicParsing="false" text="%Application.Menu.Main.Help.About"/>
         </Menu>
     </MenuBar>
 
