@@ -1,13 +1,9 @@
 package com.malte3d.suturo.sme.ui;
 
-import java.util.Objects;
-import java.util.concurrent.Executor;
-
-import org.scenicview.ScenicView;
-
 import com.google.common.base.Preconditions;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.Provider;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
 import com.malte3d.suturo.commons.javafx.CompletableFutureTask;
 import com.malte3d.suturo.commons.javafx.FxmlLoaderUtil;
@@ -19,6 +15,7 @@ import com.malte3d.suturo.sme.ui.util.UiResources;
 import com.malte3d.suturo.sme.ui.view.MainView;
 import com.malte3d.suturo.sme.ui.viewmodel.ExitApplicationEvent;
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -26,8 +23,12 @@ import javafx.stage.Stage;
 import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
 import lombok.NonNull;
+import org.scenicview.ScenicView;
 
-public class MainApplication extends Application {
+import java.util.Objects;
+import java.util.concurrent.Executor;
+
+public class MainApplication extends Application implements Provider<HostServices> {
 
     private static Injector injector;
 
@@ -46,7 +47,7 @@ public class MainApplication extends Application {
 
         this.domainEventPublisher = injector.getInstance(DomainEventPublisher.class);
 
-        this.viewFactory = new MainApplicationViewFactory(globalExecutor, domainEventPublisher, getHostServices());
+        this.viewFactory = new MainApplicationViewFactory(globalExecutor, injector);
         this.settingsRepository = injector.getInstance(SettingsRepository.class);
 
         registerEvents();
@@ -100,4 +101,8 @@ public class MainApplication extends Application {
         launch(options.getArgs());
     }
 
+    @Override
+    public HostServices get() {
+        return getHostServices();
+    }
 }

@@ -7,8 +7,10 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import javax.inject.Inject;
+
 @Getter
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class MainViewModel {
 
     @NonNull

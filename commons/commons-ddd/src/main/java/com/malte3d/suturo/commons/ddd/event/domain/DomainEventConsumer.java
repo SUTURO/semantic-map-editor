@@ -1,8 +1,8 @@
 package com.malte3d.suturo.commons.ddd.event.domain;
 
-import java.util.function.Consumer;
-
 import lombok.NonNull;
+
+import java.util.function.Consumer;
 
 /**
  * Interface to enable a class to react to a domain event.
@@ -22,7 +22,7 @@ public interface DomainEventConsumer<T extends DomainEvent> {
     void reactToEvent(@NonNull T event);
 
     /**
-     * This implementation should be resource-efficient. E.g. ExampleDomainEvent.getClass().equals(event.getClass())
+     * This implementation should be resource-efficient. E.g. {@code ExampleDomainEvent.class.equals(event.getClass())}
      *
      * @param event The {@link DomainEvent}
      * @return True, if this consumer accepts the passed event and reacts to it

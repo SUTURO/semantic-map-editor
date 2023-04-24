@@ -1,16 +1,13 @@
 package com.malte3d.suturo.commons.ddd.event.domain;
 
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-public class BasicDomainEventRunnable<T extends DomainEvent> implements DomainEventConsumer<T> {
+@RequiredArgsConstructor
+final class BasicDomainEventRunnable<T extends DomainEvent> implements DomainEventConsumer<T> {
 
     private final Class<T> eventClass;
     private final Runnable eventRunnable;
-
-    public BasicDomainEventRunnable(Class<T> eventClass, Runnable eventRunnable) {
-        this.eventClass = eventClass;
-        this.eventRunnable = eventRunnable;
-    }
 
     @Override
     public void reactToEvent(@NonNull T event) {
