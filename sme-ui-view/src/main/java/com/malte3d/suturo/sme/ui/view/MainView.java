@@ -1,12 +1,17 @@
 package com.malte3d.suturo.sme.ui.view;
 
+import java.time.Year;
+
 import com.malte3d.suturo.commons.Version;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.ui.viewmodel.MainViewModel;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -14,8 +19,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.time.Year;
 
 
 @Slf4j
@@ -87,7 +90,7 @@ public class MainView {
         menuFileSaveAs.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
         menuFileSettings.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHIFT_DOWN, KeyCombination.ALT_DOWN));
 
-        menuFileExit.setOnAction(event -> Platform.exit());
+        menuFileExit.setOnAction(event -> viewModel.exitApplication());
     }
 
     private void initMenuEdit() {
