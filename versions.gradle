@@ -12,12 +12,14 @@ ext {
     versions.guava          = "31.1-jre"
     versions.guice          = "5.1.0"
     versions.javafx         = "20"
+    versions.jfxjme         = "1.0.2"
     versions.jmetro         = "11.6.16"
+    versions.jmonkeyengine  = "3.6.0-stable"
     versions.junit          = "5.9.2"
     versions.log4j          = "2.20.0"
     versions.lombok         = "1.18.26"
     versions.mockito        = "5.2.0"
-    versions.sl4j           = "2.0.7"
     versions.owlapi         = "5.5.0"
+    versions.sl4j           = "2.0.7"
 
 }

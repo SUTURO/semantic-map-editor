@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
+import com.jme3.util.LWJGLBufferAllocator;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
 import com.malte3d.suturo.commons.javafx.CompletableFutureTask;
 import com.malte3d.suturo.commons.javafx.FxmlLoaderUtil;
@@ -23,6 +24,7 @@ import javafx.stage.Stage;
 import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
 import lombok.NonNull;
+import org.lwjgl.system.Configuration;
 import org.scenicview.ScenicView;
 
 import java.util.Objects;
@@ -97,8 +99,23 @@ public class MainApplication extends Application implements Provider<HostService
     }
 
     public static void launch(@NonNull MainApplicationOptions options) {
+
         MainApplication.injector = options.getInjector();
+
+        setupJfxLwjglEnvironment();
+
         launch(options.getArgs());
+    }
+
+    /**
+     * Some general settings for JFX/LWJGL for maximum compatibility
+     */
+    private static void setupJfxLwjglEnvironment() {
+
+        Configuration.GLFW_CHECK_THREAD0.set(false); // need to disable to work on macOS
+        Configuration.MEMORY_ALLOCATOR.set("jemalloc"); // use jemalloc
+        System.setProperty("prism.lcdtext", "false"); // force antialiasing in JavaFX fonts
+        System.setProperty(LWJGLBufferAllocator.PROPERTY_CONCURRENT_BUFFER_ALLOCATOR, "true");
     }
 
     @Override

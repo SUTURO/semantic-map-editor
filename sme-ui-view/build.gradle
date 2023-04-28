@@ -10,4 +10,11 @@ dependencies {
 
     implementation project(":sme-ui-viewmodel")
     implementation project(":sme-domain-model")
+
+    // jMonkeyEngine
+    implementation "org.jmonkeyengine:jme3-core:$versions.jmonkeyengine"
+    implementation "org.jmonkeyengine:jme3-desktop:$versions.jmonkeyengine"
+    implementation "org.jmonkeyengine:jme3-lwjgl3:$versions.jmonkeyengine"
+    implementation ":jfx-11-jme-embedded:$versions.jfxjme"
+
 }

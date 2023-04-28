@@ -6,6 +6,9 @@ plugins {
 
 repositories {
     mavenCentral()
+    flatDir {
+        dirs "$rootDir/libs"
+    }
 }
 
 sourceSets {
