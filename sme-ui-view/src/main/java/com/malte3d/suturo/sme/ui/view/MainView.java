@@ -1,24 +1,22 @@
 package com.malte3d.suturo.sme.ui.view;
 
-import java.time.Year;
-
 import com.malte3d.suturo.commons.Version;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.ui.viewmodel.MainViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.time.Year;
 
 
 @Slf4j
@@ -30,12 +28,16 @@ public class MainView {
     @FXML
     Parent mainView;
 
+    /*
+     * Menu
+     */
+
     @FXML
     public MenuBar menuBar;
 
     /* File */
     @FXML
-    Menu menuFile;
+    private Menu menuFile;
     @FXML
     private MenuItem menuFileNew;
     @FXML
@@ -74,6 +76,22 @@ public class MainView {
     public Menu menuHelp;
     @FXML
     private MenuItem menuHelpAbout;
+
+    /*
+     * Editor View
+     */
+
+    @FXML
+    private AnchorPane editorView;
+    @FXML
+    private AnchorPane optionsView;
+
+    /*
+     * Statusbar
+     */
+
+    public HBox statusbar;
+
 
     public void initialize() {
 
