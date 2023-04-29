@@ -37,8 +37,9 @@
 
     <SplitPane dividerPositions="0.75" focusTraversable="true" VBox.vgrow="ALWAYS">
 
-        <AnchorPane fx:id="editorView" prefWidth="430.0">
-
+        <AnchorPane>
+            <StackPane fx:id="editorView" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
         </AnchorPane>
 
         <ScrollPane>

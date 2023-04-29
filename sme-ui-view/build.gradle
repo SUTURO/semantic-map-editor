@@ -15,6 +15,8 @@ dependencies {
     implementation "org.jmonkeyengine:jme3-core:$versions.jmonkeyengine"
     implementation "org.jmonkeyengine:jme3-desktop:$versions.jmonkeyengine"
     implementation "org.jmonkeyengine:jme3-lwjgl3:$versions.jmonkeyengine"
+    runtimeOnly "org.jmonkeyengine:jme3-plugins:$versions.jmonkeyengine"
+    runtimeOnly "org.jmonkeyengine:jme3-jogg:$versions.jmonkeyengine"
     implementation ":jfx-11-jme-embedded:$versions.jfxjme"
 
 }

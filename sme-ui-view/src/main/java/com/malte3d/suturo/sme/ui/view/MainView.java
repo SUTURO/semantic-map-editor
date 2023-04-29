@@ -1,5 +1,9 @@
 package com.malte3d.suturo.sme.ui.view;
 
+import com.jayfella.jfx.embedded.jfx.EditorFxImageView;
+import com.jme3.app.FlyCamAppState;
+import com.jme3.app.StatsAppState;
+import com.jme3.system.AppSettings;
 import com.malte3d.suturo.commons.Version;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.ui.viewmodel.MainViewModel;
@@ -11,12 +15,14 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Year;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 @Slf4j
@@ -82,7 +88,7 @@ public class MainView {
      */
 
     @FXML
-    private AnchorPane editorView;
+    private StackPane editorView;
     @FXML
     private AnchorPane optionsView;
 
@@ -95,6 +101,11 @@ public class MainView {
 
     public void initialize() {
 
+        initMenuView();
+        initEditorView();
+    }
+
+    private void initMenuView() {
         initMenuFile();
         initMenuEdit();
         initMenuHelp();
@@ -124,6 +135,53 @@ public class MainView {
     private void initMenuHelp() {
 
         menuHelpAbout.setOnAction(event -> showHelpAboutDialog());
+    }
+
+    private void initEditorView() {
+
+        try {
+
+            MainViewEditor mainViewEditor = createMainViewEditor();
+            EditorFxImageView editorImageView = mainViewEditor.getImageView();
+            editorImageView.setResizeDelay(15);
+
+            editorView.getChildren().add(editorImageView);
+
+        } catch (InterruptedException e) {
+            log.error("Error while initializing the 3d-editor view.", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    private MainViewEditor createMainViewEditor() throws InterruptedException {
+
+        AtomicReference<MainViewEditor> jfxMainViewEditor = new AtomicReference<>();
+
+        new Thread(new ThreadGroup("LWJGL"), () -> {
+
+            var mainViewEditor = new MainViewEditor(
+                    new StatsAppState(),
+                    new FlyCamAppState()
+            );
+
+            AppSettings appSettings = mainViewEditor.getSettings();
+            appSettings.setGammaCorrection(true);
+            appSettings.setSamples(16);
+
+
+            jfxMainViewEditor.set(mainViewEditor);
+            jfxMainViewEditor.get().start();
+
+        }, "LWJGL Renderer").start();
+
+        while (jfxMainViewEditor.get() == null || !jfxMainViewEditor.get().isInitialized()) {
+            Thread.sleep(100);
+            log.info("Waiting for LWJGL3 engine to initialize...");
+        }
+
+        log.info("LWJGL3 engine initialized.");
+
+        return jfxMainViewEditor.get();
     }
 
     private void showHelpAboutDialog() {

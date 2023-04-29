@@ -108,7 +108,7 @@ public class MainApplication extends Application implements Provider<HostService
     }
 
     /**
-     * Some general settings for JFX/LWJGL for maximum compatibility
+     * Setup some general settings for JavaFX and LWJGL for maximum compatibility
      */
     private static void setupJfxLwjglEnvironment() {
 
