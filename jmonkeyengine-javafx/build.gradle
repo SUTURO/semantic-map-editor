@@ -4,17 +4,14 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.13'
 }
 
-description = "Semantic Map Editor - UI View"
+description = "jMonkeyEngine - JavaFX: Embed JME into JavaFX"
 
 dependencies {
-
-    implementation project(":sme-ui-viewmodel")
-    implementation project(":sme-domain-model")
 
     // jMonkeyEngine
     implementation "org.jmonkeyengine:jme3-core:$versions.jmonkeyengine"
     implementation "org.jmonkeyengine:jme3-desktop:$versions.jmonkeyengine"
     implementation "org.jmonkeyengine:jme3-lwjgl3:$versions.jmonkeyengine"
-    implementation project(":jmonkeyengine-javafx")
-
+    runtimeOnly "org.jmonkeyengine:jme3-plugins:$versions.jmonkeyengine"
+    runtimeOnly "org.jmonkeyengine:jme3-jogg:$versions.jmonkeyengine"
 }

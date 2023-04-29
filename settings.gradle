@@ -16,3 +16,6 @@ include 'sme-domain-service'
 include 'sme-ui'
 include 'sme-ui-view'
 include 'sme-ui-viewmodel'
+
+/* jMonkeyEngine */
+include 'jmonkeyengine-javafx'

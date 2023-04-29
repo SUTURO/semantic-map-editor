@@ -12,7 +12,6 @@ ext {
     versions.guava          = "31.1-jre"
     versions.guice          = "5.1.0"
     versions.javafx         = "20"
-    versions.jfxjme         = "1.0.2"
     versions.jmetro         = "11.6.16"
     versions.jmonkeyengine  = "3.6.0-stable"
     versions.junit          = "5.9.2"
