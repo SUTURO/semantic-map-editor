@@ -4,26 +4,40 @@ import com.jme3.app.FlyCamAppState;
 import com.jme3.app.StatsAppState;
 import com.jme3.system.AppSettings;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
+import com.malte3d.suturo.commons.javafx.CompletableFutureTask;
+import com.malte3d.suturo.commons.javafx.GlobalExecutor;
 import com.malte3d.suturo.commons.messages.Messages;
+import com.malte3d.suturo.sme.ui.viewmodel.UiService;
 import javafx.application.HostServices;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.Executor;
 
 @Slf4j
 @Getter
-@RequiredArgsConstructor(onConstructor_ = @Inject)
-public class MainViewModel {
+public class MainViewModel extends UiService {
 
     @NonNull
     private final DomainEventPublisher domainEventPublisher;
 
     @NonNull
     private final HostServices hostServices;
+
+    @Inject
+    public MainViewModel(
+            @NonNull @GlobalExecutor Executor executor,
+            @NonNull DomainEventPublisher domainEventPublisher,
+            @NonNull HostServices hostServices) {
+
+        super(executor);
+
+        this.domainEventPublisher = domainEventPublisher;
+        this.hostServices = hostServices;
+    }
+
 
     public void openCopyrightOwnerUrl() {
         hostServices.showDocument(Messages.getString("Application.Help.About.CopyrightOwnerUrl"));
@@ -33,38 +47,36 @@ public class MainViewModel {
         domainEventPublisher.raise(new ExitApplicationEvent());
     }
 
-    public MainViewEditor loadMainViewEditor() {
+    public CompletableFutureTask<MainEditor> loadMainEditor() {
 
-        AtomicReference<MainViewEditor> jfxMainViewEditor = new AtomicReference<>();
+        return this.<MainEditor>createFutureTask()
+                .withErrorMessageKey("Application.Main.Editor.Initialization.Error")
+                .withLoggerMessageOnError("Error while initializing MainEditor")
+                .withTask(this::initializeMainEditor);
+    }
 
-        new Thread(new ThreadGroup("LWJGL"), () -> {
+    private MainEditor initializeMainEditor() {
 
-            var mainViewEditor = new MainViewEditor(
-                    new StatsAppState(),
-                    new FlyCamAppState()
-            );
+        MainEditor mainEditor = new MainEditor(
+                new StatsAppState(),
+                new FlyCamAppState()
+        );
 
-            AppSettings appSettings = mainViewEditor.getSettings();
-            appSettings.setGammaCorrection(true);
-            appSettings.setSamples(16);
+        AppSettings appSettings = mainEditor.getSettings();
+        appSettings.setGammaCorrection(true);
+        appSettings.setSamples(16);
 
-
-            jfxMainViewEditor.set(mainViewEditor);
-            jfxMainViewEditor.get().start();
-
-        }, "LWJGL Renderer").start();
+        mainEditor.start();
 
         try {
 
-            while (jfxMainViewEditor.get() == null || !jfxMainViewEditor.get().isInitialized())
-                Thread.sleep(100);
+            while (!mainEditor.isInitialized())
+                Thread.sleep(10);
 
         } catch (InterruptedException e) {
-            log.error("Error while waiting for MainViewEditor to be initialized", e);
+            log.error("Error while waiting for MainEditor to be initialized", e);
         }
-        
-        domainEventPublisher.raise(new EditorInitializedEvent());
 
-        return jfxMainViewEditor.get();
+        return mainEditor;
     }
 }

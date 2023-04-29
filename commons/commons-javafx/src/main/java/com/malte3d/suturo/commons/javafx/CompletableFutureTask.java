@@ -106,7 +106,7 @@ public class CompletableFutureTask<T> {
 
     private synchronized void onSucceed(Runnable runnable) {
 
-        if (task.getState() == Worker.State.SUCCEEDED)
+        if (Platform.isFxApplicationThread() && task.getState() == Worker.State.SUCCEEDED)
             runOnUiThread(runnable);
         else
             succeededHandlers.add(runnable);
@@ -114,7 +114,7 @@ public class CompletableFutureTask<T> {
 
     private synchronized void onFail(Runnable runnable) {
 
-        if (task.getState() == Worker.State.FAILED)
+        if (Platform.isFxApplicationThread() && task.getState() == Worker.State.FAILED)
             runOnUiThread(runnable);
         else
             failedHandlers.add(runnable);

@@ -1,5 +1,8 @@
 dependencies {
 
+    if (!project.name.startsWith("commons-"))
+        implementation project(":commons-javafx")
+
     implementation "org.jfxtras:jmetro:${versions.jmetro}"
     implementation "org.controlsfx:controlsfx:${versions.controlsfx}"
 }

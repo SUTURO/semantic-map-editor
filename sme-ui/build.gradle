@@ -8,8 +8,6 @@ description = "Semantic Map Editor - UI"
 
 dependencies {
 
-    implementation project(":commons-javafx")
-
     implementation project(":sme-ui-view")
     implementation project(":sme-ui-viewmodel")
     implementation project(":sme-domain-service")

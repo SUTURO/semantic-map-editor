@@ -11,11 +11,11 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 
-public class MainViewEditor extends SimpleJfxApplication {
+public class MainEditor extends SimpleJfxApplication {
 
     private Geometry box;
 
-    public MainViewEditor(AppState... initialStates) {
+    public MainEditor(AppState... initialStates) {
         super(initialStates);
     }
 

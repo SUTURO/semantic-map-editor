@@ -4,7 +4,6 @@ import com.jayfella.jfx.embedded.jfx.EditorFxImageView;
 import com.malte3d.suturo.commons.Version;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.ui.viewmodel.main.EditorInitializedEvent;
-import com.malte3d.suturo.sme.ui.viewmodel.main.MainViewEditor;
 import com.malte3d.suturo.sme.ui.viewmodel.main.MainViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -142,10 +141,13 @@ public class MainView {
 
         viewModel.getDomainEventPublisher().register(EditorInitializedEvent.class, () -> editorViewProgress.setVisible(false));
 
-        MainViewEditor mainViewEditor = viewModel.loadMainViewEditor();
-        EditorFxImageView editorImageView = mainViewEditor.getImageView();
+        viewModel.loadMainEditor().thenConsume(editor -> {
 
-        editorView.getChildren().add(editorImageView);
+            EditorFxImageView editorImageView = editor.getImageView();
+
+            editorView.getChildren().add(editorImageView);
+            viewModel.getDomainEventPublisher().raise(new EditorInitializedEvent());
+        });
     }
 
     private void showHelpAboutDialog() {
