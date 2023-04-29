@@ -1,4 +1,4 @@
-package com.malte3d.suturo.sme.ui.view;
+package com.malte3d.suturo.sme.ui.viewmodel.main;
 
 import com.jayfella.jfx.embedded.SimpleJfxApplication;
 import com.jme3.app.state.AppState;

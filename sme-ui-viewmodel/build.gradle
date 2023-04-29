@@ -9,7 +9,13 @@ description = "Semantic Map Editor - UI Viewmodel"
 dependencies {
 
     implementation project(":commons-javafx")
-    
+
     implementation project(":sme-application-service")
     implementation project(":sme-domain-model")
+
+    // jMonkeyEngine
+    implementation "org.jmonkeyengine:jme3-core:$versions.jmonkeyengine"
+    implementation "org.jmonkeyengine:jme3-desktop:$versions.jmonkeyengine"
+    implementation "org.jmonkeyengine:jme3-lwjgl3:$versions.jmonkeyengine"
+    implementation project(":jmonkeyengine-javafx")
 }

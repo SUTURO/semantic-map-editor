@@ -4,7 +4,7 @@ import com.google.inject.Injector;
 import com.malte3d.suturo.commons.javafx.AbstractFxmlViewFactory;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.ui.view.MainView;
-import com.malte3d.suturo.sme.ui.viewmodel.MainViewModel;
+import com.malte3d.suturo.sme.ui.viewmodel.main.MainViewModel;
 import lombok.NonNull;
 
 import java.util.HashMap;

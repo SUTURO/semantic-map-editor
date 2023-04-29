@@ -39,7 +39,9 @@
 
         <AnchorPane>
             <StackPane fx:id="editorView" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
-                       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
+                       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                <ProgressIndicator fx:id="editorViewProgress"/>
+            </StackPane>
         </AnchorPane>
 
         <ScrollPane>

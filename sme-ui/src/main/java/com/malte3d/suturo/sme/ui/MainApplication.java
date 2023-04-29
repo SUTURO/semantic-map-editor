@@ -14,7 +14,7 @@ import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMo
 import com.malte3d.suturo.sme.domain.service.application.settings.SettingsRepository;
 import com.malte3d.suturo.sme.ui.util.UiResources;
 import com.malte3d.suturo.sme.ui.view.MainView;
-import com.malte3d.suturo.sme.ui.viewmodel.ExitApplicationEvent;
+import com.malte3d.suturo.sme.ui.viewmodel.main.ExitApplicationEvent;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.application.Platform;
