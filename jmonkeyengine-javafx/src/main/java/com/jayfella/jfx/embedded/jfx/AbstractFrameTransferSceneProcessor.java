@@ -449,14 +449,10 @@ public abstract class AbstractFrameTransferSceneProcessor<T extends Node> implem
      *
      * @param width     the width.
      * @param height    the height.
-     * @param fixAspect true if need to fix aspect ration.
+     * @param fixAspect true if need to fix aspect ratio.
      * @return the new frame transfer.
      */
     protected FrameTransfer reshapeInThread(int width, int height, boolean fixAspect) {
-
-        //if (LOGGER.isEnabled(LoggerLevel.DEBUG)) {
-        //LOGGER.debug(this, "Reshape in the jME thread to " + width + "x" + height);
-        //}
 
         reshapeCurrentViewPort(width, height);
 
@@ -519,11 +515,11 @@ public abstract class AbstractFrameTransferSceneProcessor<T extends Node> implem
                 .filter(sceneProcessor -> !(sceneProcessor instanceof FrameTransferSceneProcessor))
                 .findAny();
 
-        if (!any.isPresent()) {
+        if (any.isEmpty()) {
 
             FrameBuffer frameBuffer = new FrameBuffer(width, height, 1);
-            frameBuffer.setDepthBuffer(Image.Format.Depth);
-            frameBuffer.setColorBuffer(Image.Format.RGBA8);
+            frameBuffer.setDepthTarget(FrameBuffer.FrameBufferTarget.newTarget(Image.Format.Depth));
+            frameBuffer.addColorTarget(FrameBuffer.FrameBufferTarget.newTarget(Image.Format.RGBA8));
             frameBuffer.setSrgb(true);
 
             viewPort.setOutputFrameBuffer(frameBuffer);
