@@ -8,6 +8,7 @@ import com.malte3d.suturo.commons.javafx.CompletableFutureTask;
 import com.malte3d.suturo.commons.javafx.GlobalExecutor;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.ui.viewmodel.UiService;
+import com.malte3d.suturo.sme.ui.viewmodel.main.editor.MainEditor;
 import javafx.application.HostServices;
 import lombok.Getter;
 import lombok.NonNull;

@@ -1,4 +1,4 @@
-package com.malte3d.suturo.sme.ui.viewmodel.main;
+package com.malte3d.suturo.sme.ui.viewmodel.main.editor;
 
 import com.jayfella.jfx.embedded.SimpleJfxApplication;
 import com.jme3.app.state.AppState;
@@ -13,6 +13,8 @@ import com.jme3.texture.Texture;
 
 public class MainEditor extends SimpleJfxApplication {
 
+    private final ColorRGBA backgroundColor = new ColorRGBA(EditorUtil.hexToVec3("#fafafa"));
+
     private Geometry box;
 
     public MainEditor(AppState... initialStates) {
@@ -22,12 +24,11 @@ public class MainEditor extends SimpleJfxApplication {
     @Override
     public void initApp() {
 
-        flyCam.setDragToRotate(true);
-        flyCam.setMoveSpeed(6);
+        viewPort.setBackgroundColor(backgroundColor);
 
         DirectionalLight directionalLight = new DirectionalLight(
                 new Vector3f(-1, -1, -1).normalizeLocal(),
-                ColorRGBA.White.clone()
+                ColorRGBA.White
         );
 
         rootNode.addLight(directionalLight);
