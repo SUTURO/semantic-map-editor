@@ -1,6 +1,8 @@
 package com.jayfella.jfx.embedded.jfx;
 
 import javafx.scene.image.ImageView;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -12,16 +14,23 @@ import java.util.TimerTask;
  * @author JavaSaBr
  * @author jayfella
  */
+@Getter
+@Setter
 public class EditorFxImageView extends ImageView {
 
-    private static final long DEFAULT_RESIZE_DELAY = 50;
+    private static final long DEFAULT_RESIZE_DELAY = 100;
     private static final double MIN_SIZE = 128;
     private static final double MAX_SIZE = Double.MAX_VALUE;
 
     private final Timer timer = new Timer();
+    private TimerTask resizeTask;
 
-    private TimerTask resizeTask = null;
-    private long resizeDelay = DEFAULT_RESIZE_DELAY;
+    private double maxWidth = MAX_SIZE;
+    private double maxHeight = MAX_SIZE;
+
+    private long resizeDelayInMs = DEFAULT_RESIZE_DELAY;
+    private double lastWidth = -1;
+    private double lastHeight = -1;
 
     @Override
     public double minHeight(double width) {
@@ -30,7 +39,7 @@ public class EditorFxImageView extends ImageView {
 
     @Override
     public double maxHeight(double width) {
-        return MAX_SIZE;
+        return Math.max(maxHeight, minHeight(width));
     }
 
     @Override
@@ -45,7 +54,7 @@ public class EditorFxImageView extends ImageView {
 
     @Override
     public double maxWidth(double height) {
-        return MAX_SIZE;
+        return Math.max(maxWidth, minWidth(height));
     }
 
     @Override
@@ -53,44 +62,35 @@ public class EditorFxImageView extends ImageView {
         return true;
     }
 
+    /**
+     * To prevent to frequent resizing, the resize will only be scheduled after the defined delay
+     */
     @Override
     public void resize(double width, double height) {
 
-        if (resizeTask != null)
-            resizeTask.cancel();
+        if (width != lastWidth || height != lastHeight) {
 
-        resizeTask = new TimerTask() {
-            @Override
-            public void run() {
-                resizeAfter(width, height);
-            }
-        };
+            lastWidth = width;
+            lastHeight = height;
 
-        timer.schedule(resizeTask, resizeDelay);
+            if (resizeTask != null)
+                resizeTask.cancel();
+
+            resizeTask = new TimerTask() {
+                @Override
+                public void run() {
+                    resizeAfter(width, height);
+                }
+            };
+
+            timer.schedule(resizeTask, resizeDelayInMs);
+        }
     }
 
     private void resizeAfter(double width, double height) {
         super.resize(width, height);
         super.setFitWidth(width);
         super.setFitHeight(height);
-    }
-
-    /**
-     * Returns the delay time of resizing the canvas.
-     *
-     * @return the delay time of resizing the canvas.
-     */
-    public long getResizeDelay() {
-        return resizeDelay;
-    }
-
-    /**
-     * Delays resizing the JME viewport and thus reducing the continual resizes when a window is resized.
-     *
-     * @param resizeDelay the time in ms to delay a window redraw.
-     */
-    public void setResizeDelay(long resizeDelay) {
-        this.resizeDelay = resizeDelay;
     }
 
 }
