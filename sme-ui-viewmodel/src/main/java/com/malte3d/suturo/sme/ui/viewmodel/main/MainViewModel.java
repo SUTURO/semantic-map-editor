@@ -1,13 +1,11 @@
 package com.malte3d.suturo.sme.ui.viewmodel.main;
 
-import com.jme3.app.FlyCamAppState;
 import com.jme3.app.StatsAppState;
-import com.jme3.system.AppSettings;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
 import com.malte3d.suturo.commons.javafx.CompletableFutureTask;
 import com.malte3d.suturo.commons.javafx.GlobalExecutor;
+import com.malte3d.suturo.commons.javafx.UiService;
 import com.malte3d.suturo.commons.messages.Messages;
-import com.malte3d.suturo.sme.ui.viewmodel.UiService;
 import com.malte3d.suturo.sme.ui.viewmodel.main.editor.MainEditor;
 import javafx.application.HostServices;
 import lombok.Getter;
@@ -59,20 +57,14 @@ public class MainViewModel extends UiService {
     private MainEditor initializeMainEditor() {
 
         MainEditor mainEditor = new MainEditor(
-                new StatsAppState(),
-                new FlyCamAppState()
+                new StatsAppState()
         );
-
-        AppSettings appSettings = mainEditor.getSettings();
-        appSettings.setGammaCorrection(true);
-        appSettings.setSamples(16);
 
         mainEditor.start();
 
         try {
 
-            while (!mainEditor.isInitialized())
-                Thread.sleep(10);
+            mainEditor.getInitializedLatch().await();
 
         } catch (InterruptedException e) {
             log.error("Error while waiting for MainEditor to be initialized", e);

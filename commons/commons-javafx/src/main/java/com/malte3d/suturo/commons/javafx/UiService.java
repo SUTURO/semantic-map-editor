@@ -1,6 +1,5 @@
-package com.malte3d.suturo.sme.ui.viewmodel;
+package com.malte3d.suturo.commons.javafx;
 
-import com.malte3d.suturo.commons.javafx.CompletableFutureTaskBuilder;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
