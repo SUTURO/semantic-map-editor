@@ -1,6 +1,6 @@
 package com.malte3d.suturo.sme.ui.viewmodel.main.editor;
 
-import com.jayfella.jfx.embedded.SimpleJfxApplication;
+import com.jayfella.jfx.embedded.AbstractJmeApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
@@ -11,7 +11,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 
-public class MainEditor extends SimpleJfxApplication {
+public class MainEditor extends AbstractJmeApplication {
 
     private final ColorRGBA backgroundColor = new ColorRGBA(EditorUtil.hexToVec3("#fafafa"));
 
@@ -43,8 +43,6 @@ public class MainEditor extends SimpleJfxApplication {
         box.getMaterial().setFloat("Metallic", 0.001f);
 
         rootNode.attachChild(box);
-
-        initialized = true;
     }
 
     @Override

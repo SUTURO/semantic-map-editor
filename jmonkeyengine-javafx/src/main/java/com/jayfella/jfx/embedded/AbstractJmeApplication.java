@@ -15,17 +15,17 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 
 @Slf4j
-public abstract class SimpleJfxApplication extends SimpleApplication {
+public abstract class AbstractJmeApplication extends SimpleApplication {
 
     private final Thread jmeThread;
 
     private EditorFxImageView imageView;
 
     private boolean started = false;
-    protected boolean initialized = false;
+    private boolean initialized = false;
 
-    public SimpleJfxApplication(AppState... initialStates) {
-        
+    public AbstractJmeApplication(AppState... initialStates) {
+
         super(initialStates);
 
         jmeThread = Thread.currentThread();
@@ -38,7 +38,6 @@ public abstract class SimpleJfxApplication extends SimpleApplication {
         setSettings(settings);
 
         createCanvas();
-
     }
 
     public void start() {
@@ -73,9 +72,9 @@ public abstract class SimpleJfxApplication extends SimpleApplication {
 
         started = true;
 
-        log.info("jMonkeyEngine Started.");
-
         initApp();
+
+        initialized = true;
     }
 
     public EditorFxImageView getImageView() {
@@ -85,7 +84,6 @@ public abstract class SimpleJfxApplication extends SimpleApplication {
     /**
      * Indicates that the first of two phases of the engine startup sequence is complete. It has started.
      * The engine is ready for input, but has not yet been initialized.
-     * You must set initialized = true in your initApp method.
      *
      * @return whether the engine has started.
      */
@@ -95,8 +93,6 @@ public abstract class SimpleJfxApplication extends SimpleApplication {
 
     /**
      * Indicates that the second of two phases are complete. The engine is initialized.
-     * The engine is waiting for the class to set initialized = true.
-     * This usually occurs in the users initApp() method.
      *
      * @return whether the engine is initialized.
      */

@@ -1,6 +1,6 @@
 package com.jayfella.jfx.embedded.jfx;
 
-import com.jayfella.jfx.embedded.SimpleJfxApplication;
+import com.jayfella.jfx.embedded.AbstractJmeApplication;
 import com.jayfella.jfx.embedded.core.ThreadRunner;
 import com.jayfella.jfx.embedded.jme.JmeOffscreenSurfaceContext;
 import com.jme3.cursors.plugins.JmeCursor;
@@ -75,7 +75,7 @@ public class JfxMouseInput extends JfxInput implements MouseInput {
         this.mouseButtonEvents = new LinkedList<>();
     }
 
-    public void setApplication(SimpleJfxApplication application) {
+    public void setApplication(AbstractJmeApplication application) {
         this.threadRunner = new ThreadRunner(application);
     }
 
@@ -171,7 +171,7 @@ public class JfxMouseInput extends JfxInput implements MouseInput {
         MouseMotionEvent mouseMotionEvent = new MouseMotionEvent(mouseX, mouseY, 0, 0, mouseWheel, (int) Math.round(yOffset));
         mouseMotionEvent.setTime(getInputTimeNanos());
 
-        threadRunner.runInJmeThread(() -> mouseMotionEvents.add(mouseMotionEvent) );
+        threadRunner.runInJmeThread(() -> mouseMotionEvents.add(mouseMotionEvent));
     }
 
     private void onCursorPos(double xpos, double ypos) {
@@ -182,7 +182,7 @@ public class JfxMouseInput extends JfxInput implements MouseInput {
         int x = (int) Math.round(xpos);
         int y = 0;
 
-        if(inverseYCoord) {
+        if (inverseYCoord) {
             if (node instanceof Region) {
                 y = (int) Math.round(((Region) node).getHeight() - ypos);
             } else if (node instanceof Canvas) {
@@ -210,7 +210,7 @@ public class JfxMouseInput extends JfxInput implements MouseInput {
         MouseMotionEvent mouseMotionEvent = new MouseMotionEvent(x, y, xDelta, yDelta, mouseWheel, 0);
         mouseMotionEvent.setTime(getInputTimeNanos());
 
-        threadRunner.runInJmeThread(() -> mouseMotionEvents.add(mouseMotionEvent) );
+        threadRunner.runInJmeThread(() -> mouseMotionEvents.add(mouseMotionEvent));
     }
 
     private void onMouseButton(MouseButton button, boolean pressed) {
@@ -218,7 +218,7 @@ public class JfxMouseInput extends JfxInput implements MouseInput {
         MouseButtonEvent mouseButtonEvent = new MouseButtonEvent(convertButton(button), pressed, mouseX, mouseY);
         mouseButtonEvent.setTime(getInputTimeNanos());
 
-        threadRunner.runInJmeThread(() -> mouseButtonEvents.add(mouseButtonEvent) );
+        threadRunner.runInJmeThread(() -> mouseButtonEvents.add(mouseButtonEvent));
     }
 
     private int convertButton(MouseButton button) {
