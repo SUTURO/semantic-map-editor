@@ -28,7 +28,7 @@ import java.util.Map;
  *
  * @author JavaSaBr
  */
-public class JfxMouseInput extends JfxInput implements MouseInput {
+public class JfxMouseInput extends AbstractJfxInput implements MouseInput {
 
     public static final String PROP_USE_LOCAL_COORDS = "JFX.mouseInput.useLocalCoords";
     public static final String PROP_INVERSE_Y_COORD = "JFX.mouseInput.inverseYCoord";
@@ -47,15 +47,11 @@ public class JfxMouseInput extends JfxInput implements MouseInput {
     private static final int WHEEL_SCALE = 10;
 
     private final EventHandler<MouseEvent> processMotion = this::processMotion;
-
     private final EventHandler<MouseEvent> processPressed = this::processPressed;
-
     private final EventHandler<MouseEvent> processReleased = this::processReleased;
-
     private final EventHandler<ScrollEvent> processScroll = this::processScroll;
 
     private final LinkedList<MouseMotionEvent> mouseMotionEvents;
-
     private final LinkedList<MouseButtonEvent> mouseButtonEvents;
 
     private int mouseX;
@@ -69,8 +65,6 @@ public class JfxMouseInput extends JfxInput implements MouseInput {
 
     public JfxMouseInput(JmeOffscreenSurfaceContext context) {
         super(context);
-        // this.mouseMotionEvents = newLinkedList(MouseMotionEvent.class);
-        // this.mouseButtonEvents = newLinkedList(MouseButtonEvent.class);
         this.mouseMotionEvents = new LinkedList<>();
         this.mouseButtonEvents = new LinkedList<>();
     }
@@ -81,6 +75,7 @@ public class JfxMouseInput extends JfxInput implements MouseInput {
 
     @Override
     public void bind(Node node) {
+
         super.bind(node);
 
         node.addEventHandler(MouseEvent.MOUSE_MOVED, processMotion);
@@ -115,13 +110,11 @@ public class JfxMouseInput extends JfxInput implements MouseInput {
 
         RawInputListener listener = getListener();
 
-        while (!mouseMotionEvents.isEmpty()) {
+        while (!mouseMotionEvents.isEmpty())
             listener.onMouseMotionEvent(mouseMotionEvents.poll());
-        }
 
-        while (!mouseButtonEvents.isEmpty()) {
+        while (!mouseButtonEvents.isEmpty())
             listener.onMouseButtonEvent(mouseButtonEvents.poll());
-        }
     }
 
     /**
@@ -203,9 +196,8 @@ public class JfxMouseInput extends JfxInput implements MouseInput {
         mouseX = x;
         mouseY = y;
 
-        if (xDelta == 0 && yDelta == 0) {
+        if (xDelta == 0 && yDelta == 0)
             return;
-        }
 
         MouseMotionEvent mouseMotionEvent = new MouseMotionEvent(x, y, xDelta, yDelta, mouseWheel, 0);
         mouseMotionEvent.setTime(getInputTimeNanos());

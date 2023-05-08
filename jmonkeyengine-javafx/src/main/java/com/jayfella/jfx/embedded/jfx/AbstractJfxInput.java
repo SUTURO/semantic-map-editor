@@ -11,7 +11,7 @@ import javafx.scene.Scene;
  *
  * @author JavaSaBr
  */
-public class JfxInput implements Input {
+abstract class AbstractJfxInput implements Input {
 
     /**
      * The context.
@@ -38,7 +38,7 @@ public class JfxInput implements Input {
      */
     protected boolean initialized;
 
-    public JfxInput(JmeOffscreenSurfaceContext context) {
+    public AbstractJfxInput(JmeOffscreenSurfaceContext context) {
         this.context = context;
     }
 
@@ -89,28 +89,26 @@ public class JfxInput implements Input {
 
     @Override
     public void initialize() {
-        if (isInitialized()) return;
-        initializeImpl();
-        initialized = true;
-    }
 
-    /**
-     * Initialize.
-     */
-    protected void initializeImpl() {
+        if (isInitialized())
+            return;
+
+        initialized = true;
     }
 
     @Override
     public void update() {
-        if (!context.isRenderable()) return;
+
+        if (!context.isRenderable())
+            return;
+
         updateImpl();
     }
 
     /**
      * Update.
      */
-    protected void updateImpl() {
-    }
+    abstract void updateImpl();
 
     @Override
     public void destroy() {

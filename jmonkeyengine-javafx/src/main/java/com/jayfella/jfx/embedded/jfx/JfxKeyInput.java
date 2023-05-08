@@ -4,13 +4,13 @@ import com.jayfella.jfx.embedded.AbstractJmeApplication;
 import com.jayfella.jfx.embedded.core.ThreadRunner;
 import com.jayfella.jfx.embedded.jme.JmeOffscreenSurfaceContext;
 import com.jme3.input.KeyInput;
-import com.jme3.input.RawInputListener;
 import com.jme3.input.event.KeyInputEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,7 +22,8 @@ import java.util.Map;
  * @author malte3d
  * @author JavaSaBr
  */
-public class JfxKeyInput extends JfxInput implements KeyInput {
+@Slf4j
+public class JfxKeyInput extends AbstractJfxInput implements KeyInput {
 
     private static final Map<KeyCode, Integer> KEY_CODE_TO_JME = new HashMap<>();
 
@@ -138,7 +139,6 @@ public class JfxKeyInput extends JfxInput implements KeyInput {
     }
 
     private final EventHandler<KeyEvent> processKeyPressed = this::processKeyPressed;
-
     private final EventHandler<KeyEvent> processKeyReleased = this::processKeyReleased;
 
     private final LinkedList<KeyInputEvent> keyInputEvents;
@@ -156,11 +156,11 @@ public class JfxKeyInput extends JfxInput implements KeyInput {
 
     @Override
     public void bind(Node node) {
+
         super.bind(node);
 
         node.addEventHandler(KeyEvent.KEY_PRESSED, processKeyPressed);
         node.addEventHandler(KeyEvent.KEY_RELEASED, processKeyReleased);
-
     }
 
     @Override
@@ -181,6 +181,7 @@ public class JfxKeyInput extends JfxInput implements KeyInput {
 
     private void processKeyPressed(KeyEvent keyEvent) {
         onKeyEvent(keyEvent, true);
+        log.info("Key pressed: {}", keyEvent.getCode());
     }
 
     private void onKeyEvent(KeyEvent keyEvent, boolean pressed) {
@@ -197,10 +198,9 @@ public class JfxKeyInput extends JfxInput implements KeyInput {
 
     @Override
     protected void updateImpl() {
-        RawInputListener listener = getListener();
-        while (!keyInputEvents.isEmpty()) {
-            listener.onKeyEvent(keyInputEvents.poll());
-        }
+
+        while (!keyInputEvents.isEmpty())
+            getListener().onKeyEvent(keyInputEvents.poll());
     }
 
     private int convertKeyCode(KeyCode keyCode) {

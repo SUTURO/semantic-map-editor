@@ -324,17 +324,10 @@ public abstract class AbstractFrameTransferSceneProcessor<T extends Node> implem
      * @param viewPort    the view port.
      * @param main        true if this processor is main.
      */
-    public void bind(
-            T destination,
-            AbstractJmeApplication application,
-            Node inputNode,
-            ViewPort viewPort,
-            boolean main
-    ) {
+    public void bind(T destination, AbstractJmeApplication application, Node inputNode, ViewPort viewPort, boolean main) {
 
-        if (hasApplication()) {
+        if (hasApplication())
             throw new RuntimeException("This process is already bonded.");
-        }
 
         setApplication(application);
         setEnabled(true);
@@ -343,10 +336,7 @@ public abstract class AbstractFrameTransferSceneProcessor<T extends Node> implem
         this.viewPort = viewPort;
         this.viewPort.addProcessor(this);
 
-        // JfxPlatform.runInFxThread(() -> bindDestination(application, destination, inputNode));
-        Platform.runLater(() -> {
-            bindDestination(application, destination, inputNode);
-        });
+        Platform.runLater(() -> bindDestination(application, destination, inputNode));
     }
 
     /**
@@ -356,15 +346,10 @@ public abstract class AbstractFrameTransferSceneProcessor<T extends Node> implem
      * @param destination the destination.
      * @param inputNode   the input node.
      */
-    protected void bindDestination(
-            AbstractJmeApplication application,
-            T destination,
-            Node inputNode
-    ) {
+    protected void bindDestination(AbstractJmeApplication application, T destination, Node inputNode) {
 
-        if (!Platform.isFxApplicationThread()) {
+        if (!Platform.isFxApplicationThread())
             throw new RuntimeException("this call is not from JavaFX thread.");
-        }
 
         if (isMain()) {
             JmeOffscreenSurfaceContext context = (JmeOffscreenSurfaceContext) application.getContext();
@@ -383,8 +368,12 @@ public abstract class AbstractFrameTransferSceneProcessor<T extends Node> implem
     /**
      * Bind listeners to current destination.
      */
-    protected void bindListeners() {
-    }
+    protected abstract void bindListeners();
+
+    /**
+     * Unbind all listeners from destination.
+     */
+    protected abstract void unbindListeners();
 
     /**
      * Unbind this processor from its current destination.
@@ -421,12 +410,6 @@ public abstract class AbstractFrameTransferSceneProcessor<T extends Node> implem
             unbindListeners();
             setDestination(null);
         }
-    }
-
-    /**
-     * Unbind all listeners from destination.
-     */
-    protected void unbindListeners() {
     }
 
     @Override

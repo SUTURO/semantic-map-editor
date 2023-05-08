@@ -86,17 +86,8 @@ public abstract class AbstractFrameTransfer<T> implements FrameTransfer {
      */
     private final int height;
 
-    public AbstractFrameTransfer(T destination, int width, int height, FrameTransferSceneProcessor.TransferMode transferMode) {
-        this(destination, transferMode, null, width, height);
-    }
+    public AbstractFrameTransfer(T destination, FrameTransferSceneProcessor.TransferMode transferMode, FrameBuffer frameBuffer, int width, int height) {
 
-    public AbstractFrameTransfer(
-            T destination,
-            FrameTransferSceneProcessor.TransferMode transferMode,
-            FrameBuffer frameBuffer,
-            int width,
-            int height
-    ) {
         this.transferMode = transferMode;
         this.frameState = new AtomicInteger(WAITING_STATE);
         this.imageState = new AtomicInteger(WAITING_STATE);
@@ -108,8 +99,8 @@ public abstract class AbstractFrameTransfer<T> implements FrameTransfer {
             this.frameBuffer = frameBuffer;
         } else {
             this.frameBuffer = new FrameBuffer(width, height, 1);
-            this.frameBuffer.setDepthBuffer(Image.Format.Depth);
-            this.frameBuffer.setColorBuffer(Image.Format.RGBA8);
+            this.frameBuffer.setDepthTarget(FrameBuffer.FrameBufferTarget.newTarget(Image.Format.Depth));
+            this.frameBuffer.addColorTarget(FrameBuffer.FrameBufferTarget.newTarget(Image.Format.RGBA8));
             this.frameBuffer.setSrgb(true);
         }
 
@@ -122,9 +113,9 @@ public abstract class AbstractFrameTransfer<T> implements FrameTransfer {
 
     @Override
     public void initFor(Renderer renderer, boolean main) {
-        if (main) {
+
+        if (main)
             renderer.setMainFrameBufferOverride(frameBuffer);
-        }
     }
 
     /**
@@ -136,9 +127,7 @@ public abstract class AbstractFrameTransfer<T> implements FrameTransfer {
      * @param height      the height.
      * @return the pixel writer.
      */
-    protected PixelWriter getPixelWriter(T destination, FrameBuffer frameBuffer, int width, int height) {
-        throw new UnsupportedOperationException();
-    }
+    protected abstract PixelWriter getPixelWriter(T destination, FrameBuffer frameBuffer, int width, int height);
 
     @Override
     public int getWidth() {
@@ -269,6 +258,5 @@ public abstract class AbstractFrameTransfer<T> implements FrameTransfer {
      */
     protected void disposeImpl() {
         frameBuffer.dispose();
-        // BufferUtils.destroyDirectBuffer(frameByteBuffer);
     }
 }

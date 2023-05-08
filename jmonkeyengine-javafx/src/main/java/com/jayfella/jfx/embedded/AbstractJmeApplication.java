@@ -10,19 +10,24 @@ import com.jme3.app.state.AppState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.ViewPort;
 import com.jme3.system.AppSettings;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 @Slf4j
 public abstract class AbstractJmeApplication extends SimpleApplication {
+
 
     private final Thread jmeThread;
 
     private EditorFxImageView imageView;
 
     private boolean started = false;
-    private boolean initialized = false;
+
+    @Getter
+    private final CountDownLatch initializedLatch = new CountDownLatch(1);
 
     public AbstractJmeApplication(AppState... initialStates) {
 
@@ -61,7 +66,6 @@ public abstract class AbstractJmeApplication extends SimpleApplication {
         sceneProcessor.setEnabled(true);
 
         sceneProcessor.setTransferMode(FrameTransferSceneProcessor.TransferMode.ON_CHANGES);
-
     }
 
     @Override
@@ -74,7 +78,7 @@ public abstract class AbstractJmeApplication extends SimpleApplication {
 
         initApp();
 
-        initialized = true;
+        initializedLatch.countDown();
     }
 
     public EditorFxImageView getImageView() {
@@ -97,7 +101,7 @@ public abstract class AbstractJmeApplication extends SimpleApplication {
      * @return whether the engine is initialized.
      */
     public boolean isInitialized() {
-        return initialized;
+        return initializedLatch.getCount() == 0;
     }
 
     public boolean isJmeThread() {

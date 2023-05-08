@@ -133,6 +133,7 @@ public class JmeOffscreenSurfaceContext implements JmeContext {
 
     @Override
     public void setSettings(AppSettings settings) {
+
         this.settings.copyFrom(settings);
         this.settings.setRenderer(AppSettings.LWJGL_OPENGL32);
 
@@ -222,11 +223,9 @@ public class JmeOffscreenSurfaceContext implements JmeContext {
     @Override
     public void destroy(boolean waitFor) {
 
-        if (backgroundContext == null) {
+        if (backgroundContext == null)
             throw new IllegalStateException("Not created");
-        }
 
-        // destroy wrapped context
         backgroundContext.destroy(waitFor);
     }
 

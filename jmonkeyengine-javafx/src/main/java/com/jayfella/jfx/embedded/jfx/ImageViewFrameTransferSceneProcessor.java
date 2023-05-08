@@ -27,22 +27,25 @@ public class ImageViewFrameTransferSceneProcessor extends AbstractFrameTransferS
     }
 
     @Override
-    protected void bindDestination(
-            AbstractJmeApplication application,
-            ImageView destination,
-            Node inputNode
-    ) {
-        super.bindDestination(application, destination, inputNode);
-        destination.setScaleY(-1.0);
-    }
-
-    @Override
     protected void bindListeners() {
         ImageView destination = getDestination();
         destination.fitWidthProperty().addListener(widthListener);
         destination.fitHeightProperty().addListener(heightListener);
         destination.preserveRatioProperty().addListener(rationListener);
-        super.bindListeners();
+    }
+
+    @Override
+    protected void unbindListeners() {
+        ImageView destination = getDestination();
+        destination.fitWidthProperty().removeListener(widthListener);
+        destination.fitHeightProperty().removeListener(heightListener);
+        destination.preserveRatioProperty().removeListener(rationListener);
+    }
+
+    @Override
+    protected void bindDestination(AbstractJmeApplication application, ImageView destination, Node inputNode) {
+        super.bindDestination(application, destination, inputNode);
+        destination.setScaleY(-1.0);
     }
 
     @Override
