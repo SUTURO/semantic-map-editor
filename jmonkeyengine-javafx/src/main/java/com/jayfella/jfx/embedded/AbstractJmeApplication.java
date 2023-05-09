@@ -10,7 +10,6 @@ import com.jme3.app.state.AppState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.ViewPort;
 import com.jme3.system.AppSettings;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -19,14 +18,11 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 public abstract class AbstractJmeApplication extends SimpleApplication {
 
-
     private final Thread jmeThread;
 
     private EditorFxImageView imageView;
 
     private boolean started = false;
-
-    @Getter
     private final CountDownLatch initializedLatch = new CountDownLatch(1);
 
     public AbstractJmeApplication(AppState... initialStates) {
@@ -45,11 +41,19 @@ public abstract class AbstractJmeApplication extends SimpleApplication {
         createCanvas();
     }
 
-    public void start() {
+    /**
+     * Starts the JME application and initializes the JavaFX image view.
+     *
+     * @return A CountDownLatch that will count down when the application has been initialized.
+     */
+    public CountDownLatch completeInitialization() {
+
         JmeOffscreenSurfaceContext canvasContext = (JmeOffscreenSurfaceContext) getContext();
         canvasContext.setApplication(this);
         canvasContext.setSystemListener(this);
         startCanvas(true);
+
+        return initializedLatch;
     }
 
     private void initJavaFxImage() {
@@ -70,6 +74,7 @@ public abstract class AbstractJmeApplication extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
+
         initJavaFxImage();
 
         viewPort.setBackgroundColor(ColorRGBA.Black);

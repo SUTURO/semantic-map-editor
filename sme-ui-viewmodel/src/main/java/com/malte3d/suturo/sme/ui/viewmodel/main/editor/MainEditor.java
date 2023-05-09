@@ -19,7 +19,9 @@ import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.debug.Grid;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MainEditor extends AbstractJmeApplication {
 
     private static final ColorRGBA BACKGROUND_COLOR = new ColorRGBA(EditorUtil.hexToVec3("#fafafa"));
@@ -30,8 +32,37 @@ public class MainEditor extends AbstractJmeApplication {
 
     private Geometry box;
 
-    public MainEditor(AppState... initialStates) {
+    /**
+     * Use the factory method {@link #create(AppState...)} to create a new instance of the MainEditor.
+     *
+     * @param initialStates The initial states to be added to the MainEditor
+     */
+    private MainEditor(AppState... initialStates) {
         super(initialStates);
+    }
+
+    /**
+     * Creates and initializes a new instance of the MainEditor.
+     * <p>
+     * <b>Warning:</b> This call is blocking an may take some time to complete.
+     * </p>
+     *
+     * @param initialStates The initial states to be added to the MainEditor
+     * @return A new initialized instance of the MainEditor
+     */
+    public static MainEditor create(AppState... initialStates) {
+
+        MainEditor mainEditor = new MainEditor(initialStates);
+
+        try {
+
+            mainEditor.completeInitialization().await();
+
+        } catch (InterruptedException e) {
+            log.error("Error while waiting for MainEditor to be initialized", e);
+        }
+
+        return mainEditor;
     }
 
     @Override

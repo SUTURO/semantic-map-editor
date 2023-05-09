@@ -1,5 +1,6 @@
 package com.malte3d.suturo.sme.ui.viewmodel.main;
 
+import com.jme3.app.FlyCamAppState;
 import com.jme3.app.StatsAppState;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
 import com.malte3d.suturo.commons.javafx.CompletableFutureTask;
@@ -56,20 +57,9 @@ public class MainViewModel extends UiService {
 
     private MainEditor initializeMainEditor() {
 
-        MainEditor mainEditor = new MainEditor(
-                new StatsAppState()
+        return MainEditor.create(
+                new StatsAppState(),
+                new FlyCamAppState()
         );
-
-        mainEditor.start();
-
-        try {
-
-            mainEditor.getInitializedLatch().await();
-
-        } catch (InterruptedException e) {
-            log.error("Error while waiting for MainEditor to be initialized", e);
-        }
-
-        return mainEditor;
     }
 }
