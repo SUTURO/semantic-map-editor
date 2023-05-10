@@ -2,24 +2,20 @@ package com.malte3d.suturo.sme.ui.viewmodel.main.editor;
 
 import com.jayfella.jfx.embedded.AbstractJmeApplication;
 import com.jme3.app.state.AppState;
-import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
-import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.material.Materials;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
-import com.jme3.scene.control.CameraControl;
 import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.debug.Grid;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Collection;
 
 @Slf4j
 public class MainEditor extends AbstractJmeApplication {
@@ -27,8 +23,6 @@ public class MainEditor extends AbstractJmeApplication {
     private static final ColorRGBA BACKGROUND_COLOR = new ColorRGBA(EditorUtil.hexToVec3("#fafafa"));
 
     private static final Vector3f FRAME_ORIGIN = new Vector3f(0, 0, 0);
-
-    private CameraInputListener cameraInputListener;
 
     private Geometry box;
 
@@ -65,24 +59,24 @@ public class MainEditor extends AbstractJmeApplication {
         return mainEditor;
     }
 
+    /**
+     * Creates and initializes a new instance of the MainEditor.
+     * <p>
+     * <b>Warning:</b> This call is blocking an may take some time to complete.
+     * </p>
+     *
+     * @param initialStates The initial states to be added to the MainEditor
+     * @return A new initialized instance of the MainEditor
+     */
+    public static MainEditor create(Collection<AppState> initialStates) {
+        return create(initialStates.toArray(new AppState[0]));
+    }
+
     @Override
     public void initApp() {
 
-        CameraNode camNode = new CameraNode("CamNode", cam);
-        camNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera);
-        camNode.addControl(new CameraControl(cam));
-
-        cameraInputListener = new CameraInputListener(camNode);
-
-        inputManager.addMapping("MoveForward", new KeyTrigger(KeyInput.KEY_W));
-        inputManager.addMapping("MoveBackward", new KeyTrigger(KeyInput.KEY_S));
-        inputManager.addMapping("MoveLeft", new KeyTrigger(KeyInput.KEY_A));
-        inputManager.addMapping("MoveRight", new KeyTrigger(KeyInput.KEY_D));
-        inputManager.addMapping("RotateLeft", new MouseAxisTrigger(MouseInput.AXIS_X, true));
-        inputManager.addMapping("RotateRight", new MouseAxisTrigger(MouseInput.AXIS_X, false));
-        inputManager.addMapping("RotateUp", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
-        inputManager.addMapping("RotateDown", new MouseAxisTrigger(MouseInput.AXIS_Y, false));
-        inputManager.addListener(cameraInputListener, "MoveForward", "MoveBackward", "MoveLeft", "MoveRight", "RotateLeft", "RotateRight", "RotateUp", "RotateDown");
+        flyCam.setMoveSpeed(6f);
+        flyCam.setDragToRotate(true);
 
         viewPort.setBackgroundColor(BACKGROUND_COLOR);
 
@@ -102,31 +96,30 @@ public class MainEditor extends AbstractJmeApplication {
         box.getMaterial().setFloat("Roughness", 0.001f);
         box.getMaterial().setFloat("Metallic", 0.001f);
 
-        attachGrid(FRAME_ORIGIN, 10, ColorRGBA.Black);
-        attachCoordinateAxes(FRAME_ORIGIN);
+        attachGrid();
+        attachOriginCoordinateAxes();
 
         rootNode.attachChild(box);
     }
 
     @Override
     public void simpleUpdate(float tpf) {
-        cameraInputListener.update(tpf);
         box.rotate(tpf * .2f, tpf * .3f, tpf * .4f);
     }
 
-    private void attachCoordinateAxes(Vector3f pos) {
+    private void attachOriginCoordinateAxes() {
 
-        Arrow arrow = new Arrow(Vector3f.UNIT_X);
-        putShape(arrow, ColorRGBA.Red).setLocalTranslation(pos);
+        Arrow arrow = new Arrow(Vector3f.UNIT_X.mult(2));
+        putOriginCoordinateAxesShape(arrow, ColorRGBA.Red).setLocalTranslation(MainEditor.FRAME_ORIGIN);
 
-        arrow = new Arrow(Vector3f.UNIT_Y);
-        putShape(arrow, ColorRGBA.Green).setLocalTranslation(pos);
+        arrow = new Arrow(Vector3f.UNIT_Y.mult(2));
+        putOriginCoordinateAxesShape(arrow, ColorRGBA.Green).setLocalTranslation(MainEditor.FRAME_ORIGIN);
 
-        arrow = new Arrow(Vector3f.UNIT_Z);
-        putShape(arrow, ColorRGBA.Blue).setLocalTranslation(pos);
+        arrow = new Arrow(Vector3f.UNIT_Z.mult(2));
+        putOriginCoordinateAxesShape(arrow, ColorRGBA.Blue).setLocalTranslation(MainEditor.FRAME_ORIGIN);
     }
 
-    private Geometry putShape(Mesh shape, ColorRGBA color) {
+    private Geometry putOriginCoordinateAxesShape(Mesh shape, ColorRGBA color) {
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.getAdditionalRenderState().setWireframe(true);
@@ -141,19 +134,17 @@ public class MainEditor extends AbstractJmeApplication {
         return g;
     }
 
-    private Geometry attachGrid(Vector3f pos, int size, ColorRGBA color) {
+    private void attachGrid() {
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.getAdditionalRenderState().setWireframe(true);
-        mat.setColor("Color", color);
+        mat.setColor("Color", ColorRGBA.Black);
 
-        Geometry g = new Geometry("wireframe grid", new Grid(size, size, 0.2f));
+        Geometry g = new Geometry("wireframe grid", new Grid(10, 10, 1.0f));
         g.setMaterial(mat);
-        g.center().move(pos);
+        g.center().move(MainEditor.FRAME_ORIGIN);
 
         rootNode.attachChild(g);
-
-        return g;
     }
 
 }

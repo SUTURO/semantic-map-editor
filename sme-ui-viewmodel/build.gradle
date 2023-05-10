@@ -9,6 +9,7 @@ description = "Semantic Map Editor - UI Viewmodel"
 dependencies {
 
     implementation project(":sme-application-service")
+    implementation project(":sme-domain-service")
     implementation project(":sme-domain-model")
 
     // jMonkeyEngine

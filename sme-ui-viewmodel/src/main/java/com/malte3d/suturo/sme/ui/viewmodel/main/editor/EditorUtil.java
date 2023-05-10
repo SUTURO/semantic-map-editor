@@ -9,7 +9,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class EditorUtil {
 
-
     /**
      * @param hexColor Hex color string in the format #RRGGBB or #RGB
      * @return {@link Vector3f} with values between 0 and 1
