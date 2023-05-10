@@ -139,6 +139,12 @@ public class MainView {
 
     private void initEditorView() {
 
+        mainView.setOnKeyPressed(event -> {
+
+            if (event.getCode() == KeyCode.F3)
+                viewModel.toggleDebugMode();
+        });
+
         viewModel.getDomainEventPublisher().register(EditorInitializedEvent.class, () -> editorViewProgress.setVisible(false));
 
         viewModel.loadMainEditor().thenConsume(editor -> {

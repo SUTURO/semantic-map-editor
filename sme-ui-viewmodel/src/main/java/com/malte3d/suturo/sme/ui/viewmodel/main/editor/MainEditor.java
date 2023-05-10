@@ -76,9 +76,6 @@ public class MainEditor extends AbstractJmeApplication {
     @Override
     public void initApp() {
 
-        flyCam.setMoveSpeed(6f);
-        flyCam.setDragToRotate(true);
-
         viewPort.setBackgroundColor(BACKGROUND_COLOR);
 
         DirectionalLight directionalLight = new DirectionalLight(
@@ -88,24 +85,10 @@ public class MainEditor extends AbstractJmeApplication {
 
         rootNode.addLight(directionalLight);
 
-        Texture texture = assetManager.loadTexture("com/jme3/app/Monkey.png");
-
-        Geometry boxGeom = new Geometry("Box", new Box(1, 1, 1));
-        boxGeom.setMaterial(new Material(assetManager, Materials.PBR));
-        boxGeom.getMaterial().setTexture("BaseColorMap", texture);
-        boxGeom.getMaterial().setColor("BaseColor", ColorRGBA.White);
-        boxGeom.getMaterial().setFloat("Roughness", 0.001f);
-        boxGeom.getMaterial().setFloat("Metallic", 0.001f);
-
-        box = new Node("box");
-        box.attachChild(boxGeom);
-        attachCoordinateAxes(box);
-
-
-        attachGrid();
+        attachGroundGrid();
         attachCoordinateAxes(rootNode);
 
-        rootNode.attachChild(box);
+        attachDebugBox();
     }
 
     @Override
@@ -140,17 +123,36 @@ public class MainEditor extends AbstractJmeApplication {
         return g;
     }
 
-    private void attachGrid() {
+    private void attachGroundGrid() {
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.getAdditionalRenderState().setWireframe(true);
-        mat.setColor("Color", ColorRGBA.Black);
+        mat.setColor("Color", ColorRGBA.DarkGray);
 
         Geometry g = new Geometry("wireframe grid", new Grid(10, 10, 1.0f));
         g.setMaterial(mat);
         g.center().move(MainEditor.FRAME_ORIGIN);
 
         rootNode.attachChild(g);
+    }
+
+    private void attachDebugBox() {
+
+        Texture texture = assetManager.loadTexture("com/jme3/app/Monkey.png");
+
+        Geometry boxGeom = new Geometry("Box", new Box(1, 1, 1));
+        boxGeom.setMaterial(new Material(assetManager, Materials.PBR));
+        boxGeom.getMaterial().setTexture("BaseColorMap", texture);
+        boxGeom.getMaterial().setColor("BaseColor", ColorRGBA.White);
+        boxGeom.getMaterial().setFloat("Roughness", 0.001f);
+        boxGeom.getMaterial().setFloat("Metallic", 0.001f);
+
+        box = new Node("box");
+        box.attachChild(boxGeom);
+        box.move(0, 4, 0);
+        attachCoordinateAxes(box);
+
+        rootNode.attachChild(box);
     }
 
 }

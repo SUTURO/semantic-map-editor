@@ -1,7 +1,6 @@
 package com.malte3d.suturo.sme.ui.viewmodel.main;
 
 import com.jme3.app.DebugKeysAppState;
-import com.jme3.app.FlyCamAppState;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppState;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
@@ -10,8 +9,10 @@ import com.malte3d.suturo.commons.javafx.GlobalExecutor;
 import com.malte3d.suturo.commons.javafx.UiService;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.domain.model.application.settings.Settings;
+import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
 import com.malte3d.suturo.sme.domain.service.application.settings.SettingsRepository;
 import com.malte3d.suturo.sme.ui.viewmodel.main.editor.MainEditor;
+import com.malte3d.suturo.sme.ui.viewmodel.main.editor.camera.Cinema4dCameraAppState;
 import javafx.application.HostServices;
 import lombok.Getter;
 import lombok.NonNull;
@@ -70,7 +71,7 @@ public class MainViewModel extends UiService {
         Settings settings = settingsRepository.load();
 
         List<AppState> appStates = new ArrayList<>();
-        appStates.add(new FlyCamAppState());
+        appStates.add(new Cinema4dCameraAppState());
 
         if (settings.advancedSettings().debugMode().isEnabled()) {
 
@@ -79,5 +80,15 @@ public class MainViewModel extends UiService {
         }
 
         return MainEditor.create(appStates);
+    }
+
+    public void toggleDebugMode() {
+
+        final Settings currentSettings = settingsRepository.load();
+        DebugMode debugMode = DebugMode.of(!currentSettings.advancedSettings().debugMode().isEnabled());
+
+        Settings newSettings = currentSettings.withAdvancedSettings(currentSettings.advancedSettings().withDebugMode(debugMode));
+
+        settingsRepository.save(newSettings);
     }
 }
