@@ -9,6 +9,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.Node;
 import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.debug.Grid;
 import com.jme3.scene.shape.Box;
@@ -24,7 +25,7 @@ public class MainEditor extends AbstractJmeApplication {
 
     private static final Vector3f FRAME_ORIGIN = new Vector3f(0, 0, 0);
 
-    private Geometry box;
+    private Node box;
 
     /**
      * Use the factory method {@link #create(AppState...)} to create a new instance of the MainEditor.
@@ -89,15 +90,20 @@ public class MainEditor extends AbstractJmeApplication {
 
         Texture texture = assetManager.loadTexture("com/jme3/app/Monkey.png");
 
-        box = new Geometry("Box", new Box(1, 1, 1));
-        box.setMaterial(new Material(assetManager, Materials.PBR));
-        box.getMaterial().setTexture("BaseColorMap", texture);
-        box.getMaterial().setColor("BaseColor", ColorRGBA.White);
-        box.getMaterial().setFloat("Roughness", 0.001f);
-        box.getMaterial().setFloat("Metallic", 0.001f);
+        Geometry boxGeom = new Geometry("Box", new Box(1, 1, 1));
+        boxGeom.setMaterial(new Material(assetManager, Materials.PBR));
+        boxGeom.getMaterial().setTexture("BaseColorMap", texture);
+        boxGeom.getMaterial().setColor("BaseColor", ColorRGBA.White);
+        boxGeom.getMaterial().setFloat("Roughness", 0.001f);
+        boxGeom.getMaterial().setFloat("Metallic", 0.001f);
+
+        box = new Node("box");
+        box.attachChild(boxGeom);
+        attachCoordinateAxes(box);
+
 
         attachGrid();
-        attachOriginCoordinateAxes();
+        attachCoordinateAxes(rootNode);
 
         rootNode.attachChild(box);
     }
@@ -107,19 +113,19 @@ public class MainEditor extends AbstractJmeApplication {
         box.rotate(tpf * .2f, tpf * .3f, tpf * .4f);
     }
 
-    private void attachOriginCoordinateAxes() {
+    private void attachCoordinateAxes(Node node) {
 
         Arrow arrow = new Arrow(Vector3f.UNIT_X.mult(2));
-        putOriginCoordinateAxesShape(arrow, ColorRGBA.Red).setLocalTranslation(MainEditor.FRAME_ORIGIN);
+        attachCoordinateAxesShape(node, arrow, ColorRGBA.Red).setLocalTranslation(MainEditor.FRAME_ORIGIN);
 
         arrow = new Arrow(Vector3f.UNIT_Y.mult(2));
-        putOriginCoordinateAxesShape(arrow, ColorRGBA.Green).setLocalTranslation(MainEditor.FRAME_ORIGIN);
+        attachCoordinateAxesShape(node, arrow, ColorRGBA.Green).setLocalTranslation(MainEditor.FRAME_ORIGIN);
 
         arrow = new Arrow(Vector3f.UNIT_Z.mult(2));
-        putOriginCoordinateAxesShape(arrow, ColorRGBA.Blue).setLocalTranslation(MainEditor.FRAME_ORIGIN);
+        attachCoordinateAxesShape(node, arrow, ColorRGBA.Blue).setLocalTranslation(MainEditor.FRAME_ORIGIN);
     }
 
-    private Geometry putOriginCoordinateAxesShape(Mesh shape, ColorRGBA color) {
+    private Geometry attachCoordinateAxesShape(Node node, Mesh shape, ColorRGBA color) {
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.getAdditionalRenderState().setWireframe(true);
@@ -129,7 +135,7 @@ public class MainEditor extends AbstractJmeApplication {
         Geometry g = new Geometry("coordinate axis", shape);
         g.setMaterial(mat);
 
-        rootNode.attachChild(g);
+        node.attachChild(g);
 
         return g;
     }
