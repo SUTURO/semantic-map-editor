@@ -181,7 +181,6 @@ public class JfxKeyInput extends AbstractJfxInput implements KeyInput {
 
     private void processKeyPressed(KeyEvent keyEvent) {
         onKeyEvent(keyEvent, true);
-        log.info("Key pressed: {}", keyEvent.getCode());
     }
 
     private void onKeyEvent(KeyEvent keyEvent, boolean pressed) {
