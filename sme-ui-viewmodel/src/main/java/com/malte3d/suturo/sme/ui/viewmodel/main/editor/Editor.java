@@ -18,8 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 
+/**
+ * The Editor is the main entry point for the 3D-Editor.
+ */
 @Slf4j
-public class MainEditor extends AbstractJmeApplication {
+public class Editor extends AbstractJmeApplication {
 
     private static final ColorRGBA BACKGROUND_COLOR = new ColorRGBA(EditorUtil.hexToVec3("#fafafa"));
 
@@ -28,48 +31,48 @@ public class MainEditor extends AbstractJmeApplication {
     private Node box;
 
     /**
-     * Use the factory method {@link #create(AppState...)} to create a new instance of the MainEditor.
+     * Use the factory method {@link #create(AppState...)} to create a new instance of the 3D-Editor.
      *
-     * @param initialStates The initial states to be added to the MainEditor
+     * @param initialStates The initial states to be added to the 3D-Editor
      */
-    private MainEditor(AppState... initialStates) {
+    private Editor(AppState... initialStates) {
         super(initialStates);
     }
 
     /**
-     * Creates and initializes a new instance of the MainEditor.
+     * Creates and initializes a new instance of the 3D-Editor.
      * <p>
      * <b>Warning:</b> This call is blocking an may take some time to complete.
      * </p>
      *
-     * @param initialStates The initial states to be added to the MainEditor
-     * @return A new initialized instance of the MainEditor
+     * @param initialStates The initial states to be added to the 3D-Editor
+     * @return A new initialized instance of the 3D-Editor
      */
-    public static MainEditor create(AppState... initialStates) {
+    public static Editor create(AppState... initialStates) {
 
-        MainEditor mainEditor = new MainEditor(initialStates);
+        Editor editor = new Editor(initialStates);
 
         try {
 
-            mainEditor.completeInitialization().await();
+            editor.completeInitialization().await();
 
         } catch (InterruptedException e) {
-            log.error("Error while waiting for MainEditor to be initialized", e);
+            log.error("Error while waiting for 3D-Editor to be initialized", e);
         }
 
-        return mainEditor;
+        return editor;
     }
 
     /**
-     * Creates and initializes a new instance of the MainEditor.
+     * Creates and initializes a new instance of the 3D-Editor.
      * <p>
      * <b>Warning:</b> This call is blocking an may take some time to complete.
      * </p>
      *
-     * @param initialStates The initial states to be added to the MainEditor
-     * @return A new initialized instance of the MainEditor
+     * @param initialStates The initial states to be added to the 3D-Editor
+     * @return A new initialized instance of the 3D-Editor
      */
-    public static MainEditor create(Collection<AppState> initialStates) {
+    public static Editor create(Collection<AppState> initialStates) {
         return create(initialStates.toArray(new AppState[0]));
     }
 
@@ -99,13 +102,13 @@ public class MainEditor extends AbstractJmeApplication {
     private void attachCoordinateAxes(Node node) {
 
         Arrow arrow = new Arrow(Vector3f.UNIT_X.mult(2));
-        attachCoordinateAxesShape(node, arrow, ColorRGBA.Red).setLocalTranslation(MainEditor.FRAME_ORIGIN);
+        attachCoordinateAxesShape(node, arrow, ColorRGBA.Red).setLocalTranslation(FRAME_ORIGIN);
 
         arrow = new Arrow(Vector3f.UNIT_Y.mult(2));
-        attachCoordinateAxesShape(node, arrow, ColorRGBA.Green).setLocalTranslation(MainEditor.FRAME_ORIGIN);
+        attachCoordinateAxesShape(node, arrow, ColorRGBA.Green).setLocalTranslation(FRAME_ORIGIN);
 
         arrow = new Arrow(Vector3f.UNIT_Z.mult(2));
-        attachCoordinateAxesShape(node, arrow, ColorRGBA.Blue).setLocalTranslation(MainEditor.FRAME_ORIGIN);
+        attachCoordinateAxesShape(node, arrow, ColorRGBA.Blue).setLocalTranslation(FRAME_ORIGIN);
     }
 
     private Geometry attachCoordinateAxesShape(Node node, Mesh shape, ColorRGBA color) {
@@ -131,7 +134,7 @@ public class MainEditor extends AbstractJmeApplication {
 
         Geometry g = new Geometry("wireframe grid", new Grid(10, 10, 1.0f));
         g.setMaterial(mat);
-        g.center().move(MainEditor.FRAME_ORIGIN);
+        g.center().move(FRAME_ORIGIN);
 
         rootNode.attachChild(g);
     }

@@ -147,7 +147,7 @@ public class MainView {
 
         viewModel.getDomainEventPublisher().register(EditorInitializedEvent.class, () -> editorViewProgress.setVisible(false));
 
-        viewModel.loadMainEditor().thenConsume(editor -> {
+        viewModel.loadEditor().thenConsume(editor -> {
 
             EditorFxImageView editorImageView = editor.getImageView();
 

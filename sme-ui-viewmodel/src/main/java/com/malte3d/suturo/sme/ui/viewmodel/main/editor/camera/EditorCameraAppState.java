@@ -6,10 +6,10 @@ import com.jme3.app.state.AppStateManager;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class Cinema4dCameraAppState extends AbstractAppState {
+public class EditorCameraAppState extends AbstractAppState {
 
     private Application app;
-    private Cinema4dCamera cinema4dCamera;
+    private EditorCamera editorCamera;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -20,8 +20,8 @@ public class Cinema4dCameraAppState extends AbstractAppState {
 
         if (app.getInputManager() != null) {
 
-            if (cinema4dCamera == null)
-                cinema4dCamera = new Cinema4dCamera(app.getCamera(), app.getInputManager());
+            if (editorCamera == null)
+                editorCamera = new EditorCamera(app.getCamera(), app.getInputManager());
         }
     }
 
@@ -31,6 +31,6 @@ public class Cinema4dCameraAppState extends AbstractAppState {
         super.cleanup();
 
         if (app.getInputManager() != null)
-            cinema4dCamera.unregisterInput();
+            editorCamera.unregisterInput();
     }
 }

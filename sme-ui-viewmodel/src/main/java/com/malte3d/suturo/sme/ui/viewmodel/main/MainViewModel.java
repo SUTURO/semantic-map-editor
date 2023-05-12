@@ -13,8 +13,8 @@ import com.malte3d.suturo.sme.application.service.settings.SettingsService;
 import com.malte3d.suturo.sme.domain.model.application.settings.Settings;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugModeChangedEvent;
-import com.malte3d.suturo.sme.ui.viewmodel.main.editor.MainEditor;
-import com.malte3d.suturo.sme.ui.viewmodel.main.editor.camera.Cinema4dCameraAppState;
+import com.malte3d.suturo.sme.ui.viewmodel.main.editor.Editor;
+import com.malte3d.suturo.sme.ui.viewmodel.main.editor.camera.EditorCameraAppState;
 import javafx.application.HostServices;
 import lombok.Getter;
 import lombok.NonNull;
@@ -34,7 +34,7 @@ public class MainViewModel extends UiService {
     private final HostServices hostServices;
     private final SettingsService settingsService;
 
-    private MainEditor mainEditor;
+    private Editor editor;
 
     @Inject
     public MainViewModel(
@@ -58,19 +58,19 @@ public class MainViewModel extends UiService {
 
     private void onDebugModeChanged(DebugModeChangedEvent event) {
 
-        Preconditions.checkNotNull(mainEditor, "Main editor must be loaded before debug mode can be changed.");
+        Preconditions.checkNotNull(editor, "Main editor must be loaded before debug mode can be changed.");
 
         DebugMode debugMode = event.getNewDebugMode();
 
         if (debugMode.isEnabled()) {
 
-            mainEditor.getStateManager().attach(new StatsAppState());
-            mainEditor.getStateManager().attach(new DebugKeysAppState());
+            editor.getStateManager().attach(new StatsAppState());
+            editor.getStateManager().attach(new DebugKeysAppState());
 
         } else {
 
-            mainEditor.getStateManager().detach(mainEditor.getStateManager().getState(StatsAppState.class));
-            mainEditor.getStateManager().detach(mainEditor.getStateManager().getState(DebugKeysAppState.class));
+            editor.getStateManager().detach(editor.getStateManager().getState(StatsAppState.class));
+            editor.getStateManager().detach(editor.getStateManager().getState(DebugKeysAppState.class));
         }
     }
 
@@ -89,22 +89,22 @@ public class MainViewModel extends UiService {
     }
 
     /**
-     * @return a {@link CompletableFutureTask} that loads the main editor and returns it.
+     * @return a {@link CompletableFutureTask} that loads the 3d-editor and returns it.
      */
-    public CompletableFutureTask<MainEditor> loadMainEditor() {
+    public CompletableFutureTask<Editor> loadEditor() {
 
-        return this.<MainEditor>createFutureTask()
+        return this.<Editor>createFutureTask()
                 .withErrorMessageKey("Application.Main.Editor.Initialization.Error")
-                .withLoggerMessageOnError("Error while initializing MainEditor")
-                .withTask(this::initializeMainEditor);
+                .withLoggerMessageOnError("Error while initializing 3D-Editor")
+                .withTask(this::initializeEditor);
     }
 
-    private MainEditor initializeMainEditor() {
+    private Editor initializeEditor() {
 
         Settings settings = settingsService.get();
 
         List<AppState> initialAppStates = new ArrayList<>();
-        initialAppStates.add(new Cinema4dCameraAppState());
+        initialAppStates.add(new EditorCameraAppState());
 
         if (settings.getAdvanced().getDebugMode().isEnabled()) {
 
@@ -112,9 +112,9 @@ public class MainViewModel extends UiService {
             initialAppStates.add(new DebugKeysAppState());
         }
 
-        this.mainEditor = MainEditor.create(initialAppStates);
+        this.editor = Editor.create(initialAppStates);
 
-        return mainEditor;
+        return editor;
     }
 
     /**

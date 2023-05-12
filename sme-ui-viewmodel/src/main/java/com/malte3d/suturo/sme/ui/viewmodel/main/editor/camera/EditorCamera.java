@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @EqualsAndHashCode
-public class Cinema4dCamera implements AnalogListener, ActionListener {
+public class EditorCamera implements AnalogListener, ActionListener {
 
     private static final String KEY_ALT = "KEY_ALT";
     private static final String KEY_MOUSE_LEFT = "KEY_MOUSE_LEFT";
@@ -88,7 +88,7 @@ public class Cinema4dCamera implements AnalogListener, ActionListener {
     private boolean mouseMiddleHeld = false;
     private boolean mouseRightHeld = false;
 
-    public Cinema4dCamera(@NonNull Camera cam, @NonNull InputManager inputManager) {
+    public EditorCamera(@NonNull Camera cam, @NonNull InputManager inputManager) {
 
         this.cam = cam;
         this.inputManager = inputManager;
