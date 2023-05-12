@@ -7,10 +7,10 @@ import com.malte3d.suturo.commons.messages.Language;
 import com.malte3d.suturo.sme.adapter.integration.IntegrationAdapterModule;
 import com.malte3d.suturo.sme.adapter.persistence.PersistenceAdapterModule;
 import com.malte3d.suturo.sme.application.service.ApplicationServiceModule;
+import com.malte3d.suturo.sme.application.service.settings.SettingsService;
 import com.malte3d.suturo.sme.domain.model.application.settings.Settings;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
 import com.malte3d.suturo.sme.domain.service.DomainServiceModule;
-import com.malte3d.suturo.sme.domain.service.application.settings.SettingsRepository;
 import com.malte3d.suturo.sme.ui.MainApplication;
 import com.malte3d.suturo.sme.ui.MainApplicationOptions;
 import com.malte3d.suturo.sme.ui.UiModule;
@@ -40,11 +40,11 @@ public class Launcher {
 
         LauncherOptions options = LauncherOptions.parse(args);
 
-        SettingsRepository settingsRepository = injector.getInstance(SettingsRepository.class);
-        Settings settings = settingsRepository.load();
-        Settings newSettings = settings.withAdvancedSettings(settings.getAdvancedSettings().withDebugMode(DebugMode.of(options.isDebugMode())));
+        SettingsService settingsService = injector.getInstance(SettingsService.class);
+        Settings settings = settingsService.get();
+        Settings newSettings = settings.withAdvanced(settings.getAdvanced().withDebugMode(DebugMode.of(options.isDebugMode())));
 
-        settingsRepository.save(newSettings);
+        settingsService.save(newSettings);
 
         return new MainApplicationOptions(injector, args);
     }

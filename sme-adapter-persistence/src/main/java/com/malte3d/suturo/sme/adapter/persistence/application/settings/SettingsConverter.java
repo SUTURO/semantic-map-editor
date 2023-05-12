@@ -55,13 +55,13 @@ public class SettingsConverter {
         Properties properties = new Properties();
 
         /* Appearance */
-        properties.setProperty(APPEARANCE_LANGUAGE, settings.getAppearanceSettings().getLanguage().locale.toLanguageTag());
+        properties.setProperty(APPEARANCE_LANGUAGE, settings.getAppearance().getLanguage().locale.toLanguageTag());
 
         /* Keymap */
-        properties.setProperty(KEYMAP_EDITOR_CAMERA_BEHAVIOUR, String.valueOf(settings.getKeymapSettings().getCameraBehaviour().eternalId));
+        properties.setProperty(KEYMAP_EDITOR_CAMERA_BEHAVIOUR, String.valueOf(settings.getKeymap().getCameraBehaviour().eternalId));
 
         /* Advanced */
-        properties.setProperty(ADVANCED_DEBUG_MODE, String.valueOf(settings.getAdvancedSettings().getDebugMode().value));
+        properties.setProperty(ADVANCED_DEBUG_MODE, String.valueOf(settings.getAdvanced().getDebugMode().value));
 
         return properties;
     }

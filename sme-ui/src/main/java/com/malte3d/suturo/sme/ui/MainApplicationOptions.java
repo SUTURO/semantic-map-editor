@@ -5,6 +5,9 @@ import com.malte3d.suturo.commons.ddd.annotation.DPO;
 import lombok.NonNull;
 import lombok.Value;
 
+/**
+ * Starter options for the main application.
+ */
 @DPO
 
 @Value

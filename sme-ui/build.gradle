@@ -10,6 +10,7 @@ dependencies {
 
     implementation project(":sme-ui-view")
     implementation project(":sme-ui-viewmodel")
+    implementation project(":sme-application-service")
     implementation project(":sme-domain-service")
     implementation project(":sme-domain-model")
 

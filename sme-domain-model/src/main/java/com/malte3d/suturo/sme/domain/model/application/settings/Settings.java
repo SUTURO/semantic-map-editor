@@ -19,8 +19,8 @@ public class Settings {
             AdvancedSettings.DEFAULT
     );
 
-    AppearanceSettings appearanceSettings;
-    KeymapSettings keymapSettings;
-    AdvancedSettings advancedSettings;
+    AppearanceSettings appearance;
+    KeymapSettings keymap;
+    AdvancedSettings advanced;
 
 }
