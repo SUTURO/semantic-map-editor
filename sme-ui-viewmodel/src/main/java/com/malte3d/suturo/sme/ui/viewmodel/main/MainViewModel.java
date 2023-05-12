@@ -118,13 +118,12 @@ public class MainViewModel extends UiService {
     }
 
     /**
-     * @return a {@link CompletableFutureTask} that toggles the debug mode and returns the new debug mode.
+     * Toggles the debug mode and saves the new mode to the application settings.
      */
-    public CompletableFutureTask<DebugMode> toggleDebugMode() {
+    public void toggleDebugMode() {
 
-        return this.<DebugMode>createFutureTask()
-                .withErrorMessageKey("Application.Settings.Save.Error")
-                .withLoggerMessageOnError("Error while initializing MainEditor")
+        this.<DebugMode>createFutureTask()
+                .withLoggerMessageOnError("Error while saving debug mode to settings")
                 .withTask(() -> {
 
                     final Settings currentSettings = settingsService.get();
