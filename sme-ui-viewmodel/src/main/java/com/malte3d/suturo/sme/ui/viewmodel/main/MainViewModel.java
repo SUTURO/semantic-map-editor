@@ -73,7 +73,7 @@ public class MainViewModel extends UiService {
         List<AppState> appStates = new ArrayList<>();
         appStates.add(new Cinema4dCameraAppState());
 
-        if (settings.advancedSettings().debugMode().isEnabled()) {
+        if (settings.getAdvancedSettings().getDebugMode().isEnabled()) {
 
             appStates.add(new StatsAppState());
             appStates.add(new DebugKeysAppState());
@@ -85,9 +85,9 @@ public class MainViewModel extends UiService {
     public void toggleDebugMode() {
 
         final Settings currentSettings = settingsRepository.load();
-        DebugMode debugMode = DebugMode.of(!currentSettings.advancedSettings().debugMode().isEnabled());
+        DebugMode debugMode = DebugMode.of(!currentSettings.getAdvancedSettings().getDebugMode().isEnabled());
 
-        Settings newSettings = currentSettings.withAdvancedSettings(currentSettings.advancedSettings().withDebugMode(debugMode));
+        Settings newSettings = currentSettings.withAdvancedSettings(currentSettings.getAdvancedSettings().withDebugMode(debugMode));
 
         settingsRepository.save(newSettings);
     }

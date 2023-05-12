@@ -42,7 +42,7 @@ public class Launcher {
 
         SettingsRepository settingsRepository = injector.getInstance(SettingsRepository.class);
         Settings settings = settingsRepository.load();
-        Settings newSettings = settings.withAdvancedSettings(settings.advancedSettings().withDebugMode(DebugMode.of(options.isDebugMode())));
+        Settings newSettings = settings.withAdvancedSettings(settings.getAdvancedSettings().withDebugMode(DebugMode.of(options.isDebugMode())));
 
         settingsRepository.save(newSettings);
 

@@ -56,7 +56,7 @@ public class MainApplication extends Application implements Provider<HostService
     @Override
     public void start(Stage stage) {
 
-        DebugMode debugMode = settingsRepository.load().advancedSettings().debugMode();
+        DebugMode debugMode = settingsRepository.load().getAdvancedSettings().getDebugMode();
 
         stage.setTitle(Messages.getString("Application.Name"));
         stage.getIcons().add(UiResources.APP_ICON);

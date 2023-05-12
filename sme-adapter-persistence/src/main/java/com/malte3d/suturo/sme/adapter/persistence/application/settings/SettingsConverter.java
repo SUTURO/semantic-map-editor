@@ -31,20 +31,20 @@ public class SettingsConverter {
         /* Appearance */
 
         final AppearanceSettings appeareanceDefault = AppearanceSettings.DEFAULT;
-        Language language = Language.of(Locale.forLanguageTag(getOrDefault(properties, APPEARANCE_LANGUAGE, appeareanceDefault.language().locale.toLanguageTag())));
+        Language language = Language.of(Locale.forLanguageTag(getOrDefault(properties, APPEARANCE_LANGUAGE, appeareanceDefault.getLanguage().locale.toLanguageTag())));
         AppearanceSettings appearanceSettings = new AppearanceSettings(language);
 
         /* Keymap */
 
         final KeymapSettings keymapSettingsDefault = KeymapSettings.DEFAULT;
-        CameraBehaviour cameraBehaviour = CameraBehaviour.of(getOrDefault(properties, KEYMAP_EDITOR_CAMERA_BEHAVIOUR, keymapSettingsDefault.cameraBehaviour().eternalId));
+        CameraBehaviour cameraBehaviour = CameraBehaviour.of(getOrDefault(properties, KEYMAP_EDITOR_CAMERA_BEHAVIOUR, keymapSettingsDefault.getCameraBehaviour().eternalId));
         ;
         KeymapSettings keymapSettings = new KeymapSettings(cameraBehaviour);
 
         /* Advanced */
 
         final AdvancedSettings advancedDefault = AdvancedSettings.DEFAULT;
-        DebugMode debugMode = DebugMode.of(getOrDefault(properties, ADVANCED_DEBUG_MODE, advancedDefault.debugMode().value));
+        DebugMode debugMode = DebugMode.of(getOrDefault(properties, ADVANCED_DEBUG_MODE, advancedDefault.getDebugMode().value));
         AdvancedSettings advancedSettings = new AdvancedSettings(debugMode);
 
         return new Settings(appearanceSettings, keymapSettings, advancedSettings);
@@ -55,13 +55,13 @@ public class SettingsConverter {
         Properties properties = new Properties();
 
         /* Appearance */
-        properties.setProperty(APPEARANCE_LANGUAGE, settings.appearanceSettings().language().locale.toLanguageTag());
+        properties.setProperty(APPEARANCE_LANGUAGE, settings.getAppearanceSettings().getLanguage().locale.toLanguageTag());
 
         /* Keymap */
-        properties.setProperty(KEYMAP_EDITOR_CAMERA_BEHAVIOUR, String.valueOf(settings.keymapSettings().cameraBehaviour().eternalId));
+        properties.setProperty(KEYMAP_EDITOR_CAMERA_BEHAVIOUR, String.valueOf(settings.getKeymapSettings().getCameraBehaviour().eternalId));
 
         /* Advanced */
-        properties.setProperty(ADVANCED_DEBUG_MODE, String.valueOf(settings.advancedSettings().debugMode().value));
+        properties.setProperty(ADVANCED_DEBUG_MODE, String.valueOf(settings.getAdvancedSettings().getDebugMode().value));
 
         return properties;
     }
