@@ -1,4 +1,4 @@
-package com.malte3d.suturo.sme.ui.viewmodel.main.editor.camera;
+package com.malte3d.suturo.sme.ui.viewmodel.editor.camera;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;

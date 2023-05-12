@@ -1,4 +1,4 @@
-package com.malte3d.suturo.sme.ui.viewmodel.main.editor;
+package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
 import com.google.common.base.Preconditions;
 import com.jme3.math.Vector3f;
