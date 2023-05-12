@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <VBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-      stylesheets="@main-view.css"
+      stylesheets="@MainView.css"
       fx:id="mainView"
       fx:controller="com.malte3d.suturo.sme.ui.view.MainView">
 

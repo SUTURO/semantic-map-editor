@@ -11,15 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Locale;
-import java.util.regex.Pattern;
 
 @Slf4j
 @UtilityClass
 public final class FxmlLoaderUtil {
 
     private static final String FXML_FILE_EXTENSION = ".fxml";
-    private static final Pattern DASH_CASE = Pattern.compile("([a-z\\d])([A-Z])");
 
     private static Injector injector;
 
@@ -72,9 +69,9 @@ public final class FxmlLoaderUtil {
 
     private static URL resolveFxml(Class<?> viewClass) {
 
-        String fxmlViewName = getFxmlViewName(getViewClassName(viewClass));
+        String viewName = getViewClassName(viewClass);
 
-        URL fxml = viewClass.getResource(fxmlViewName + FXML_FILE_EXTENSION);
+        URL fxml = viewClass.getResource(viewName + FXML_FILE_EXTENSION);
 
         if (fxml == null)
             throw new IllegalStateException(Messages.format("Failed to resolve FXML file for {}", viewClass));
@@ -87,7 +84,4 @@ public final class FxmlLoaderUtil {
         return split[split.length == 1 ? 0 : split.length - 1];
     }
 
-    private static String getFxmlViewName(String viewClassName) {
-        return DASH_CASE.matcher(viewClassName).replaceAll("$1-$2").toLowerCase(Locale.ENGLISH);
-    }
 }
