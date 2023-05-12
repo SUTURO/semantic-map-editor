@@ -11,7 +11,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * Utility class, for internationalization.
+ * Utility class for internationalization.
  * <p>
  * Loads translations from the {@code messages.properties} matching a MessageKey
  * </p>

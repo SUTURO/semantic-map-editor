@@ -1,8 +1,10 @@
-package com.malte3d.suturo.commons.javafx;
+package com.malte3d.suturo.commons.javafx.fxml;
 
 import com.google.common.base.Preconditions;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class Color {
 
     private static final String HEX_COLOR_PATTERN = "#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})";

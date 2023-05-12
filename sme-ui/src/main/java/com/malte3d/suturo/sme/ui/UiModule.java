@@ -1,7 +1,7 @@
 package com.malte3d.suturo.sme.ui;
 
 import com.google.inject.AbstractModule;
-import com.malte3d.suturo.commons.javafx.GlobalExecutor;
+import com.malte3d.suturo.commons.javafx.service.GlobalExecutor;
 import javafx.application.HostServices;
 
 import java.util.concurrent.Executor;

@@ -1,5 +1,6 @@
 package com.malte3d.suturo.commons.javafx;
 
+import com.malte3d.suturo.commons.javafx.fxml.Color;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 

@@ -1,4 +1,4 @@
-package com.malte3d.suturo.commons.javafx;
+package com.malte3d.suturo.commons.javafx.fxml;
 
 import com.malte3d.suturo.commons.messages.Messages;
 import javafx.util.StringConverter;

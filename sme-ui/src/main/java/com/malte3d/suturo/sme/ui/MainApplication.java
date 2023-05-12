@@ -5,7 +5,7 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.jme3.util.LWJGLBufferAllocator;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
-import com.malte3d.suturo.commons.javafx.FxmlLoaderUtil;
+import com.malte3d.suturo.commons.javafx.fxml.FxmlLoaderUtil;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
 import com.malte3d.suturo.sme.domain.service.application.settings.SettingsRepository;
@@ -45,7 +45,7 @@ public class MainApplication extends Application implements Provider<HostService
         this.settingsRepository = injector.getInstance(SettingsRepository.class);
 
         FxmlLoaderUtil.init(injector);
-        
+
         registerEvents();
     }
 

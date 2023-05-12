@@ -1,4 +1,4 @@
-package com.malte3d.suturo.commons.javafx;
+package com.malte3d.suturo.commons.javafx.service;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.ElementType;

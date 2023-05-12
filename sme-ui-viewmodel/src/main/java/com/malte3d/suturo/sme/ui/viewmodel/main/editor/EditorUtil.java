@@ -2,7 +2,7 @@ package com.malte3d.suturo.sme.ui.viewmodel.main.editor;
 
 import com.google.common.base.Preconditions;
 import com.jme3.math.Vector3f;
-import com.malte3d.suturo.commons.javafx.Color;
+import com.malte3d.suturo.commons.javafx.fxml.Color;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 

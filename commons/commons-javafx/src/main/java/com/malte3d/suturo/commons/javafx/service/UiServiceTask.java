@@ -1,4 +1,4 @@
-package com.malte3d.suturo.commons.javafx;
+package com.malte3d.suturo.commons.javafx.service;
 
 import javafx.concurrent.Task;
 import lombok.NonNull;
