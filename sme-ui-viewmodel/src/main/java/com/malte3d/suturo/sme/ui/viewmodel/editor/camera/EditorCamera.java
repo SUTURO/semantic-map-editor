@@ -87,10 +87,15 @@ public class EditorCamera implements AnalogListener, ActionListener {
     private final InputManager inputManager;
 
     private final Node rootNode;
+    private final Plane floor = new Plane(Vector3f.UNIT_Y, 0);
+
+    /**
+     * The target of the cursor in world coordinates
+     */
+    private Vector3f cursorTarget = Vector3f.ZERO;
 
     private float yaw;
     private float pitch;
-    private Vector3f rotationTarget = Vector3f.ZERO;
 
     private boolean altPressed = false;
     private boolean mouseLeftPressed = false;
@@ -164,9 +169,9 @@ public class EditorCamera implements AnalogListener, ActionListener {
         if (name.equals(KEY_MOUSE_RIGHT))
             mouseRightPressed = isPressed;
 
-        /* Update rotation target if rotation is started */
+        /* Update target if rotation is started */
         if (altPressed && mouseLeftPressed)
-            rotationTarget = getRotationTarget();
+            updateCursorTarget();
     }
 
     @Override
@@ -209,6 +214,12 @@ public class EditorCamera implements AnalogListener, ActionListener {
         }
     }
 
+    /**
+     * Moves the camera along the given axis.
+     *
+     * @param value The amount to move the camera
+     * @param axis  The axis to move the camera along
+     */
     private void moveCamera(float value, Vector3f axis) {
 
         Vector3f delta = axis.clone();
@@ -217,6 +228,12 @@ public class EditorCamera implements AnalogListener, ActionListener {
         cam.setLocation(cam.getLocation().add(delta));
     }
 
+    /**
+     * Rotates the camera around the rotation target.
+     *
+     * @param value The amount to rotate the camera
+     * @param axis  The axis to rotate the camera around
+     */
     private void rotateCamera(float value, Vector3f axis) {
 
         float delta = value * rotationSpeed;
@@ -226,27 +243,35 @@ public class EditorCamera implements AnalogListener, ActionListener {
         else if (axis.equals(cam.getLeft()))
             pitch = (pitch + delta) % FastMath.TWO_PI;
 
-        Quaternion rotation = new Quaternion();
-        rotation.fromAngles(pitch, yaw, 0);
-        cam.setRotation(rotation);
+        Quaternion newCamRotation = new Quaternion();
+        newCamRotation.fromAngles(pitch, yaw, 0);
+        cam.setRotation(newCamRotation);
 
-        float distanceToTarget = cam.getLocation().distance(rotationTarget);
-        Vector3f position = rotationTarget.add(cam.getDirection().mult(distanceToTarget).negate());
-        cam.setLocation(position);
+        Vector3f targetToCam = cam.getLocation().subtract(cursorTarget);
+
+        Quaternion rotation = new Quaternion();
+        rotation.fromAngleNormalAxis(delta, axis);
+        targetToCam = rotation.mult(targetToCam);
+        Vector3f newCamPosition = cursorTarget.add(targetToCam);
+
+        cam.setLocation(newCamPosition);
     }
 
+    /**
+     * Zooms/Moves the camera along the camera direction.
+     *
+     * @param value The amount to zoom the camera
+     */
     private void zoomCamera(float value) {
         float delta = value * zoomSpeed;
         cam.setLocation(cam.getLocation().add(cam.getDirection().mult(delta)));
     }
 
     /**
-     * Gets first collision point with an object from the scene graph at the current cursor position (if present).
+     * Sets the first collision point with an object from the scene graph at the current cursor position (if present).
      * Else returns the default target.
-     *
-     * @return The rotation target of the camera.
      */
-    private Vector3f getRotationTarget() {
+    private void updateCursorTarget() {
 
         Vector2f cursor2d = inputManager.getCursorPosition();
         Vector3f cursor3d = cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 0f).clone();
@@ -261,18 +286,30 @@ public class EditorCamera implements AnalogListener, ActionListener {
         CollisionResult closestCollision = results.getClosestCollision();
 
         if (closestCollision == null)
-            return getDefaultRotationTarget();
+            this.cursorTarget = getDefaultCursorTarget();
         else
-            return closestCollision.getContactPoint();
+            this.cursorTarget = closestCollision.getContactPoint();
     }
 
     /**
-     * The default rotation target is simply 20 units in front of the camera.
+     * The default rotation target is on the floor at the current cursor position.
      *
      * @return The default rotation target of the camera.
      */
-    private Vector3f getDefaultRotationTarget() {
-        return cam.getLocation().add(cam.getDirection().mult(20));
+    private Vector3f getDefaultCursorTarget() {
+
+        Vector2f cursor2d = inputManager.getCursorPosition();
+        Vector3f cursor3d = cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 0f).clone();
+
+        Vector3f dir = cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 1f).subtractLocal(cursor3d);
+        dir.normalizeLocal();
+
+        Ray ray = new Ray(cursor3d, dir);
+
+        Vector3f intersectionPoint = Vector3f.ZERO;
+        ray.intersectsWherePlane(floor, intersectionPoint);
+
+        return intersectionPoint;
     }
 
 }

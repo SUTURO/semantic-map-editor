@@ -123,12 +123,12 @@ public class Editor extends AbstractJmeApplication {
         mat.getAdditionalRenderState().setLineWidth(4);
         mat.setColor("Color", color);
 
-        Geometry g = new Geometry("coordinate axis", shape);
-        g.setMaterial(mat);
+        Geometry coordinateAxis = new Geometry("coordinate axis", shape);
+        coordinateAxis.setMaterial(mat);
 
-        node.attachChild(g);
+        node.attachChild(coordinateAxis);
 
-        return g;
+        return coordinateAxis;
     }
 
     private void attachGroundGrid() {
@@ -137,26 +137,26 @@ public class Editor extends AbstractJmeApplication {
         mat.getAdditionalRenderState().setWireframe(true);
         mat.setColor("Color", ColorRGBA.DarkGray);
 
-        Geometry g = new Geometry("wireframe grid", new Grid(10, 10, 1.0f));
-        g.setMaterial(mat);
-        g.center().move(FRAME_ORIGIN);
+        Geometry groundGrid = new Geometry("wireframe grid", new Grid(10, 10, 1.0f));
+        groundGrid.setMaterial(mat);
+        groundGrid.center().move(FRAME_ORIGIN);
 
-        rootNode.attachChild(g);
+        rootNode.attachChild(groundGrid);
     }
 
     private void attachDebugBox() {
 
         Texture texture = assetManager.loadTexture("com/jme3/app/Monkey.png");
 
-        Geometry boxGeom = new Geometry("Box", new Box(1, 1, 1));
-        boxGeom.setMaterial(new Material(assetManager, Materials.PBR));
-        boxGeom.getMaterial().setTexture("BaseColorMap", texture);
-        boxGeom.getMaterial().setColor("BaseColor", ColorRGBA.White);
-        boxGeom.getMaterial().setFloat("Roughness", 0.001f);
-        boxGeom.getMaterial().setFloat("Metallic", 0.001f);
+        Geometry debugBox = new Geometry("Box", new Box(1, 1, 1));
+        debugBox.setMaterial(new Material(assetManager, Materials.PBR));
+        debugBox.getMaterial().setTexture("BaseColorMap", texture);
+        debugBox.getMaterial().setColor("BaseColor", ColorRGBA.White);
+        debugBox.getMaterial().setFloat("Roughness", 0.001f);
+        debugBox.getMaterial().setFloat("Metallic", 0.001f);
 
         box = new Node("box");
-        box.attachChild(boxGeom);
+        box.attachChild(debugBox);
         box.move(0, 4, 0);
         attachCoordinateAxes(box);
 
