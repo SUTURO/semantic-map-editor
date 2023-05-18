@@ -1,12 +1,17 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor.camera;
 
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.*;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Node;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -60,21 +65,21 @@ public class EditorCamera implements AnalogListener, ActionListener {
     private static final float DEFAULT_ZOOM_SPEED = 10f;
 
     /**
-     * rotation-rate multiplier
+     * The rotation-rate multiplier
      */
     @Getter
     @Setter
     private float rotationSpeed = DEFAULT_ROTATION_SPEED;
 
     /**
-     * translation speed (in world units per second)
+     * The translation speed (in world units per second)
      */
     @Getter
     @Setter
     private float moveSpeed = DEFAULT_MOVE_SPEED;
 
     /**
-     * zoom-rate multiplier
+     * The zoom-rate multiplier
      */
     @Getter
     @Setter
@@ -83,15 +88,28 @@ public class EditorCamera implements AnalogListener, ActionListener {
     private final Camera cam;
     private final InputManager inputManager;
 
+    private final Node rootNode;
+
+    private float yaw;
+    private float pitch;
+
     private boolean altHeld = false;
     private boolean mouseLeftHeld = false;
     private boolean mouseMiddleHeld = false;
     private boolean mouseRightHeld = false;
 
-    public EditorCamera(@NonNull Camera cam, @NonNull InputManager inputManager) {
+    public EditorCamera(@NonNull Camera cam, @NonNull InputManager inputManager, Node rootNode) {
 
         this.cam = cam;
         this.inputManager = inputManager;
+        this.rootNode = rootNode;
+
+        /* Set initial pitch and yaw */
+        Quaternion camRotation = cam.getRotation();
+        float[] angles = new float[3];
+        camRotation.toAngles(angles);
+        this.pitch = angles[0];
+        this.yaw = angles[1];
 
         registerInput();
     }
@@ -126,9 +144,9 @@ public class EditorCamera implements AnalogListener, ActionListener {
         if (inputManager == null)
             return;
 
-        for (String s : mappings)
-            if (inputManager.hasMapping(s))
-                inputManager.deleteMapping(s);
+        for (String mapping : mappings)
+            if (inputManager.hasMapping(mapping))
+                inputManager.deleteMapping(mapping);
 
         inputManager.removeListener(this);
     }
@@ -202,26 +220,50 @@ public class EditorCamera implements AnalogListener, ActionListener {
         cam.setLocation(cam.getLocation().add(pos));
     }
 
-    private void rotateCamera(float value, Vector3f axis) {
+    private void rotateCamera(float angle, Vector3f axis) {
 
-        Vector3f cameraPos = cam.getLocation();
+        float delta = angle * rotationSpeed;
 
-        float distanceToOrigin = cameraPos.distance(Vector3f.ZERO);
-        Vector3f targetPos = cameraPos.add(cam.getDirection().mult(distanceToOrigin));
-        float distanceToTarget = cameraPos.distance(targetPos);
+        if (axis.equals(cam.getUp()))
+            yaw = (yaw + delta) % FastMath.TWO_PI;
+        else if (axis.equals(cam.getLeft()))
+            pitch = (pitch + delta) % FastMath.TWO_PI;
 
-        Quaternion rotation = new Quaternion().fromAngleAxis(value * rotationSpeed, axis);
-        Vector3f direction = cameraPos.subtract(targetPos).normalizeLocal();
-        direction = rotation.mult(direction);
-        Vector3f newCameraPos = targetPos.add(direction.mult(distanceToTarget));
+        Quaternion rotation = new Quaternion();
+        rotation.fromAngles(pitch, yaw, 0);
+        cam.setRotation(rotation);
 
-        cam.setLocation(newCameraPos);
-        cam.lookAt(targetPos, Vector3f.UNIT_Y);
+        Vector3f rotationTarget = Vector3f.ZERO;
+        float distanceToTarget = cam.getLocation().distance(rotationTarget);
+        Vector3f position = rotationTarget.add(cam.getDirection().mult(distanceToTarget).negate());
+        cam.setLocation(position);
     }
 
-    private void zoomCamera(float value) {
-        float zoomAmount = value * zoomSpeed;
+    private void zoomCamera(float delta) {
+        float zoomAmount = delta * zoomSpeed;
         cam.setLocation(cam.getLocation().add(cam.getDirection().mult(zoomAmount)));
+    }
+
+    private Vector3f getTarget() {
+
+        Vector3f origin = cam.getLocation();
+        Vector3f direction = cam.getDirection();
+
+        Ray ray = new Ray(origin, direction.normalize());
+        CollisionResults results = new CollisionResults();
+
+        rootNode.collideWith(ray, results);
+
+        CollisionResult closestCollision = results.getClosestCollision();
+
+        if (closestCollision == null)
+            return getDefaultTarget();
+        else
+            return closestCollision.getContactPoint();
+    }
+
+    private Vector3f getDefaultTarget() {
+        return cam.getLocation().add(cam.getDirection().mult(10));
     }
 
 }

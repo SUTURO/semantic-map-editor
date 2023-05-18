@@ -2,6 +2,7 @@ package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
 import com.jayfella.jfx.embedded.AbstractJmeApplication;
 import com.jme3.app.state.AppState;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.material.Materials;
@@ -14,6 +15,7 @@ import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.debug.Grid;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.EditorCameraAppState;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
@@ -79,6 +81,8 @@ public class Editor extends AbstractJmeApplication {
     @Override
     public void initApp() {
 
+        stateManager.attach(new EditorCameraAppState(rootNode));
+
         viewPort.setBackgroundColor(BACKGROUND_COLOR);
 
         DirectionalLight directionalLight = new DirectionalLight(
@@ -87,6 +91,7 @@ public class Editor extends AbstractJmeApplication {
         );
 
         rootNode.addLight(directionalLight);
+        rootNode.addLight(new AmbientLight(ColorRGBA.White.mult(0.7f)));
 
         attachGroundGrid();
         attachCoordinateAxes(rootNode);

@@ -3,10 +3,13 @@ package com.malte3d.suturo.sme.ui.viewmodel.editor.camera;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import lombok.NoArgsConstructor;
+import com.jme3.scene.Node;
+import lombok.RequiredArgsConstructor;
 
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class EditorCameraAppState extends AbstractAppState {
+
+    private final Node rootNode;
 
     private Application app;
     private EditorCamera editorCamera;
@@ -21,7 +24,7 @@ public class EditorCameraAppState extends AbstractAppState {
         if (app.getInputManager() != null) {
 
             if (editorCamera == null)
-                editorCamera = new EditorCamera(app.getCamera(), app.getInputManager());
+                editorCamera = new EditorCamera(app.getCamera(), app.getInputManager(), rootNode);
         }
     }
 

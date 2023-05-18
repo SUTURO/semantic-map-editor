@@ -14,7 +14,6 @@ import com.malte3d.suturo.sme.domain.model.application.settings.Settings;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugModeChangedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.Editor;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.EditorCameraAppState;
 import javafx.application.HostServices;
 import lombok.Getter;
 import lombok.NonNull;
@@ -104,7 +103,6 @@ public class MainViewModel extends UiService {
         Settings settings = settingsService.get();
 
         List<AppState> initialAppStates = new ArrayList<>();
-        initialAppStates.add(new EditorCameraAppState());
 
         if (settings.getAdvanced().getDebugMode().isEnabled()) {
 
