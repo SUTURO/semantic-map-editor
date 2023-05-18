@@ -6,10 +6,7 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.*;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Ray;
-import com.jme3.math.Vector3f;
+import com.jme3.math.*;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import lombok.EqualsAndHashCode;
@@ -63,6 +60,7 @@ public class EditorCamera implements AnalogListener, ActionListener {
     private static final float DEFAULT_ROTATION_SPEED = 5f;
     private static final float DEFAULT_MOVE_SPEED = 10f;
     private static final float DEFAULT_ZOOM_SPEED = 10f;
+    private static final float DEFAULT_ZOOM_SCROLL = 0.02f;
 
     /**
      * The rotation-rate multiplier
@@ -92,11 +90,12 @@ public class EditorCamera implements AnalogListener, ActionListener {
 
     private float yaw;
     private float pitch;
+    private Vector3f rotationTarget = Vector3f.ZERO;
 
-    private boolean altHeld = false;
-    private boolean mouseLeftHeld = false;
-    private boolean mouseMiddleHeld = false;
-    private boolean mouseRightHeld = false;
+    private boolean altPressed = false;
+    private boolean mouseLeftPressed = false;
+    private boolean mouseMiddlePressed = false;
+    private boolean mouseRightPressed = false;
 
     public EditorCamera(@NonNull Camera cam, @NonNull InputManager inputManager, Node rootNode) {
 
@@ -156,27 +155,31 @@ public class EditorCamera implements AnalogListener, ActionListener {
     public void onAction(String name, boolean isPressed, float tpf) {
 
         if (name.equals(KEY_ALT))
-            altHeld = isPressed;
+            altPressed = isPressed;
 
         if (name.equals(KEY_MOUSE_LEFT))
-            mouseLeftHeld = isPressed;
+            mouseLeftPressed = isPressed;
         if (name.equals(KEY_MOUSE_MIDDLE))
-            mouseMiddleHeld = isPressed;
+            mouseMiddlePressed = isPressed;
         if (name.equals(KEY_MOUSE_RIGHT))
-            mouseRightHeld = isPressed;
+            mouseRightPressed = isPressed;
+
+        /* Update rotation target if rotation is started */
+        if (altPressed && mouseLeftPressed)
+            rotationTarget = getRotationTarget();
     }
 
     @Override
     public void onAnalog(String name, float value, float tpf) {
 
         switch (name) {
-            case CAM_ZOOM_IN_SCROLL -> zoomCamera(0.2f);
-            case CAM_ZOOM_OUT_SCROLL -> zoomCamera(-0.2f);
+            case CAM_ZOOM_IN_SCROLL -> zoomCamera(DEFAULT_ZOOM_SCROLL);
+            case CAM_ZOOM_OUT_SCROLL -> zoomCamera(-DEFAULT_ZOOM_SCROLL);
         }
 
-        if (altHeld) {
+        if (altPressed) {
 
-            if (mouseLeftHeld) {
+            if (mouseLeftPressed) {
 
                 switch (name) {
                     case CAM_LEFT -> rotateCamera(value, cam.getUp());
@@ -186,17 +189,17 @@ public class EditorCamera implements AnalogListener, ActionListener {
                 }
             }
 
-            if (mouseMiddleHeld) {
+            if (mouseMiddlePressed) {
 
                 switch (name) {
-                    case CAM_LEFT -> moveCamera(-value, true);
-                    case CAM_RIGHT -> moveCamera(value, true);
-                    case CAM_UP -> moveCamera(-value, false);
-                    case CAM_DOWN -> moveCamera(value, false);
+                    case CAM_LEFT -> moveCamera(-value, cam.getLeft());
+                    case CAM_RIGHT -> moveCamera(value, cam.getLeft());
+                    case CAM_UP -> moveCamera(-value, cam.getUp());
+                    case CAM_DOWN -> moveCamera(value, cam.getUp());
                 }
             }
 
-            if (mouseRightHeld) {
+            if (mouseRightPressed) {
 
                 switch (name) {
                     case CAM_ZOOM_IN -> zoomCamera(value);
@@ -206,23 +209,17 @@ public class EditorCamera implements AnalogListener, ActionListener {
         }
     }
 
-    private void moveCamera(float value, boolean horizontal) {
+    private void moveCamera(float value, Vector3f axis) {
 
-        Vector3f pos = new Vector3f();
+        Vector3f delta = axis.clone();
+        delta.multLocal(value * moveSpeed);
 
-        if (horizontal)
-            cam.getLeft(pos);
-        else
-            cam.getUp(pos);
-
-        pos.multLocal(value * moveSpeed);
-
-        cam.setLocation(cam.getLocation().add(pos));
+        cam.setLocation(cam.getLocation().add(delta));
     }
 
-    private void rotateCamera(float angle, Vector3f axis) {
+    private void rotateCamera(float value, Vector3f axis) {
 
-        float delta = angle * rotationSpeed;
+        float delta = value * rotationSpeed;
 
         if (axis.equals(cam.getUp()))
             yaw = (yaw + delta) % FastMath.TWO_PI;
@@ -233,37 +230,49 @@ public class EditorCamera implements AnalogListener, ActionListener {
         rotation.fromAngles(pitch, yaw, 0);
         cam.setRotation(rotation);
 
-        Vector3f rotationTarget = Vector3f.ZERO;
         float distanceToTarget = cam.getLocation().distance(rotationTarget);
         Vector3f position = rotationTarget.add(cam.getDirection().mult(distanceToTarget).negate());
         cam.setLocation(position);
     }
 
-    private void zoomCamera(float delta) {
-        float zoomAmount = delta * zoomSpeed;
-        cam.setLocation(cam.getLocation().add(cam.getDirection().mult(zoomAmount)));
+    private void zoomCamera(float value) {
+        float delta = value * zoomSpeed;
+        cam.setLocation(cam.getLocation().add(cam.getDirection().mult(delta)));
     }
 
-    private Vector3f getTarget() {
+    /**
+     * Gets first collision point with an object from the scene graph at the current cursor position (if present).
+     * Else returns the default target.
+     *
+     * @return The rotation target of the camera.
+     */
+    private Vector3f getRotationTarget() {
 
-        Vector3f origin = cam.getLocation();
-        Vector3f direction = cam.getDirection();
+        Vector2f cursor2d = inputManager.getCursorPosition();
+        Vector3f cursor3d = cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 0f).clone();
 
-        Ray ray = new Ray(origin, direction.normalize());
+        Vector3f dir = cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 1f).subtractLocal(cursor3d);
+        dir.normalizeLocal();
+
+        Ray ray = new Ray(cursor3d, dir);
         CollisionResults results = new CollisionResults();
 
         rootNode.collideWith(ray, results);
-
         CollisionResult closestCollision = results.getClosestCollision();
 
         if (closestCollision == null)
-            return getDefaultTarget();
+            return getDefaultRotationTarget();
         else
             return closestCollision.getContactPoint();
     }
 
-    private Vector3f getDefaultTarget() {
-        return cam.getLocation().add(cam.getDirection().mult(10));
+    /**
+     * The default rotation target is simply 20 units in front of the camera.
+     *
+     * @return The default rotation target of the camera.
+     */
+    private Vector3f getDefaultRotationTarget() {
+        return cam.getLocation().add(cam.getDirection().mult(20));
     }
 
 }
