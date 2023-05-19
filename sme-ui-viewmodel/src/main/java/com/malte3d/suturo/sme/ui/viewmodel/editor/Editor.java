@@ -15,7 +15,9 @@ import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.debug.Grid;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymap;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.EditorCameraAppState;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
@@ -30,15 +32,22 @@ public class Editor extends AbstractJmeApplication {
 
     private static final Vector3f FRAME_ORIGIN = new Vector3f(0, 0, 0);
 
+    @NonNull
+    private Class<? extends CameraKeymap> cameraKeymap;
+
     private Node box;
 
     /**
-     * Use the factory method {@link #create(AppState...)} to create a new instance of the 3D-Editor.
+     * Use the factory method to create a new instance of the 3D-Editor.
      *
+     * @param cameraKeymap  The keymap to be used for the camera
      * @param initialStates The initial states to be added to the 3D-Editor
      */
-    private Editor(AppState... initialStates) {
+    private Editor(@NonNull Class<? extends CameraKeymap> cameraKeymap, @NonNull AppState... initialStates) {
+
         super(initialStates);
+
+        this.cameraKeymap = cameraKeymap;
     }
 
     /**
@@ -47,12 +56,13 @@ public class Editor extends AbstractJmeApplication {
      * <b>Warning:</b> This call is blocking an may take some time to complete.
      * </p>
      *
+     * @param keymap        The keymap to be used for the camera
      * @param initialStates The initial states to be added to the 3D-Editor
      * @return A new initialized instance of the 3D-Editor
      */
-    public static Editor create(AppState... initialStates) {
+    public static Editor create(@NonNull Class<? extends CameraKeymap> keymap, @NonNull AppState... initialStates) {
 
-        Editor editor = new Editor(initialStates);
+        Editor editor = new Editor(keymap, initialStates);
 
         try {
 
@@ -71,17 +81,29 @@ public class Editor extends AbstractJmeApplication {
      * <b>Warning:</b> This call is blocking an may take some time to complete.
      * </p>
      *
+     * @param keymap        The keymap to be used for the camera
      * @param initialStates The initial states to be added to the 3D-Editor
      * @return A new initialized instance of the 3D-Editor
      */
-    public static Editor create(Collection<AppState> initialStates) {
-        return create(initialStates.toArray(new AppState[0]));
+    public static Editor create(@NonNull Class<? extends CameraKeymap> keymap, @NonNull Collection<AppState> initialStates) {
+        return create(keymap, initialStates.toArray(new AppState[0]));
+    }
+
+    /**
+     * Updates the keymap to be used for the camera.
+     *
+     * @param cameraKeymap The keymap to be used for the camera
+     */
+    public void setCameraKeymap(@NonNull Class<? extends CameraKeymap> cameraKeymap) {
+        this.cameraKeymap = cameraKeymap;
+        EditorCameraAppState editorCameraAppState = getStateManager().getState(EditorCameraAppState.class);
+        editorCameraAppState.setKeymap(cameraKeymap);
     }
 
     @Override
     public void initApp() {
 
-        stateManager.attach(new EditorCameraAppState(rootNode));
+        stateManager.attach(new EditorCameraAppState(cameraKeymap, rootNode));
 
         viewPort.setBackgroundColor(BACKGROUND_COLOR);
 

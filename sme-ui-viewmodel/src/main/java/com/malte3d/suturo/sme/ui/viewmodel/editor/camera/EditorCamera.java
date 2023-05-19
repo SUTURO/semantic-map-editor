@@ -3,9 +3,8 @@ package com.malte3d.suturo.sme.ui.viewmodel.editor.camera;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
-import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
-import com.jme3.input.controls.*;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
 import com.jme3.math.*;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
@@ -15,52 +14,14 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * This class enables the user to move the camera like in Cinema 4D.
- *
- * <p>
- * Hold down ALT and move, zoom and rotate the camera with the mouse buttons.
- * </p>
- */
 @Slf4j
 @EqualsAndHashCode
 public class EditorCamera implements AnalogListener, ActionListener {
 
-    private static final String KEY_ALT = "KEY_ALT";
-    private static final String KEY_MOUSE_LEFT = "KEY_MOUSE_LEFT";
-    private static final String KEY_MOUSE_MIDDLE = "KEY_MOUSE_MIDDLE";
-    private static final String KEY_MOUSE_RIGHT = "KEY_MOUSE_RIGHT";
-
-    private static final String CAM_ZOOM_IN = "CAM_ZOOM_IN";
-    private static final String CAM_ZOOM_IN_SCROLL = "CAM_ZOOM_IN_SCROLL";
-    private static final String CAM_ZOOM_OUT = "CAM_ZOOM_OUT";
-    private static final String CAM_ZOOM_OUT_SCROLL = "CAM_ZOOM_OUT_SCROLL";
-    private static final String CAM_LEFT = "CAM_MOVE_LEFT";
-    private static final String CAM_RIGHT = "CAM_MOVE_RIGHT";
-    private static final String CAM_UP = "CAM_MOVE_UP";
-    private static final String CAM_DOWN = "CAM_MOVE_DOWN";
-
-    private static final String[] mappings = new String[]{
-
-            KEY_ALT,
-            KEY_MOUSE_LEFT,
-            KEY_MOUSE_MIDDLE,
-            KEY_MOUSE_RIGHT,
-
-            CAM_ZOOM_IN,
-            CAM_ZOOM_IN_SCROLL,
-            CAM_ZOOM_OUT,
-            CAM_ZOOM_OUT_SCROLL,
-            CAM_LEFT,
-            CAM_RIGHT,
-            CAM_UP,
-            CAM_DOWN,
-    };
-
     private static final float DEFAULT_ROTATION_SPEED = 5f;
-    private static final float DEFAULT_MOVE_SPEED = 10f;
-    private static final float DEFAULT_ZOOM_SPEED = 10f;
-    private static final float DEFAULT_ZOOM_SCROLL = 0.02f;
+    private static final float DEFAULT_MOVE_SPEED = 12f;
+    private static final float DEFAULT_ZOOM_SPEED = 15f;
+    private static final float DEFAULT_ZOOM_SCROLL = 0.04f;
 
     /**
      * The rotation-rate multiplier
@@ -97,16 +58,15 @@ public class EditorCamera implements AnalogListener, ActionListener {
     private float yaw;
     private float pitch;
 
-    private boolean altPressed = false;
-    private boolean mouseLeftPressed = false;
-    private boolean mouseMiddlePressed = false;
-    private boolean mouseRightPressed = false;
+    private CameraKeymap keymap;
 
-    public EditorCamera(@NonNull Camera cam, @NonNull InputManager inputManager, Node rootNode) {
+    public EditorCamera(@NonNull Camera cam, @NonNull InputManager inputManager, @NonNull Class<? extends CameraKeymap> keymap, @NonNull Node rootNode) {
 
         this.cam = cam;
         this.inputManager = inputManager;
         this.rootNode = rootNode;
+
+        setKeymap(keymap);
 
         /* Set initial pitch and yaw */
         Quaternion camRotation = cam.getRotation();
@@ -114,63 +74,57 @@ public class EditorCamera implements AnalogListener, ActionListener {
         camRotation.toAngles(angles);
         this.pitch = angles[0];
         this.yaw = angles[1];
+    }
+
+    /**
+     * Register this camera to receive input events from the specified input manager.
+     */
+    private void registerInput() {
+        keymap.registerInput();
+    }
+
+    /**
+     * Unregister this camera's keymaps from the specified input manager.
+     */
+    public void unregisterInput() {
+
+        if (keymap != null)
+            keymap.unregisterInput();
+    }
+
+    /**
+     * Updates the camera's keymap.
+     *
+     * @param keymap the keymap to set
+     */
+    public void setKeymap(@NonNull Class<? extends CameraKeymap> keymap) {
+
+        unregisterInput();
+
+        if (keymap.isAssignableFrom(CameraKeymapBlender.class))
+            this.keymap = new CameraKeymapBlender(inputManager, this);
+        else
+            this.keymap = new CameraKeymapCinema4D(inputManager, this);
 
         registerInput();
     }
 
-    /**
-     * Register this controller to receive input events from the specified input manager.
-     */
-    private void registerInput() {
-
-
-        inputManager.addMapping(KEY_ALT, new KeyTrigger(KeyInput.KEY_LMENU));
-        inputManager.addMapping(KEY_MOUSE_LEFT, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-        inputManager.addMapping(KEY_MOUSE_MIDDLE, new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
-        inputManager.addMapping(KEY_MOUSE_RIGHT, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-
-        inputManager.addMapping(CAM_ZOOM_IN, new MouseAxisTrigger(MouseInput.AXIS_X, false), new MouseAxisTrigger(MouseInput.AXIS_Y, false));
-        inputManager.addMapping(CAM_ZOOM_IN_SCROLL, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
-        inputManager.addMapping(CAM_ZOOM_OUT, new MouseAxisTrigger(MouseInput.AXIS_X, true), new MouseAxisTrigger(MouseInput.AXIS_Y, true));
-        inputManager.addMapping(CAM_ZOOM_OUT_SCROLL, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
-
-        inputManager.addMapping(CAM_LEFT, new MouseAxisTrigger(MouseInput.AXIS_X, true));
-        inputManager.addMapping(CAM_RIGHT, new MouseAxisTrigger(MouseInput.AXIS_X, false));
-        inputManager.addMapping(CAM_UP, new MouseAxisTrigger(MouseInput.AXIS_Y, false));
-        inputManager.addMapping(CAM_DOWN, new MouseAxisTrigger(MouseInput.AXIS_Y, true));
-
-        inputManager.addListener(this, mappings);
-        inputManager.setCursorVisible(true);
-    }
-
-    public void unregisterInput() {
-
-        if (inputManager == null)
-            return;
-
-        for (String mapping : mappings)
-            if (inputManager.hasMapping(mapping))
-                inputManager.deleteMapping(mapping);
-
-        inputManager.removeListener(this);
-    }
-
-
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
 
-        if (name.equals(KEY_ALT))
-            altPressed = isPressed;
+        log.info("onAction: {} {}", name, isPressed);
 
-        if (name.equals(KEY_MOUSE_LEFT))
-            mouseLeftPressed = isPressed;
-        if (name.equals(KEY_MOUSE_MIDDLE))
-            mouseMiddlePressed = isPressed;
-        if (name.equals(KEY_MOUSE_RIGHT))
-            mouseRightPressed = isPressed;
+        if (keymap.getMove().getTriggers().contains(name))
+            keymap.getMove().update(name, isPressed);
+
+        if (keymap.getRotate().getTriggers().contains(name))
+            keymap.getRotate().update(name, isPressed);
+
+        if (keymap.getZoom().getTriggers().contains(name))
+            keymap.getZoom().update(name, isPressed);
 
         /* Update target if rotation is started */
-        if (altPressed && mouseLeftPressed)
+        if (keymap.getRotate().isActive())
             updateCursorTarget();
     }
 
@@ -178,38 +132,33 @@ public class EditorCamera implements AnalogListener, ActionListener {
     public void onAnalog(String name, float value, float tpf) {
 
         switch (name) {
-            case CAM_ZOOM_IN_SCROLL -> zoomCamera(DEFAULT_ZOOM_SCROLL);
-            case CAM_ZOOM_OUT_SCROLL -> zoomCamera(-DEFAULT_ZOOM_SCROLL);
+            case CameraKeymap.CAM_ZOOM_IN_SCROLL -> zoomCamera(DEFAULT_ZOOM_SCROLL);
+            case CameraKeymap.CAM_ZOOM_OUT_SCROLL -> zoomCamera(-DEFAULT_ZOOM_SCROLL);
         }
 
-        if (altPressed) {
+        if (keymap.getMove().isActive()) {
 
-            if (mouseLeftPressed) {
-
-                switch (name) {
-                    case CAM_LEFT -> rotateCamera(value, cam.getUp());
-                    case CAM_RIGHT -> rotateCamera(-value, cam.getUp());
-                    case CAM_UP -> rotateCamera(-value, cam.getLeft());
-                    case CAM_DOWN -> rotateCamera(value, cam.getLeft());
-                }
+            switch (name) {
+                case CameraKeymap.CAM_LEFT -> moveCamera(-value, cam.getLeft());
+                case CameraKeymap.CAM_RIGHT -> moveCamera(value, cam.getLeft());
+                case CameraKeymap.CAM_UP -> moveCamera(-value, cam.getUp());
+                case CameraKeymap.CAM_DOWN -> moveCamera(value, cam.getUp());
             }
 
-            if (mouseMiddlePressed) {
+        } else if (keymap.getZoom().isActive()) {
 
-                switch (name) {
-                    case CAM_LEFT -> moveCamera(-value, cam.getLeft());
-                    case CAM_RIGHT -> moveCamera(value, cam.getLeft());
-                    case CAM_UP -> moveCamera(-value, cam.getUp());
-                    case CAM_DOWN -> moveCamera(value, cam.getUp());
-                }
+            switch (name) {
+                case CameraKeymap.CAM_ZOOM_IN -> zoomCamera(value);
+                case CameraKeymap.CAM_ZOOM_OUT -> zoomCamera(-value);
             }
 
-            if (mouseRightPressed) {
+        } else if (keymap.getRotate().isActive()) {
 
-                switch (name) {
-                    case CAM_ZOOM_IN -> zoomCamera(value);
-                    case CAM_ZOOM_OUT -> zoomCamera(-value);
-                }
+            switch (name) {
+                case CameraKeymap.CAM_LEFT -> rotateCamera(value, cam.getUp());
+                case CameraKeymap.CAM_RIGHT -> rotateCamera(-value, cam.getUp());
+                case CameraKeymap.CAM_UP -> rotateCamera(-value, cam.getLeft());
+                case CameraKeymap.CAM_DOWN -> rotateCamera(value, cam.getLeft());
             }
         }
     }

@@ -13,7 +13,12 @@ import com.malte3d.suturo.sme.application.service.settings.SettingsService;
 import com.malte3d.suturo.sme.domain.model.application.settings.Settings;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugModeChangedEvent;
+import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviour;
+import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviourChangedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.Editor;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymap;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymapBlender;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymapCinema4D;
 import javafx.application.HostServices;
 import lombok.Getter;
 import lombok.NonNull;
@@ -53,11 +58,24 @@ public class MainViewModel extends UiService {
 
     private void registerEventConsumer() {
         domainEventPublisher.register(DebugModeChangedEvent.class, this::onDebugModeChanged);
+        domainEventPublisher.register(CameraBehaviourChangedEvent.class, this::onCameraBehaviourChanged);
+    }
+
+    private void onCameraBehaviourChanged(CameraBehaviourChangedEvent event) {
+
+        Preconditions.checkNotNull(editor, "Editor must be initialized before camera behaviour can be changed.");
+
+        CameraBehaviour cameraBehaviour = event.getNewCameraBehaviour();
+
+        if (cameraBehaviour == CameraBehaviour.BLENDER)
+            editor.setCameraKeymap(CameraKeymapBlender.class);
+        else
+            editor.setCameraKeymap(CameraKeymapCinema4D.class);
     }
 
     private void onDebugModeChanged(DebugModeChangedEvent event) {
 
-        Preconditions.checkNotNull(editor, "Main editor must be loaded before debug mode can be changed.");
+        Preconditions.checkNotNull(editor, "Editor must be initialized before debug mode can be changed.");
 
         DebugMode debugMode = event.getNewDebugMode();
 
@@ -110,7 +128,10 @@ public class MainViewModel extends UiService {
             initialAppStates.add(new DebugKeysAppState());
         }
 
-        this.editor = Editor.create(initialAppStates);
+        CameraBehaviour cameraBehaviour = settings.getKeymap().getCameraBehaviour();
+        Class<? extends CameraKeymap> cameraKeymap = cameraBehaviour == CameraBehaviour.BLENDER ? CameraKeymapBlender.class : CameraKeymapCinema4D.class;
+
+        this.editor = Editor.create(cameraKeymap, initialAppStates);
 
         return editor;
     }
