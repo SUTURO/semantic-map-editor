@@ -185,10 +185,10 @@ public class EditorCamera implements AnalogListener, ActionListener {
         } else if (keymap.getRotate().isActive()) {
 
             switch (name) {
-                case CameraKeymap.CAM_LEFT -> rotateCamera(value, cam.getUp());
-                case CameraKeymap.CAM_RIGHT -> rotateCamera(-value, cam.getUp());
-                case CameraKeymap.CAM_UP -> rotateCamera(-value, cam.getLeft());
-                case CameraKeymap.CAM_DOWN -> rotateCamera(value, cam.getLeft());
+                case CameraKeymap.CAM_LEFT -> rotateCamera(value, true);
+                case CameraKeymap.CAM_RIGHT -> rotateCamera(-value, true);
+                case CameraKeymap.CAM_UP -> rotateCamera(value, false);
+                case CameraKeymap.CAM_DOWN -> rotateCamera(-value, false);
             }
         }
 
@@ -212,26 +212,23 @@ public class EditorCamera implements AnalogListener, ActionListener {
     /**
      * Rotates the camera around the rotation target.
      *
-     * @param value The amount to rotate the camera
-     * @param axis  The axis to rotate the camera around
+     * @param value      The amount to rotate the camera
+     * @param horizontal Whether to rotate the camera horizontally (yaw) or vertically (pitch)
      */
-    private void rotateCamera(float value, Vector3f axis) {
+    private void rotateCamera(float value, boolean horizontal) {
 
         float delta = value * rotationSpeed;
 
-        if (axis.equals(cam.getUp()))
-            yaw = (yaw + delta) % FastMath.TWO_PI;
-        else if (axis.equals(cam.getLeft()))
-            pitch = (pitch + delta) % FastMath.TWO_PI;
-
-        Quaternion newCamRotation = new Quaternion();
-        newCamRotation.fromAngles(pitch, yaw, 0);
-        cam.setRotation(newCamRotation);
-
-        Vector3f targetToCam = cam.getLocation().subtract(target);
-
+        Vector3f axis = horizontal ? Vector3f.UNIT_Y : cam.getDirection().cross(cam.getUp()).normalizeLocal();
         Quaternion rotation = new Quaternion();
         rotation.fromAngleNormalAxis(delta, axis);
+
+        Vector3f newDirection = rotation.mult(cam.getDirection());
+        Vector3f newUp = rotation.mult(cam.getUp());
+
+        cam.lookAtDirection(newDirection, newUp);
+
+        Vector3f targetToCam = cam.getLocation().subtract(target);
         targetToCam = rotation.mult(targetToCam);
         Vector3f newCamPosition = target.add(targetToCam);
 
