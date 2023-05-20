@@ -2,6 +2,7 @@ package com.malte3d.suturo.sme.ui.viewmodel.editor.floor;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.material.Materials;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
@@ -38,14 +39,14 @@ public class FloorGrid {
 
     public FloorGrid(@NonNull AssetManager assetManager) {
 
-        Material matSmall = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material matSmall = new Material(assetManager, Materials.UNSHADED);
         matSmall.setColor("Color", this.colorSmall);
 
         this.gridSmall = new Geometry("FloorGrid Small", new Grid(101, 101, 1f));
         this.gridSmall.setMaterial(matSmall);
         this.gridSmall.center();
 
-        Material matLarge = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material matLarge = new Material(assetManager, Materials.UNSHADED);
         matLarge.setColor("Color", this.colorLarge);
 
         this.gridLarge = new Geometry("FloorGrid Large", new Grid(11, 11, 10f));

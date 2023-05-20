@@ -113,13 +113,11 @@ public class Editor extends AbstractJmeApplication {
 
         viewPort.setBackgroundColor(BACKGROUND_COLOR);
 
-        DirectionalLight directionalLight = new DirectionalLight(
-                new Vector3f(-1, -1, -1).normalizeLocal(),
-                ColorRGBA.White
-        );
+        AmbientLight ambientLight = new AmbientLight(ColorRGBA.White.mult(1.3f));
+        DirectionalLight directionalLight = new DirectionalLight(new Vector3f(-1, -1, -1), ColorRGBA.White);
 
+        rootNode.addLight(ambientLight);
         rootNode.addLight(directionalLight);
-        rootNode.addLight(new AmbientLight(ColorRGBA.White.mult(0.7f)));
 
         attachFloorGrid();
         attachCoordinateAxes(rootNode);
@@ -149,7 +147,7 @@ public class Editor extends AbstractJmeApplication {
 
     private Geometry attachCoordinateAxesShape(Node node, Mesh shape, ColorRGBA color) {
 
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material mat = new Material(assetManager, Materials.UNSHADED);
         mat.getAdditionalRenderState().setWireframe(true);
         mat.getAdditionalRenderState().setLineWidth(4);
         mat.setColor("Color", color);
