@@ -148,8 +148,6 @@ public class Editor extends AbstractJmeApplication {
     private Geometry attachCoordinateAxesShape(Node node, Mesh shape, ColorRGBA color) {
 
         Material mat = new Material(assetManager, Materials.UNSHADED);
-        mat.getAdditionalRenderState().setWireframe(true);
-        mat.getAdditionalRenderState().setLineWidth(4);
         mat.setColor("Color", color);
 
         Geometry coordinateAxis = new Geometry("coordinate axis", shape);

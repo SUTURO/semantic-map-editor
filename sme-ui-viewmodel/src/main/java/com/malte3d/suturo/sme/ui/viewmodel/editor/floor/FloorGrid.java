@@ -3,6 +3,7 @@ package com.malte3d.suturo.sme.ui.viewmodel.editor.floor;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.material.Materials;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
@@ -18,13 +19,13 @@ import lombok.NonNull;
  */
 public class FloorGrid {
 
-    private static final float CULLING_THRESHOLD = 0.1f;
+    private static final float CULLING_THRESHOLD = 0.05f;
 
     private static final float MIN_DISTANCE_SMALL = 5f;
-    private static final float MAX_DISTANCE_SMALL = 25f;
+    private static final float MAX_DISTANCE_SMALL = 30f;
 
-    private static final float MIN_DISTANCE_LARGE = 30f;
-    private static final float MAX_DISTANCE_LARGE = 100f;
+    private static final float MIN_DISTANCE_LARGE = 50f;
+    private static final float MAX_DISTANCE_LARGE = 150f;
 
     private final Geometry gridSmall;
     private final Geometry gridLarge;
@@ -40,6 +41,7 @@ public class FloorGrid {
     public FloorGrid(@NonNull AssetManager assetManager) {
 
         Material matSmall = new Material(assetManager, Materials.UNSHADED);
+        matSmall.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         matSmall.setColor("Color", this.colorSmall);
 
         this.gridSmall = new Geometry("FloorGrid Small", new Grid(101, 101, 1f));
@@ -47,6 +49,7 @@ public class FloorGrid {
         this.gridSmall.center();
 
         Material matLarge = new Material(assetManager, Materials.UNSHADED);
+        matLarge.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         matLarge.setColor("Color", this.colorLarge);
 
         this.gridLarge = new Geometry("FloorGrid Large", new Grid(11, 11, 10f));
@@ -95,7 +98,7 @@ public class FloorGrid {
 
         if (smallVisible && alphaSmall <= CULLING_THRESHOLD) {
 
-            gridSmall.setCullHint(Spatial.CullHint.Never);
+            gridSmall.setCullHint(Spatial.CullHint.Always);
             smallVisible = false;
 
         } else if (!smallVisible && alphaSmall > CULLING_THRESHOLD) {
@@ -106,7 +109,7 @@ public class FloorGrid {
 
         if (largeVisible && alphaLarge <= CULLING_THRESHOLD) {
 
-            gridLarge.setCullHint(Spatial.CullHint.Never);
+            gridLarge.setCullHint(Spatial.CullHint.Always);
             largeVisible = false;
 
         } else if (!largeVisible && alphaLarge > CULLING_THRESHOLD) {
