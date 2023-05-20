@@ -237,13 +237,18 @@ public class EditorCamera implements AnalogListener, ActionListener {
     }
 
     /**
-     * Zooms/Moves the camera along the camera direction.
+     * Zooms/Moves the camera to the {@link #target}.
      *
      * @param value The amount to zoom the camera
      */
     private void zoomCamera(float value) {
+
         float delta = value * zoomSpeed;
-        cam.setLocation(cam.getLocation().add(cam.getDirection().mult(delta)));
+
+        Vector3f dir = target.subtract(cam.getLocation());
+        dir.normalizeLocal();
+
+        cam.setLocation(cam.getLocation().add(dir.mult(delta)));
     }
 
     private Vector3f getMoveTarget() {
@@ -251,13 +256,21 @@ public class EditorCamera implements AnalogListener, ActionListener {
     }
 
     private Vector3f getZoomTarget() {
-        return cam.getDirection().mult(DEFAULT_TARGET_DISTANCE);
+
+        Vector2f cursor2d = inputManager.getCursorPosition();
+        Vector3f cursor3d = cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 0f).clone();
+
+        Vector3f dir = cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 1f).subtractLocal(cursor3d);
+        dir.normalizeLocal();
+
+        Ray ray = new Ray(cursor3d, dir);
+
+        Vector3f intersectionPoint = Vector3f.ZERO;
+        ray.intersectsWherePlane(floor, intersectionPoint);
+
+        return intersectionPoint;
     }
 
-    /**
-     * Gets the first collision point with an object from the scene graph at the current cursor position (if present).
-     * Else returns the default rotation target.
-     */
     private Vector3f getRotationTarget() {
 
         Vector2f cursor2d = inputManager.getCursorPosition();
