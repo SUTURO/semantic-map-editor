@@ -15,8 +15,7 @@ public class ActionTrigger {
 
     private final String name;
 
-    private final Map<String, Trigger> triggerNameMap;
-
+    private final Map<String, Trigger> triggers;
     private final Map<Trigger, Boolean> triggerPressed;
 
     /**
@@ -28,11 +27,11 @@ public class ActionTrigger {
     public ActionTrigger(@NonNull String name, @NonNull Trigger... triggers) {
 
         this.name = name;
-        this.triggerNameMap = new HashMap<>();
+        this.triggers = new HashMap<>();
         this.triggerPressed = new HashMap<>();
 
         for (Trigger trigger : triggers) {
-            triggerNameMap.put(getTriggerName(trigger), trigger);
+            this.triggers.put(getMappingName(trigger), trigger);
             triggerPressed.put(trigger, false);
         }
     }
@@ -44,7 +43,7 @@ public class ActionTrigger {
      * @param isPressed whether the trigger is pressed
      */
     public void update(@NonNull String name, boolean isPressed) {
-        Trigger trigger = triggerNameMap.get(name);
+        Trigger trigger = this.triggers.get(name);
         triggerPressed.put(trigger, isPressed);
     }
 
@@ -62,7 +61,7 @@ public class ActionTrigger {
      */
     public void register(@NonNull InputManager inputManager) {
 
-        for (Map.Entry<String, Trigger> entry : triggerNameMap.entrySet())
+        for (Map.Entry<String, Trigger> entry : triggers.entrySet())
             inputManager.addMapping(entry.getKey(), entry.getValue());
     }
 
@@ -73,15 +72,21 @@ public class ActionTrigger {
      */
     public void unregister(@NonNull InputManager inputManager) {
 
-        for (Trigger trigger : triggerNameMap.values())
-            inputManager.deleteMapping(trigger.getName());
+
+        for (Trigger trigger : triggers.values()) {
+
+            String mappingName = getMappingName(trigger);
+
+            if (inputManager.hasMapping(mappingName))
+                inputManager.deleteMapping(mappingName);
+        }
     }
 
     public Set<String> getTriggers() {
-        return triggerNameMap.keySet();
+        return triggers.keySet();
     }
 
-    private String getTriggerName(Trigger trigger) {
+    private String getMappingName(Trigger trigger) {
         return name + " " + trigger.getName();
     }
 

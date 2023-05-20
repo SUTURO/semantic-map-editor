@@ -1,5 +1,6 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor.camera;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
@@ -8,6 +9,8 @@ import com.jme3.input.controls.AnalogListener;
 import com.jme3.math.*;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
+import com.jme3.texture.Texture2D;
+import com.jme3.ui.Picture;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -22,6 +25,8 @@ public class EditorCamera implements AnalogListener, ActionListener {
     private static final float DEFAULT_MOVE_SPEED = 12f;
     private static final float DEFAULT_ZOOM_SPEED = 15f;
     private static final float DEFAULT_ZOOM_SCROLL = 0.04f;
+
+    private static final float DEFAULT_TARGET_DISTANCE = 20.0f;
 
     /**
      * The rotation-rate multiplier
@@ -47,26 +52,37 @@ public class EditorCamera implements AnalogListener, ActionListener {
     private final Camera cam;
     private final InputManager inputManager;
 
+    private final Picture crosshair;
+
+    @NonNull
     private final Node rootNode;
+    @NonNull
+    private final Node guiNode;
+
     private final Plane floor = new Plane(Vector3f.UNIT_Y, 0);
 
     /**
-     * The target of the cursor in world coordinates
+     * The target of the camera
      */
-    private Vector3f cursorTarget = Vector3f.ZERO;
+    private Vector3f target = Vector3f.ZERO;
 
     private float yaw;
     private float pitch;
 
     private CameraKeymap keymap;
 
-    public EditorCamera(@NonNull Camera cam, @NonNull InputManager inputManager, @NonNull Class<? extends CameraKeymap> keymap, @NonNull Node rootNode) {
+    public EditorCamera(@NonNull Camera cam, @NonNull AssetManager assetManager, @NonNull InputManager inputManager, @NonNull Class<? extends CameraKeymap> keymap, @NonNull Node rootNode, @NonNull Node guiNode) {
 
         this.cam = cam;
         this.inputManager = inputManager;
         this.rootNode = rootNode;
+        this.guiNode = guiNode;
 
         setKeymap(keymap);
+
+        /* Set initial camera position */
+        cam.setLocation(new Vector3f(5, 4, 5));
+        cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
 
         /* Set initial pitch and yaw */
         Quaternion camRotation = cam.getRotation();
@@ -74,6 +90,13 @@ public class EditorCamera implements AnalogListener, ActionListener {
         camRotation.toAngles(angles);
         this.pitch = angles[0];
         this.yaw = angles[1];
+
+        /* Create crosshair */
+        Texture2D texture = (Texture2D) assetManager.loadTexture("camera/crosshair.png");
+        this.crosshair = new Picture("EditorCamera Crosshair");
+        this.crosshair.setTexture(assetManager, texture, true);
+        this.crosshair.setWidth(texture.getImage().getWidth());
+        this.crosshair.setHeight(texture.getImage().getHeight());
     }
 
     /**
@@ -112,8 +135,6 @@ public class EditorCamera implements AnalogListener, ActionListener {
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
 
-        log.info("onAction: {} {}", name, isPressed);
-
         if (keymap.getMove().getTriggers().contains(name))
             keymap.getMove().update(name, isPressed);
 
@@ -123,9 +144,18 @@ public class EditorCamera implements AnalogListener, ActionListener {
         if (keymap.getZoom().getTriggers().contains(name))
             keymap.getZoom().update(name, isPressed);
 
-        /* Update target if rotation is started */
-        if (keymap.getRotate().isActive())
-            updateCursorTarget();
+        /* Update camera target */
+        if (keymap.getMove().isActive())
+            target = getMoveTarget();
+        else if (keymap.getZoom().isActive())
+            target = getZoomTarget();
+        else if (keymap.getRotate().isActive())
+            target = getRotationTarget();
+
+        if (keymap.getRotate().isActive() || keymap.getMove().isActive() || keymap.getZoom().isActive())
+            showCrosshair();
+        else
+            hideCrosshair();
     }
 
     @Override
@@ -196,12 +226,12 @@ public class EditorCamera implements AnalogListener, ActionListener {
         newCamRotation.fromAngles(pitch, yaw, 0);
         cam.setRotation(newCamRotation);
 
-        Vector3f targetToCam = cam.getLocation().subtract(cursorTarget);
+        Vector3f targetToCam = cam.getLocation().subtract(target);
 
         Quaternion rotation = new Quaternion();
         rotation.fromAngleNormalAxis(delta, axis);
         targetToCam = rotation.mult(targetToCam);
-        Vector3f newCamPosition = cursorTarget.add(targetToCam);
+        Vector3f newCamPosition = target.add(targetToCam);
 
         cam.setLocation(newCamPosition);
     }
@@ -216,11 +246,19 @@ public class EditorCamera implements AnalogListener, ActionListener {
         cam.setLocation(cam.getLocation().add(cam.getDirection().mult(delta)));
     }
 
+    private Vector3f getMoveTarget() {
+        return cam.getDirection().mult(DEFAULT_TARGET_DISTANCE);
+    }
+
+    private Vector3f getZoomTarget() {
+        return cam.getDirection().mult(DEFAULT_TARGET_DISTANCE);
+    }
+
     /**
-     * Sets the first collision point with an object from the scene graph at the current cursor position (if present).
-     * Else returns the default target.
+     * Gets the first collision point with an object from the scene graph at the current cursor position (if present).
+     * Else returns the default rotation target.
      */
-    private void updateCursorTarget() {
+    private Vector3f getRotationTarget() {
 
         Vector2f cursor2d = inputManager.getCursorPosition();
         Vector3f cursor3d = cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 0f).clone();
@@ -235,30 +273,43 @@ public class EditorCamera implements AnalogListener, ActionListener {
         CollisionResult closestCollision = results.getClosestCollision();
 
         if (closestCollision == null)
-            this.cursorTarget = getDefaultCursorTarget();
-        else
-            this.cursorTarget = closestCollision.getContactPoint();
+            return getDefaultRotationTarget();
+
+        return closestCollision.getContactPoint();
     }
 
     /**
-     * The default rotation target is on the floor at the current cursor position.
+     * The default rotation target is maximum {@link #DEFAULT_TARGET_DISTANCE}  units away from the camera, but preferably on the floor.
      *
      * @return The default rotation target of the camera.
      */
-    private Vector3f getDefaultCursorTarget() {
+    private Vector3f getDefaultRotationTarget() {
 
-        Vector2f cursor2d = inputManager.getCursorPosition();
-        Vector3f cursor3d = cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 0f).clone();
+        Vector3f origin = cam.getLocation().clone();
+        Vector3f dir = cam.getDirection().clone();
 
-        Vector3f dir = cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 1f).subtractLocal(cursor3d);
-        dir.normalizeLocal();
-
-        Ray ray = new Ray(cursor3d, dir);
+        Ray ray = new Ray(origin, dir);
 
         Vector3f intersectionPoint = Vector3f.ZERO;
         ray.intersectsWherePlane(floor, intersectionPoint);
 
+        if (intersectionPoint.distance(origin) > DEFAULT_TARGET_DISTANCE)
+            intersectionPoint = origin.add(dir.mult(DEFAULT_TARGET_DISTANCE));
+
         return intersectionPoint;
     }
 
+    private void showCrosshair() {
+
+        float widthOffset = crosshair.getLocalScale().getX() / 2;
+        float heightOffset = crosshair.getLocalScale().getY() / 2;
+        Vector3f crosshairPosition = cam.getScreenCoordinates(target).subtract(widthOffset, heightOffset, 0);
+
+        crosshair.setLocalTranslation(crosshairPosition);
+        guiNode.attachChild(crosshair);
+    }
+
+    private void hideCrosshair() {
+        guiNode.detachChild(crosshair);
+    }
 }

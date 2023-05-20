@@ -12,6 +12,8 @@ public class EditorCameraAppState extends AbstractAppState {
 
     @NonNull
     private final Node rootNode;
+    @NonNull
+    private final Node guiNode;
 
     @Getter
     private InputManager inputManager;
@@ -21,9 +23,10 @@ public class EditorCameraAppState extends AbstractAppState {
     @Getter
     private EditorCamera camera;
 
-    public EditorCameraAppState(@NonNull Class<? extends CameraKeymap> keymap, @NonNull Node rootNode) {
+    public EditorCameraAppState(@NonNull Class<? extends CameraKeymap> keymap, @NonNull Node rootNode, @NonNull Node guiNode) {
         this.keymap = keymap;
         this.rootNode = rootNode;
+        this.guiNode = guiNode;
     }
 
     /**
@@ -42,7 +45,7 @@ public class EditorCameraAppState extends AbstractAppState {
         super.initialize(stateManager, app);
 
         this.inputManager = app.getInputManager();
-        this.camera = new EditorCamera(app.getCamera(), inputManager, keymap, rootNode);
+        this.camera = new EditorCamera(app.getCamera(), app.getAssetManager(), inputManager, keymap, rootNode, guiNode);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
 import com.jayfella.jfx.embedded.AbstractJmeApplication;
 import com.jme3.app.state.AppState;
+import com.jme3.asset.plugins.FileLocator;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
@@ -20,6 +21,7 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.EditorCameraAppState;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.util.Collection;
 
 /**
@@ -103,7 +105,9 @@ public class Editor extends AbstractJmeApplication {
     @Override
     public void initApp() {
 
-        stateManager.attach(new EditorCameraAppState(cameraKeymap, rootNode));
+        assetManager.registerLocator(System.getProperty("user.dir") + File.separator + "/assets", FileLocator.class);
+
+        stateManager.attach(new EditorCameraAppState(cameraKeymap, rootNode, guiNode));
 
         viewPort.setBackgroundColor(BACKGROUND_COLOR);
 
@@ -159,9 +163,9 @@ public class Editor extends AbstractJmeApplication {
         mat.getAdditionalRenderState().setWireframe(true);
         mat.setColor("Color", ColorRGBA.DarkGray);
 
-        Geometry groundGrid = new Geometry("wireframe grid", new Grid(10, 10, 1.0f));
+        Geometry groundGrid = new Geometry("wireframe grid", new Grid(21, 21, 1.0f));
         groundGrid.setMaterial(mat);
-        groundGrid.center().move(FRAME_ORIGIN);
+        groundGrid.center();
 
         rootNode.attachChild(groundGrid);
     }
@@ -170,7 +174,7 @@ public class Editor extends AbstractJmeApplication {
 
         Texture texture = assetManager.loadTexture("com/jme3/app/Monkey.png");
 
-        Geometry debugBox = new Geometry("Box", new Box(1, 1, 1));
+        Geometry debugBox = new Geometry("Box", new Box(0.5f, 0.5f, 0.5f));
         debugBox.setMaterial(new Material(assetManager, Materials.PBR));
         debugBox.getMaterial().setTexture("BaseColorMap", texture);
         debugBox.getMaterial().setColor("BaseColor", ColorRGBA.White);
@@ -179,7 +183,7 @@ public class Editor extends AbstractJmeApplication {
 
         box = new Node("box");
         box.attachChild(debugBox);
-        box.move(0, 4, 0);
+        box.move(0, 2, 0);
         attachCoordinateAxes(box);
 
         rootNode.attachChild(box);
