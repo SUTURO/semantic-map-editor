@@ -245,7 +245,8 @@ public class EditorCamera implements AnalogListener, ActionListener {
 
         float delta = value * zoomSpeed;
 
-        Vector3f dir = target.subtract(cam.getLocation());
+        Vector3f cursor2d = cam.getScreenCoordinates(target);
+        Vector3f dir = cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 1f).subtractLocal(target);
         dir.normalizeLocal();
 
         cam.setLocation(cam.getLocation().add(dir.mult(delta)));
@@ -256,19 +257,8 @@ public class EditorCamera implements AnalogListener, ActionListener {
     }
 
     private Vector3f getZoomTarget() {
-
         Vector2f cursor2d = inputManager.getCursorPosition();
-        Vector3f cursor3d = cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 0f).clone();
-
-        Vector3f dir = cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 1f).subtractLocal(cursor3d);
-        dir.normalizeLocal();
-
-        Ray ray = new Ray(cursor3d, dir);
-
-        Vector3f intersectionPoint = Vector3f.ZERO;
-        ray.intersectsWherePlane(floor, intersectionPoint);
-
-        return intersectionPoint;
+        return cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 0f).clone();
     }
 
     private Vector3f getRotationTarget() {
@@ -316,9 +306,9 @@ public class EditorCamera implements AnalogListener, ActionListener {
 
         float widthOffset = crosshair.getLocalScale().getX() / 2;
         float heightOffset = crosshair.getLocalScale().getY() / 2;
-        Vector3f crosshairPosition = cam.getScreenCoordinates(target).subtract(widthOffset, heightOffset, 0);
+        Vector3f position = cam.getScreenCoordinates(target).subtract(widthOffset, heightOffset, 0);
 
-        crosshair.setLocalTranslation(crosshairPosition);
+        crosshair.setLocalTranslation(position);
         guiNode.attachChild(crosshair);
     }
 
