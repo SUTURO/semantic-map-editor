@@ -1,7 +1,6 @@
 package com.malte3d.suturo.sme;
 
 import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.malte3d.suturo.commons.messages.Language;
 import com.malte3d.suturo.sme.adapter.integration.IntegrationAdapterModule;
@@ -11,9 +10,10 @@ import com.malte3d.suturo.sme.application.service.settings.SettingsService;
 import com.malte3d.suturo.sme.domain.model.application.settings.Settings;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
 import com.malte3d.suturo.sme.domain.service.DomainServiceModule;
+import com.malte3d.suturo.sme.ui.InjectorContext;
 import com.malte3d.suturo.sme.ui.MainApplication;
-import com.malte3d.suturo.sme.ui.MainApplicationOptions;
 import com.malte3d.suturo.sme.ui.UiModule;
+import javafx.application.Application;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,24 +29,27 @@ public class Launcher {
         Locale.setDefault(Language.ENGLISH.locale);
 
         Set<Module> applicationModules = createApplicationModules();
-        Injector injector = Guice.createInjector(applicationModules);
+        InjectorContext.injector = Guice.createInjector(applicationModules);
 
-        MainApplicationOptions options = createMainApplicationOptions(injector, args);
+        parseLauncherOptions(args);
 
-        MainApplication.launch(options);
+        Application.launch(MainApplication.class, args);
     }
 
-    private static MainApplicationOptions createMainApplicationOptions(Injector injector, String[] args) {
+    /**
+     * Parses and applies the launcher options.
+     *
+     * @param args The command line arguments.
+     */
+    private static void parseLauncherOptions(String[] args) {
 
         LauncherOptions options = LauncherOptions.parse(args);
 
-        SettingsService settingsService = injector.getInstance(SettingsService.class);
+        SettingsService settingsService = InjectorContext.injector.getInstance(SettingsService.class);
         Settings settings = settingsService.get();
         Settings newSettings = settings.withAdvanced(settings.getAdvanced().withDebugMode(DebugMode.of(options.isDebugMode())));
 
         settingsService.save(newSettings);
-
-        return new MainApplicationOptions(injector, args);
     }
 
     private static Set<Module> createApplicationModules() {

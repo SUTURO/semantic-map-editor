@@ -1,11 +1,9 @@
 package com.malte3d.suturo.sme.ui;
 
 import com.google.common.base.Preconditions;
-import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.jme3.util.LWJGLBufferAllocator;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
-import com.malte3d.suturo.commons.javafx.fxml.FxmlLoaderUtil;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.application.service.settings.SettingsService;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
@@ -20,7 +18,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
-import lombok.NonNull;
 import org.lwjgl.system.Configuration;
 import org.scenicview.ScenicView;
 
@@ -35,8 +32,6 @@ import java.util.Objects;
  */
 public class MainApplication extends Application implements Provider<HostServices> {
 
-    private static Injector injector;
-
     private final DomainEventPublisher domainEventPublisher;
 
     private final MainApplicationViewFactory viewFactory;
@@ -44,20 +39,19 @@ public class MainApplication extends Application implements Provider<HostService
     private final SettingsService settingsService;
 
     /**
-     * Launches the application.
+     * Creates a new instance of the application.
      *
-     * <p>Use the static factory {@link #launch(MainApplicationOptions)} to create and launch the application.</p>
+     * <p>Use the static factory {@link #launch(String...)} to create and launch the application.</p>
      */
     public MainApplication() {
 
-        Preconditions.checkNotNull(injector, "MainApplication has to be launched with the Injector initialized!");
+        Preconditions.checkNotNull(InjectorContext.injector, "MainApplication has to be launched with the Injector initialized!");
 
-        this.domainEventPublisher = injector.getInstance(DomainEventPublisher.class);
+        setupJfxLwjglEnvironment();
 
-        this.viewFactory = new MainApplicationViewFactory(injector);
-        this.settingsService = injector.getInstance(SettingsService.class);
-
-        FxmlLoaderUtil.init(injector);
+        this.domainEventPublisher = InjectorContext.injector.getInstance(DomainEventPublisher.class);
+        this.viewFactory = InjectorContext.injector.getInstance(MainApplicationViewFactory.class);
+        this.settingsService = InjectorContext.injector.getInstance(SettingsService.class);
 
         registerEventConsumer();
     }
@@ -97,20 +91,6 @@ public class MainApplication extends Application implements Provider<HostService
     public static void exit() {
         Platform.exit();
         System.exit(0);
-    }
-
-    /**
-     * Launch the application with the given options.
-     *
-     * @param options the options to launch the application with
-     */
-    public static void launch(@NonNull MainApplicationOptions options) {
-
-        MainApplication.injector = options.getInjector();
-
-        setupJfxLwjglEnvironment();
-
-        launch(options.getArgs());
     }
 
     /**

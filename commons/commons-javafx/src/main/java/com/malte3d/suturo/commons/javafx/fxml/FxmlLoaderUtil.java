@@ -1,7 +1,5 @@
 package com.malte3d.suturo.commons.javafx.fxml;
 
-import com.google.common.base.Preconditions;
-import com.google.inject.Injector;
 import com.malte3d.suturo.commons.messages.Messages;
 import javafx.fxml.FXMLLoader;
 import javafx.util.Callback;
@@ -18,20 +16,12 @@ public final class FxmlLoaderUtil {
 
     private static final String FXML_FILE_EXTENSION = ".fxml";
 
-    private static Injector injector;
-
-    public static void init(@NonNull Injector injector) {
-        FxmlLoaderUtil.injector = injector;
-    }
-
     @NonNull
     public static <T> T load(@NonNull URL fxml) {
 
-        Preconditions.checkState(injector != null, "Injector has to be initialized with init() before calling this method!");
-
         try {
 
-            FXMLLoader fxmlLoader = injector.getInstance(FXMLLoader.class);
+            FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(fxml);
             fxmlLoader.setResources(Messages.getResourceBundle());
 
@@ -46,11 +36,9 @@ public final class FxmlLoaderUtil {
     @NonNull
     public static <T> T load(@NonNull Callback<Class<?>, Object> viewFactory, @NonNull URL fxml) {
 
-        Preconditions.checkState(injector != null, "Injector has to be initialized with init() before calling this method!");
-
         try {
 
-            FXMLLoader fxmlLoader = injector.getInstance(FXMLLoader.class);
+            FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(fxml);
             fxmlLoader.setResources(Messages.getResourceBundle());
             fxmlLoader.setControllerFactory(viewFactory);

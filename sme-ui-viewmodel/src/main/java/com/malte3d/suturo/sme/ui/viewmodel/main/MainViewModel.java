@@ -25,6 +25,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -33,9 +34,10 @@ import java.util.concurrent.Executor;
 @Getter
 public class MainViewModel extends UiService {
 
+    private final Provider<HostServices> hostServices;
+
     private final DomainEventPublisher domainEventPublisher;
 
-    private final HostServices hostServices;
     private final SettingsService settingsService;
 
     private Editor editor;
@@ -43,8 +45,8 @@ public class MainViewModel extends UiService {
     @Inject
     public MainViewModel(
             @NonNull @GlobalExecutor Executor executor,
+            @NonNull Provider<HostServices> hostServices,
             @NonNull DomainEventPublisher domainEventPublisher,
-            @NonNull HostServices hostServices,
             @NonNull SettingsService settingsService) {
 
         super(executor);
@@ -95,7 +97,7 @@ public class MainViewModel extends UiService {
      * Opens the URL of the copyright owner in the default browser.
      */
     public void openCopyrightOwnerUrl() {
-        hostServices.showDocument(Messages.getString("Application.Help.About.CopyrightOwnerUrl"));
+        hostServices.get().showDocument(Messages.getString("Application.Help.About.CopyrightOwnerUrl"));
     }
 
     /**

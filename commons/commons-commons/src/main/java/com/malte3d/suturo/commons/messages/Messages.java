@@ -74,6 +74,20 @@ public final class Messages {
         }
     }
 
+    /**
+     * Performs an argument substitution for the given message pattern.
+     * <p>
+     * For example,
+     * <pre>
+     * MessageFormatter.format("Hi {}.", "there");
+     * </pre>
+     * will return the string "Hi there.".
+     * </p>
+     *
+     * @param messagePattern The message pattern which will be parsed and formatted
+     * @param args           The arguments to be substituted in place of formatting anchors
+     * @return The formatted message
+     */
     public static String format(@NonNull String messagePattern, Object... args) {
         return MessageFormatter.format(messagePattern, args).getMessage();
     }

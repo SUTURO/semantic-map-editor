@@ -4,8 +4,11 @@ import javafx.scene.Node;
 import javafx.util.Callback;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Base class for view factories.
+ */
 @RequiredArgsConstructor
-public abstract class AbstractFxmlViewFactory implements Callback<Class<?>, Object> {
+public abstract class FxmlViewFactory implements Callback<Class<?>, Object> {
 
     public <T extends Node> T loadView(Class<?> viewClass) {
         return loadView(this, viewClass);
