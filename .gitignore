@@ -40,5 +40,6 @@ bin/
 .DS_Store
 
 ### Miscellaneous ###
+logs/
 scenicView.properties
 semantic-map-editor.properties

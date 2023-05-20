@@ -30,7 +30,7 @@ public class SettingsRepositoryImpl implements SettingsRepository {
 
         } catch (FileNotFoundException e) {
 
-            log.info("Settings not found in \"{}\". Creating default settings.", SETTINGS_PATH);
+            log.info("Settings not found \"{}\". Creating default settings.", SETTINGS_PATH);
 
             save(Settings.DEFAULT);
 
@@ -50,7 +50,7 @@ public class SettingsRepositoryImpl implements SettingsRepository {
             Properties properties = SettingsConverter.toProperties(settings);
             properties.store(fileOutputStream, "Semantic Map Editor Settings");
 
-            log.info("Settings saved in \"{}\"", SETTINGS_PATH);
+            log.info("Settings saved to \"{}\"", SETTINGS_PATH);
 
         } catch (IOException e) {
             log.error("Error saving the settings", e);
