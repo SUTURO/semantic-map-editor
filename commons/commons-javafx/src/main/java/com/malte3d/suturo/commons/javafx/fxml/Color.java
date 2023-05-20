@@ -4,6 +4,9 @@ import com.google.common.base.Preconditions;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
+/**
+ * Utility class for colors and hex color strings.
+ */
 @UtilityClass
 public class Color {
 

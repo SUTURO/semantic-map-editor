@@ -10,6 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * Utility class to load FXML files.
+ */
 @Slf4j
 @UtilityClass
 public final class FxmlLoaderUtil {
