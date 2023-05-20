@@ -191,6 +191,8 @@ public class EditorCamera implements AnalogListener, ActionListener {
                 case CameraKeymap.CAM_DOWN -> rotateCamera(value, cam.getLeft());
             }
         }
+
+        cam.update();
     }
 
     /**

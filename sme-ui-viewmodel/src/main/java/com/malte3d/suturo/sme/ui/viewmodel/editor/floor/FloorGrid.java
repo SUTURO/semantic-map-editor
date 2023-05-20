@@ -8,6 +8,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.Grid;
 import lombok.NonNull;
 
@@ -16,7 +17,7 @@ import lombok.NonNull;
  */
 public class FloorGrid {
 
-    private static final float DETACH_THRESHOLD = 0.1f;
+    private static final float CULLING_THRESHOLD = 0.1f;
 
     private static final float MIN_DISTANCE_SMALL = 5f;
     private static final float MAX_DISTANCE_SMALL = 25f;
@@ -32,8 +33,8 @@ public class FloorGrid {
 
     private Node rootNode;
 
-    private boolean smallAttached;
-    private boolean largeAttached;
+    private boolean smallVisible;
+    private boolean largeVisible;
 
     public FloorGrid(@NonNull AssetManager assetManager) {
 
@@ -69,8 +70,8 @@ public class FloorGrid {
         this.rootNode = node;
         this.rootNode.attachChild(gridSmall);
         this.rootNode.attachChild(gridLarge);
-        this.smallAttached = true;
-        this.largeAttached = true;
+        this.smallVisible = true;
+        this.largeVisible = true;
     }
 
     /**
@@ -91,26 +92,26 @@ public class FloorGrid {
         gridSmall.getMaterial().setColor("Color", colorSmall);
         gridLarge.getMaterial().setColor("Color", colorLarge);
 
-        if (smallAttached && alphaSmall <= DETACH_THRESHOLD) {
+        if (smallVisible && alphaSmall <= CULLING_THRESHOLD) {
 
-            rootNode.detachChild(gridSmall);
-            smallAttached = false;
+            gridSmall.setCullHint(Spatial.CullHint.Never);
+            smallVisible = false;
 
-        } else if (!smallAttached && alphaSmall > DETACH_THRESHOLD) {
+        } else if (!smallVisible && alphaSmall > CULLING_THRESHOLD) {
 
-            rootNode.attachChildAt(gridSmall, 0);
-            smallAttached = true;
+            gridSmall.setCullHint(Spatial.CullHint.Dynamic);
+            smallVisible = true;
         }
 
-        if (largeAttached && alphaLarge <= DETACH_THRESHOLD) {
+        if (largeVisible && alphaLarge <= CULLING_THRESHOLD) {
 
-            rootNode.detachChild(gridSmall);
-            largeAttached = false;
+            gridLarge.setCullHint(Spatial.CullHint.Never);
+            largeVisible = false;
 
-        } else if (!largeAttached && alphaLarge > DETACH_THRESHOLD) {
+        } else if (!largeVisible && alphaLarge > CULLING_THRESHOLD) {
 
-            rootNode.attachChildAt(gridLarge, 0);
-            largeAttached = true;
+            gridLarge.setCullHint(Spatial.CullHint.Dynamic);
+            largeVisible = true;
         }
     }
 
