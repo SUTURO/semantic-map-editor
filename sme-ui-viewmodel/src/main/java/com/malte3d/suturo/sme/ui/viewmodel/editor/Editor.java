@@ -13,11 +13,11 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.Arrow;
-import com.jme3.scene.debug.Grid;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymap;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.EditorCameraAppState;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.floor.FloorGrid;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +36,8 @@ public class Editor extends AbstractJmeApplication {
 
     @NonNull
     private Class<? extends CameraKeymap> cameraKeymap;
+
+    private FloorGrid floorGrid;
 
     private Node box;
 
@@ -119,7 +121,7 @@ public class Editor extends AbstractJmeApplication {
         rootNode.addLight(directionalLight);
         rootNode.addLight(new AmbientLight(ColorRGBA.White.mult(0.7f)));
 
-        attachGroundGrid();
+        attachFloorGrid();
         attachCoordinateAxes(rootNode);
 
         attachDebugBox();
@@ -127,7 +129,10 @@ public class Editor extends AbstractJmeApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
+
         box.rotate(tpf * .2f, tpf * .3f, tpf * .4f);
+
+        floorGrid.update(cam);
     }
 
     private void attachCoordinateAxes(Node node) {
@@ -157,17 +162,9 @@ public class Editor extends AbstractJmeApplication {
         return coordinateAxis;
     }
 
-    private void attachGroundGrid() {
-
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.getAdditionalRenderState().setWireframe(true);
-        mat.setColor("Color", ColorRGBA.DarkGray);
-
-        Geometry groundGrid = new Geometry("wireframe grid", new Grid(21, 21, 1.0f));
-        groundGrid.setMaterial(mat);
-        groundGrid.center();
-
-        rootNode.attachChild(groundGrid);
+    private void attachFloorGrid() {
+        this.floorGrid = new FloorGrid(assetManager);
+        this.floorGrid.attachTo(rootNode);
     }
 
     private void attachDebugBox() {
