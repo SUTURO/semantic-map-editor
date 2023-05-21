@@ -1,18 +1,19 @@
 package com.malte3d.suturo.commons.messages;
 
-import java.text.MessageFormat;
-import java.util.Locale;
-
 import com.malte3d.suturo.commons.exception.UnsupportedEnumException;
 import com.malte3d.suturo.commons.i18n.I18N;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.text.MessageFormat;
+import java.util.Locale;
+
 @RequiredArgsConstructor
 public enum Language {
 
-    @I18N("Commons.Messages.Language.GERMAN")
-    GERMAN(Locale.GERMAN),
+    /* TODO: Provide german translations */
+    //@I18N("Commons.Messages.Language.GERMAN")
+    //GERMAN(Locale.GERMAN),
 
     @I18N("Commons.Messages.Language.ENGLISH")
     ENGLISH(Locale.ENGLISH);
