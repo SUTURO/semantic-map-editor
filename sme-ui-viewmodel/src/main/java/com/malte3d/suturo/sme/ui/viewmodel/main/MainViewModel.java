@@ -113,7 +113,7 @@ public class MainViewModel extends UiService {
     public CompletableFutureTask<Editor> loadEditor() {
 
         return this.<Editor>createFutureTask()
-                .withErrorMessageKey("Application.Main.Editor.Initialization.Error")
+                .withNotificationMessageOnError("Application.Main.Editor.Initialization.Error")
                 .withLoggerMessageOnError("Error while initializing 3D-Editor")
                 .withTask(this::initializeEditor);
     }

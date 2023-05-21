@@ -31,7 +31,7 @@ public final class Messages {
      * @param arguments Potential {@code arguments} of a formatted string
      * @return The formatted string for the passed key of the {@code message.properties}
      */
-    public static String getString(@NonNull String key, @NonNull Object... arguments) {
+    public static String getString(@NonNull String key, Object... arguments) {
 
         if (!messages.containsKey(key)) {
 

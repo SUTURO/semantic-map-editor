@@ -77,3 +77,8 @@
 .spinner {
     -fx-border-width: 0px !important;
 }
+
+.notification-bar > .pane {
+    -fx-background-color: dialog_background_color !important;
+    -fx-padding: 10 10 10 10 !important;
+}

@@ -2,6 +2,7 @@ package com.malte3d.suturo.sme.ui.view;
 
 import com.jayfella.jfx.embedded.jfx.EditorFxImageView;
 import com.malte3d.suturo.commons.Version;
+import com.malte3d.suturo.commons.javafx.notification.NotificationHandler;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.EditorInitializedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.main.MainViewModel;
@@ -16,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Window;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -119,6 +121,7 @@ public class MainView {
         menuFileSaveAs.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
         menuFileSettings.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHIFT_DOWN, KeyCombination.ALT_DOWN));
 
+        menuFileClose.setOnAction(event -> onCloseClicked());
         menuFileExit.setOnAction(event -> viewModel.exitApplication());
     }
 
@@ -156,6 +159,14 @@ public class MainView {
         });
     }
 
+    private void onCloseClicked() {
+
+        NotificationHandler.create()
+                .title(Messages.getString("Application.Notification.Title.Info"))
+                .text("Hello World!")
+                .showInformation();
+    }
+
     private void showHelpAboutDialog() {
 
         Hyperlink copyrightOwnerLink = new Hyperlink(Messages.getString("Application.Help.About.CopyrightOwner"));
@@ -171,7 +182,11 @@ public class MainView {
         alert.setTitle(Messages.getString("Application.Help.About.Title"));
         alert.setHeaderText(Messages.getString("Application.Help.About.Header", Version.getVersion(MainView.class)));
         alert.getDialogPane().setContent(copyrightText);
-        alert.initOwner(menuBar.getScene().getWindow());
+        alert.initOwner(getMainWindow());
         alert.showAndWait();
+    }
+
+    private Window getMainWindow() {
+        return mainView.getScene().getWindow();
     }
 }

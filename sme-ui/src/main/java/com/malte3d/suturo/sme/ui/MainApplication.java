@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Provider;
 import com.jme3.util.LWJGLBufferAllocator;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
+import com.malte3d.suturo.commons.javafx.notification.NotificationHandler;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.application.service.settings.SettingsService;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
@@ -62,6 +63,8 @@ public class MainApplication extends Application implements Provider<HostService
 
     @Override
     public void start(Stage stage) {
+
+        NotificationHandler.stage = stage;
 
         DebugMode debugMode = settingsService.get().getAdvanced().getDebugMode();
 
