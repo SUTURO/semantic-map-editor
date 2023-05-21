@@ -1,6 +1,6 @@
 package com.malte3d.suturo.sme.ui;
 
-import com.google.common.base.Preconditions;
+import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.jme3.util.LWJGLBufferAllocator;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
@@ -19,18 +19,20 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
+import lombok.extern.slf4j.Slf4j;
 import org.lwjgl.system.Configuration;
 import org.scenicview.ScenicView;
 
 import java.util.Objects;
 
 /**
- * The main application.
+ * Entry point for the application
  *
  * <p>
- * Entry point for the application. This class is responsible for initializing the application and setting up the main view.
+ * This class is responsible for initializing the application and setting up the stage with the main view.
  * </p>
  */
+@Slf4j
 public class MainApplication extends Application implements Provider<HostServices> {
 
     private final DomainEventPublisher domainEventPublisher;
@@ -46,13 +48,14 @@ public class MainApplication extends Application implements Provider<HostService
      */
     public MainApplication() {
 
-        Preconditions.checkNotNull(InjectorContext.injector, "MainApplication has to be launched with the Injector initialized!");
+        log.info("Starting application");
 
         setupJfxLwjglEnvironment();
 
-        this.domainEventPublisher = InjectorContext.injector.getInstance(DomainEventPublisher.class);
-        this.viewFactory = InjectorContext.injector.getInstance(MainApplicationViewFactory.class);
-        this.settingsService = InjectorContext.injector.getInstance(SettingsService.class);
+        Injector injector = InjectorProvider.get();
+        this.domainEventPublisher = injector.getInstance(DomainEventPublisher.class);
+        this.viewFactory = injector.getInstance(MainApplicationViewFactory.class);
+        this.settingsService = injector.getInstance(SettingsService.class);
 
         registerEventConsumer();
     }
@@ -92,6 +95,9 @@ public class MainApplication extends Application implements Provider<HostService
      * Exit the application gracefully.
      */
     public static void exit() {
+
+        log.info("Exiting application");
+
         Platform.exit();
         System.exit(0);
     }

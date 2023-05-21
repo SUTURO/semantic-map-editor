@@ -2,8 +2,10 @@ package com.malte3d.suturo.sme.ui.view;
 
 import com.jayfella.jfx.embedded.jfx.EditorFxImageView;
 import com.malte3d.suturo.commons.Version;
+import com.malte3d.suturo.commons.javafx.fxml.FxmlViewFactory;
 import com.malte3d.suturo.commons.javafx.notification.NotificationHandler;
 import com.malte3d.suturo.commons.messages.Messages;
+import com.malte3d.suturo.sme.ui.view.settings.SettingsView;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.EditorInitializedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.main.MainViewModel;
 import javafx.fxml.FXML;
@@ -18,17 +20,21 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Window;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.inject.Inject;
 import java.time.Year;
+import java.util.Optional;
 
 
 @Slf4j
-@RequiredArgsConstructor
 public class MainView {
 
-    private final MainViewModel viewModel;
+    @Inject
+    private MainViewModel viewModel;
+
+    @Inject
+    private FxmlViewFactory viewFactory;
 
     @FXML
     Parent view;
@@ -189,17 +195,15 @@ public class MainView {
 
     private void openSettings() {
 
-        Alert alert = new Alert(Alert.AlertType.NONE);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(Messages.getString("Application.Settings.Title"));
-        alert.setResult(ButtonType.APPLY);
+        alert.setDialogPane(viewFactory.loadView(SettingsView.class));
         alert.initOwner(getMainWindow());
-        alert.showAndWait().map(buttonType -> {
+        Optional<ButtonType> result = alert.showAndWait();
 
-            if (buttonType == ButtonType.APPLY)
-                log.info("Settings applied.");
-
-            return true;
-        });
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            log.debug("Settings dialog closed with OK");
+        }
     }
 
     private void openHelpAboutDialog() {
@@ -213,10 +217,13 @@ public class MainView {
                 copyrightOwnerLink
         );
 
+        ButtonType closeButton = new ButtonType(Messages.getString("Application.Help.About.Button.Close"), ButtonBar.ButtonData.OK_DONE);
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(Messages.getString("Application.Help.About.Title"));
-        alert.setHeaderText(Messages.getString("Application.Help.About.Header", Version.getVersion(MainView.class)));
+        alert.setHeaderText(Messages.getString("Application.Help.About.Header", Version.getVersion()));
         alert.getDialogPane().setContent(copyrightText);
+        alert.getDialogPane().getButtonTypes().setAll(closeButton);
         alert.initOwner(getMainWindow());
         alert.showAndWait();
     }

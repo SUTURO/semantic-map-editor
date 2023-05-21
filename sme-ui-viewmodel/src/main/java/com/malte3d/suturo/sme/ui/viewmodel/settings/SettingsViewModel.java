@@ -6,6 +6,10 @@ import com.malte3d.suturo.commons.javafx.service.UiService;
 import com.malte3d.suturo.sme.application.service.settings.SettingsService;
 import com.malte3d.suturo.sme.domain.model.application.settings.Settings;
 import com.malte3d.suturo.sme.domain.model.application.settings.SettingsChangedEvent;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import lombok.Getter;
 import lombok.NonNull;
 
 import javax.inject.Inject;
@@ -16,6 +20,10 @@ public class SettingsViewModel extends UiService {
     private final DomainEventPublisher domainEventPublisher;
 
     private final SettingsService settingsService;
+
+    private final ObjectProperty<Settings> settingsPropertyInternal = new SimpleObjectProperty<>();
+    @Getter
+    private final ReadOnlyObjectProperty<Settings> settingsProperty = settingsPropertyInternal;
 
     @Inject
     public SettingsViewModel(
@@ -28,6 +36,8 @@ public class SettingsViewModel extends UiService {
         this.domainEventPublisher = domainEventPublisher;
         this.settingsService = settingsService;
 
+        this.settingsPropertyInternal.setValue(loadSettings());
+
         registerEventConsumer();
     }
 
@@ -38,12 +48,12 @@ public class SettingsViewModel extends UiService {
     public Settings loadSettings() {
         return settingsService.get();
     }
-    
+
     public void saveSettings(@NonNull Settings settings) {
         settingsService.save(settings);
     }
 
     private void onSettingsChanged(SettingsChangedEvent event) {
-        /* TODO: Impl */
+        settingsPropertyInternal.setValue(event.getNewSettings());
     }
 }

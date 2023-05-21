@@ -4,12 +4,8 @@ import com.malte3d.suturo.commons.javafx.fxml.FxmlViewFactory;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.ui.view.MainView;
 import com.malte3d.suturo.sme.ui.view.settings.SettingsView;
-import com.malte3d.suturo.sme.ui.viewmodel.main.MainViewModel;
-import com.malte3d.suturo.sme.ui.viewmodel.settings.SettingsViewModel;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +14,7 @@ import java.util.Map;
  *
  * <p>Creates and holds views for the Semantic Map Editor application.</p>
  */
-@RequiredArgsConstructor(onConstructor_ = @Inject)
+@RequiredArgsConstructor
 public class MainApplicationViewFactory extends FxmlViewFactory {
 
     /**
@@ -28,19 +24,18 @@ public class MainApplicationViewFactory extends FxmlViewFactory {
      */
     private final Map<Class<?>, Object> views = new HashMap<>();
 
-    @NonNull
-    private final MainViewModel mainViewModel;
-    @NonNull
-    private final SettingsViewModel settingsViewModel;
-
     @Override
     public Object call(Class<?> viewClass) {
 
         if (viewClass.isAssignableFrom(MainView.class))
-            return views.computeIfAbsent(MainView.class, view -> new MainView(mainViewModel));
+            return views.computeIfAbsent(MainView.class, view -> createViewInstance(MainView.class));
         else if (viewClass.isAssignableFrom(SettingsView.class))
-            return views.computeIfAbsent(SettingsView.class, view -> new SettingsView(settingsViewModel));
+            return views.computeIfAbsent(SettingsView.class, view -> createViewInstance(SettingsView.class));
 
         throw new IllegalArgumentException(Messages.format("No view could be created for the unknown class {}", viewClass.getName()));
+    }
+
+    private static Object createViewInstance(Class<?> viewClass) {
+        return InjectorProvider.get().getInstance(viewClass);
     }
 }

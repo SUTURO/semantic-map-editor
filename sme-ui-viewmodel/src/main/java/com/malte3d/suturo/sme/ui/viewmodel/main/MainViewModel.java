@@ -5,6 +5,7 @@ import com.jme3.app.DebugKeysAppState;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppState;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
+import com.malte3d.suturo.commons.javafx.fxml.FxmlViewFactory;
 import com.malte3d.suturo.commons.javafx.service.CompletableFutureTask;
 import com.malte3d.suturo.commons.javafx.service.GlobalExecutor;
 import com.malte3d.suturo.commons.javafx.service.UiService;
@@ -36,6 +37,8 @@ public class MainViewModel extends UiService {
 
     private final DomainEventPublisher domainEventPublisher;
 
+    private final FxmlViewFactory viewFactory;
+
     private final Provider<HostServices> hostServices;
 
     private final SettingsService settingsService;
@@ -46,12 +49,14 @@ public class MainViewModel extends UiService {
     public MainViewModel(
             @NonNull @GlobalExecutor Executor executor,
             @NonNull DomainEventPublisher domainEventPublisher,
+            @NonNull FxmlViewFactory viewFactory,
             @NonNull Provider<HostServices> hostServices,
             @NonNull SettingsService settingsService) {
 
         super(executor);
 
         this.domainEventPublisher = domainEventPublisher;
+        this.viewFactory = viewFactory;
         this.hostServices = hostServices;
         this.settingsService = settingsService;
 
@@ -95,7 +100,6 @@ public class MainViewModel extends UiService {
     }
 
     public void openSettings() {
-
     }
 
     /**

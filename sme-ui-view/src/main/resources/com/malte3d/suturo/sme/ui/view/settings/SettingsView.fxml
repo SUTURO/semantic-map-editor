@@ -1,9 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <DialogPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
             stylesheets="@SettingsView.css"
             fx:id="view"
             fx:controller="com.malte3d.suturo.sme.ui.view.settings.SettingsView">
+
+    <content>
+        <ScrollPane fitToWidth="true" pannable="true">
+            <VBox spacing="20">
+
+                <!-- Appearance Section -->
+                <TitledPane text="%Application.Settings.Appearance.Title">
+                    <GridPane hgap="10" vgap="10">
+                        <Label text="%Application.Settings.Appearance.Language.Label"
+                               GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="languageComboBox" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                    </GridPane>
+                </TitledPane>
+
+                <!-- Keymap Section -->
+                <TitledPane text="%Application.Settings.Keymap.Title">
+                    <GridPane hgap="10" vgap="10">
+                        <Label text="%Application.Settings.Keymap.CameraBehaviour.Label"
+                               GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="cameraBehaviourComboBox" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                    </GridPane>
+                </TitledPane>
+
+                <!-- Advanced Section -->
+                <TitledPane text="%Application.Settings.Advanced.Title">
+                    <GridPane hgap="10" vgap="10">
+                        <Label text="%Application.Settings.Advanced.DebugMode.Label" GridPane.rowIndex="0"
+                               GridPane.columnIndex="1"/>
+                        <CheckBox fx:id="debugModeCheckBox" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    </GridPane>
+                </TitledPane>
+
+            </VBox>
+        </ScrollPane>
+    </content>
 
 </DialogPane>

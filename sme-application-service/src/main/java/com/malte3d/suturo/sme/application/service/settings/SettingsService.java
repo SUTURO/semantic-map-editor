@@ -30,6 +30,7 @@ public class SettingsService {
      *
      * @return the current settings
      */
+    @NonNull
     public Settings get() {
         return settingsRepository.load();
     }
