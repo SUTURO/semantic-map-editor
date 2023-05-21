@@ -31,7 +31,7 @@ public class MainView {
     private final MainViewModel viewModel;
 
     @FXML
-    Parent mainView;
+    Parent view;
 
     /*
      * Menu
@@ -100,8 +100,8 @@ public class MainView {
      * Statusbar
      */
 
+    @FXML
     public HBox statusbar;
-
 
     public void initialize() {
 
@@ -125,7 +125,7 @@ public class MainView {
 
         menuFileClose.setOnAction(event -> showHelloWorldNotification());
 
-        menuFileSettings.setOnAction(event -> viewModel.openSettings());
+        menuFileSettings.setOnAction(event -> openSettings());
         menuFileExit.setOnAction(event -> viewModel.exitApplication());
 
         /* TODO: Actual implementation for file menu  */
@@ -162,7 +162,7 @@ public class MainView {
 
     private void initEditorView() {
 
-        mainView.setOnKeyPressed(event -> {
+        view.setOnKeyPressed(event -> {
 
             if (event.getCode() == KeyCode.F3)
                 viewModel.toggleDebugMode();
@@ -187,6 +187,21 @@ public class MainView {
                 .showInformation();
     }
 
+    private void openSettings() {
+
+        Alert alert = new Alert(Alert.AlertType.NONE);
+        alert.setTitle(Messages.getString("Application.Settings.Title"));
+        alert.setResult(ButtonType.APPLY);
+        alert.initOwner(getMainWindow());
+        alert.showAndWait().map(buttonType -> {
+
+            if (buttonType == ButtonType.APPLY)
+                log.info("Settings applied.");
+
+            return true;
+        });
+    }
+
     private void openHelpAboutDialog() {
 
         Hyperlink copyrightOwnerLink = new Hyperlink(Messages.getString("Application.Help.About.CopyrightOwner"));
@@ -207,6 +222,6 @@ public class MainView {
     }
 
     private Window getMainWindow() {
-        return mainView.getScene().getWindow();
+        return view.getScene().getWindow();
     }
 }

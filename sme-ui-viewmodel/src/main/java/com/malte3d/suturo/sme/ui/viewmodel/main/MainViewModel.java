@@ -34,9 +34,9 @@ import java.util.concurrent.Executor;
 @Getter
 public class MainViewModel extends UiService {
 
-    private final Provider<HostServices> hostServices;
-
     private final DomainEventPublisher domainEventPublisher;
+
+    private final Provider<HostServices> hostServices;
 
     private final SettingsService settingsService;
 
@@ -45,8 +45,8 @@ public class MainViewModel extends UiService {
     @Inject
     public MainViewModel(
             @NonNull @GlobalExecutor Executor executor,
-            @NonNull Provider<HostServices> hostServices,
             @NonNull DomainEventPublisher domainEventPublisher,
+            @NonNull Provider<HostServices> hostServices,
             @NonNull SettingsService settingsService) {
 
         super(executor);

@@ -13,6 +13,10 @@ public class SettingsView {
     private final SettingsViewModel viewModel;
 
     @FXML
-    Parent mainView;
-    
+    Parent view;
+
+    public void initialize() {
+        log.info("Initializing SettingsView");
+    }
+
 }

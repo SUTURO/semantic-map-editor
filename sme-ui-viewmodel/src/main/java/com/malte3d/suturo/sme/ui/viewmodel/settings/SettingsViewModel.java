@@ -4,6 +4,7 @@ import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
 import com.malte3d.suturo.commons.javafx.service.GlobalExecutor;
 import com.malte3d.suturo.commons.javafx.service.UiService;
 import com.malte3d.suturo.sme.application.service.settings.SettingsService;
+import com.malte3d.suturo.sme.domain.model.application.settings.Settings;
 import com.malte3d.suturo.sme.domain.model.application.settings.SettingsChangedEvent;
 import lombok.NonNull;
 
@@ -32,6 +33,14 @@ public class SettingsViewModel extends UiService {
 
     private void registerEventConsumer() {
         domainEventPublisher.register(SettingsChangedEvent.class, this::onSettingsChanged);
+    }
+
+    public Settings loadSettings() {
+        return settingsService.get();
+    }
+    
+    public void saveSettings(@NonNull Settings settings) {
+        settingsService.save(settings);
     }
 
     private void onSettingsChanged(SettingsChangedEvent event) {
