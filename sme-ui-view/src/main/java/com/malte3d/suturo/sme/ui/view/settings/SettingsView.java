@@ -44,7 +44,7 @@ public class SettingsView {
 
     public void initialize() {
 
-        view.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        view.getButtonTypes().addAll(ButtonType.CLOSE);
 
         initializeAppearance();
         initializeKeymap();
@@ -58,6 +58,7 @@ public class SettingsView {
         languageComboBox.getItems().addAll(Language.values());
         languageComboBox.setConverter(new EnumConverter<>());
         languageComboBox.getSelectionModel().select(appearanceSettings.getLanguage());
+        languageComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> saveSettings());
     }
 
     private void initializeKeymap() {
@@ -68,6 +69,7 @@ public class SettingsView {
         cameraBehaviourComboBox.getItems().addAll(CameraBehaviour.values());
         cameraBehaviourComboBox.setConverter(new EnumConverter<>());
         cameraBehaviourComboBox.getSelectionModel().select(cameraBehaviour);
+        cameraBehaviourComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> saveSettings());
     }
 
     private void initializeAdvanced() {
@@ -76,6 +78,7 @@ public class SettingsView {
 
         DebugMode debugMode = advancedSettings.getDebugMode();
         debugModeCheckBox.setSelected(debugMode.isEnabled());
+        debugModeCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> saveSettings());
     }
 
     public void saveSettings() {

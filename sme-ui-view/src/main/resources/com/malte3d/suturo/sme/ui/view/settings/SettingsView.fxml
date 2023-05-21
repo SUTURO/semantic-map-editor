@@ -12,7 +12,7 @@
             <VBox spacing="20">
 
                 <!-- Appearance Section -->
-                <TitledPane text="%Application.Settings.Appearance.Title">
+                <TitledPane text="%Application.Settings.Appearance.Title" collapsible="false">
                     <GridPane hgap="10" vgap="10">
                         <Label text="%Application.Settings.Appearance.Language.Label"
                                GridPane.rowIndex="0" GridPane.columnIndex="0"/>
@@ -21,7 +21,7 @@
                 </TitledPane>
 
                 <!-- Keymap Section -->
-                <TitledPane text="%Application.Settings.Keymap.Title">
+                <TitledPane text="%Application.Settings.Keymap.Title" collapsible="false">
                     <GridPane hgap="10" vgap="10">
                         <Label text="%Application.Settings.Keymap.CameraBehaviour.Label"
                                GridPane.rowIndex="0" GridPane.columnIndex="0"/>
@@ -30,7 +30,7 @@
                 </TitledPane>
 
                 <!-- Advanced Section -->
-                <TitledPane text="%Application.Settings.Advanced.Title">
+                <TitledPane text="%Application.Settings.Advanced.Title" collapsible="false">
                     <GridPane hgap="10" vgap="10">
                         <Label text="%Application.Settings.Advanced.DebugMode.Label" GridPane.rowIndex="0"
                                GridPane.columnIndex="1"/>

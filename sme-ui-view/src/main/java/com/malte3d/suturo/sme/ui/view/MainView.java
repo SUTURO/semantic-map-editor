@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import java.time.Year;
-import java.util.Optional;
 
 
 @Slf4j
@@ -126,7 +125,7 @@ public class MainView {
         menuFileNew.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
         menuFileOpen.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
         menuFileSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
-        menuFileExport.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
+        menuFileExport.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN));
         menuFileSettings.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHIFT_DOWN, KeyCombination.ALT_DOWN));
 
         menuFileClose.setOnAction(event -> showHelloWorldNotification());
@@ -195,15 +194,11 @@ public class MainView {
 
     private void openSettings() {
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert alert = new Alert(Alert.AlertType.NONE);
         alert.setTitle(Messages.getString("Application.Settings.Title"));
         alert.setDialogPane(viewFactory.loadView(SettingsView.class));
         alert.initOwner(getMainWindow());
-        Optional<ButtonType> result = alert.showAndWait();
-
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            log.debug("Settings dialog closed with OK");
-        }
+        alert.showAndWait();
     }
 
     private void openHelpAboutDialog() {
