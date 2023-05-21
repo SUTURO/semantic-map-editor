@@ -40,7 +40,7 @@ public class NotificationHandler {
                 .owner(stage)
                 .position(Pos.BOTTOM_RIGHT)
                 .hideAfter(Duration.seconds(10))
-                .title(Messages.getString("Application.Notification.Title.Error"))
+                .title(Messages.getString("Application.Notification.Title.Warning"))
                 .text(Messages.getString("Application.Notification.MaxThreshold.Text"));
     }
 
