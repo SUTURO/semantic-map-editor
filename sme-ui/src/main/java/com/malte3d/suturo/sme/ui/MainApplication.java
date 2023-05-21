@@ -6,8 +6,6 @@ import com.jme3.util.LWJGLBufferAllocator;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
 import com.malte3d.suturo.commons.javafx.notification.NotificationHandler;
 import com.malte3d.suturo.commons.messages.Messages;
-import com.malte3d.suturo.sme.application.service.settings.SettingsService;
-import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
 import com.malte3d.suturo.sme.ui.util.UiResources;
 import com.malte3d.suturo.sme.ui.view.MainView;
 import com.malte3d.suturo.sme.ui.viewmodel.main.ExitApplicationEvent;
@@ -21,7 +19,6 @@ import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
 import lombok.extern.slf4j.Slf4j;
 import org.lwjgl.system.Configuration;
-import org.scenicview.ScenicView;
 
 import java.util.Objects;
 
@@ -39,8 +36,6 @@ public class MainApplication extends Application implements Provider<HostService
 
     private final MainApplicationViewFactory viewFactory;
 
-    private final SettingsService settingsService;
-
     /**
      * Creates a new instance of the application.
      *
@@ -55,7 +50,6 @@ public class MainApplication extends Application implements Provider<HostService
         Injector injector = InjectorProvider.get();
         this.domainEventPublisher = injector.getInstance(DomainEventPublisher.class);
         this.viewFactory = injector.getInstance(MainApplicationViewFactory.class);
-        this.settingsService = injector.getInstance(SettingsService.class);
 
         registerEventConsumer();
     }
@@ -68,8 +62,6 @@ public class MainApplication extends Application implements Provider<HostService
     public void start(Stage stage) {
 
         NotificationHandler.stage = stage;
-
-        DebugMode debugMode = settingsService.get().getAdvanced().getDebugMode();
 
         stage.setTitle(Messages.getString("Application.Name"));
         stage.getIcons().add(UiResources.APP_ICON);
@@ -84,9 +76,6 @@ public class MainApplication extends Application implements Provider<HostService
 
         stage.setScene(scene);
         stage.show();
-
-        if (debugMode.isEnabled())
-            ScenicView.show(mainView);
 
         stage.toFront();
     }
