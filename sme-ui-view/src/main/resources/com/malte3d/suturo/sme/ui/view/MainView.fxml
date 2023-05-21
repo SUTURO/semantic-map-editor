@@ -12,10 +12,12 @@
             <MenuItem fx:id="menuFileNew" mnemonicParsing="false" text="%Application.Menu.Main.File.New"/>
             <MenuItem fx:id="menuFileOpen" mnemonicParsing="false" text="%Application.Menu.Main.File.Open"/>
             <Menu fx:id="menuFileOpenRecent" mnemonicParsing="false" text="%Application.Menu.Main.File.OpenRecent"/>
-            <SeparatorMenuItem mnemonicParsing="false"/>
             <MenuItem fx:id="menuFileClose" mnemonicParsing="false" text="%Application.Menu.Main.File.Close"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem fx:id="menuFileImport" mnemonicParsing="false" text="%Application.Menu.Main.File.Import"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
             <MenuItem fx:id="menuFileSave" mnemonicParsing="false" text="%Application.Menu.Main.File.Save"/>
-            <MenuItem fx:id="menuFileSaveAs" mnemonicParsing="false" text="%Application.Menu.Main.File.SaveAs"/>
+            <MenuItem fx:id="menuFileExport" mnemonicParsing="false" text="%Application.Menu.Main.File.Export"/>
             <SeparatorMenuItem mnemonicParsing="false"/>
             <MenuItem fx:id="menuFileSettings" mnemonicParsing="false" text="%Application.Menu.Main.File.Settings"/>
             <SeparatorMenuItem mnemonicParsing="false"/>

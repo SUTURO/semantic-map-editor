@@ -48,13 +48,15 @@ public class MainView {
     @FXML
     private MenuItem menuFileOpen;
     @FXML
-    private MenuItem menuFileOpenRecent;
+    private Menu menuFileOpenRecent;
     @FXML
     private MenuItem menuFileClose;
     @FXML
+    private MenuItem menuFileImport;
+    @FXML
     private MenuItem menuFileSave;
     @FXML
-    private MenuItem menuFileSaveAs;
+    private MenuItem menuFileExport;
     @FXML
     private MenuItem menuFileSettings;
     @FXML
@@ -118,11 +120,19 @@ public class MainView {
         menuFileNew.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
         menuFileOpen.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
         menuFileSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
-        menuFileSaveAs.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
+        menuFileExport.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
         menuFileSettings.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHIFT_DOWN, KeyCombination.ALT_DOWN));
 
         menuFileClose.setOnAction(event -> onCloseClicked());
         menuFileExit.setOnAction(event -> viewModel.exitApplication());
+
+        /* TODO: Actual implementation for file menu  */
+        menuFileNew.setDisable(true);
+        menuFileOpen.setDisable(true);
+        menuFileOpenRecent.setDisable(true);
+        menuFileImport.setDisable(true);
+        menuFileSave.setDisable(true);
+        menuFileExport.setDisable(true);
     }
 
     private void initMenuEdit() {
@@ -133,6 +143,14 @@ public class MainView {
         menuEditCopy.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN));
         menuEditPaste.setAccelerator(new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN));
         menuEditDelete.setAccelerator(new KeyCodeCombination(KeyCode.DELETE));
+
+        /* TODO: Actual implementation for edit menu  */
+        menuEditUndo.setDisable(true);
+        menuEditRedo.setDisable(true);
+        menuEditCut.setDisable(true);
+        menuEditCopy.setDisable(true);
+        menuEditPaste.setDisable(true);
+        menuEditDelete.setDisable(true);
     }
 
     private void initMenuHelp() {
