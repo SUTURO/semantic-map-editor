@@ -11,6 +11,6 @@ project.afterEvaluate {
 
     project.javafx {
         version = "$versions.javafx"
-        modules = ["javafx.fxml", "javafx.graphics", "javafx.controls", "javafx.web"]
+        modules = ["javafx.fxml", "javafx.graphics", "javafx.controls", "javafx.web", "javafx.swing"]
     }
 }
