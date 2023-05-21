@@ -7,10 +7,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
- * At the {@link DomainEventPublisher}, {@link DomainEventConsumer EventConsumer} can register to process {@link DomainEvent DomainEvents}. Every bounded
- * context should maintain exactly one publisher instance as singleton.
+ * At the {@link DomainEventHandler}, {@link DomainEventConsumer EventConsumer} can register to process {@link DomainEvent DomainEvents}. Every bounded
+ * context should maintain exactly one handler instance as singleton.
  */
-public final class DomainEventPublisher {
+public final class DomainEventHandler {
 
     private final Set<DomainEventConsumer<? extends DomainEvent>> domainEventConsumers = ConcurrentHashMap.newKeySet();
 

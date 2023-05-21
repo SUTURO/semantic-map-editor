@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.jme3.app.DebugKeysAppState;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppState;
-import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
+import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
 import com.malte3d.suturo.commons.javafx.fxml.FxmlViewFactory;
 import com.malte3d.suturo.commons.javafx.service.CompletableFutureTask;
 import com.malte3d.suturo.commons.javafx.service.GlobalExecutor;
@@ -35,7 +35,7 @@ import java.util.concurrent.Executor;
 @Getter
 public class MainViewModel extends UiService {
 
-    private final DomainEventPublisher domainEventPublisher;
+    private final DomainEventHandler domainEventHandler;
 
     private final FxmlViewFactory viewFactory;
 
@@ -48,14 +48,14 @@ public class MainViewModel extends UiService {
     @Inject
     public MainViewModel(
             @NonNull @GlobalExecutor Executor executor,
-            @NonNull DomainEventPublisher domainEventPublisher,
+            @NonNull DomainEventHandler domainEventHandler,
             @NonNull FxmlViewFactory viewFactory,
             @NonNull Provider<HostServices> hostServices,
             @NonNull SettingsService settingsService) {
 
         super(executor);
 
-        this.domainEventPublisher = domainEventPublisher;
+        this.domainEventHandler = domainEventHandler;
         this.viewFactory = viewFactory;
         this.hostServices = hostServices;
         this.settingsService = settingsService;
@@ -64,8 +64,8 @@ public class MainViewModel extends UiService {
     }
 
     private void registerEventConsumer() {
-        domainEventPublisher.register(DebugModeChangedEvent.class, this::onDebugModeChanged);
-        domainEventPublisher.register(CameraBehaviourChangedEvent.class, this::onCameraBehaviourChanged);
+        domainEventHandler.register(DebugModeChangedEvent.class, this::onDebugModeChanged);
+        domainEventHandler.register(CameraBehaviourChangedEvent.class, this::onCameraBehaviourChanged);
     }
 
     /**
@@ -106,7 +106,7 @@ public class MainViewModel extends UiService {
      * Raises an {@link ExitApplicationEvent} to exit the application.
      */
     public void exitApplication() {
-        domainEventPublisher.raise(new ExitApplicationEvent());
+        domainEventHandler.raise(new ExitApplicationEvent());
     }
 
     /**

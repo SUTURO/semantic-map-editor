@@ -1,6 +1,6 @@
 package com.malte3d.suturo.sme.ui.viewmodel.settings;
 
-import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
+import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
 import com.malte3d.suturo.commons.javafx.service.GlobalExecutor;
 import com.malte3d.suturo.commons.javafx.service.UiService;
 import com.malte3d.suturo.sme.application.service.settings.SettingsService;
@@ -17,7 +17,7 @@ import java.util.concurrent.Executor;
 
 public class SettingsViewModel extends UiService {
 
-    private final DomainEventPublisher domainEventPublisher;
+    private final DomainEventHandler domainEventHandler;
 
     private final SettingsService settingsService;
 
@@ -28,12 +28,12 @@ public class SettingsViewModel extends UiService {
     @Inject
     public SettingsViewModel(
             @NonNull @GlobalExecutor Executor executor,
-            @NonNull DomainEventPublisher domainEventPublisher,
+            @NonNull DomainEventHandler domainEventHandler,
             @NonNull SettingsService settingsService) {
 
         super(executor);
 
-        this.domainEventPublisher = domainEventPublisher;
+        this.domainEventHandler = domainEventHandler;
         this.settingsService = settingsService;
 
         this.settingsPropertyInternal.setValue(loadSettings());
@@ -42,7 +42,7 @@ public class SettingsViewModel extends UiService {
     }
 
     private void registerEventConsumer() {
-        domainEventPublisher.register(SettingsChangedEvent.class, this::onSettingsChanged);
+        domainEventHandler.register(SettingsChangedEvent.class, this::onSettingsChanged);
     }
 
     public Settings loadSettings() {

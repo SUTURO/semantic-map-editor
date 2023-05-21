@@ -173,14 +173,14 @@ public class MainView {
                 viewModel.toggleDebugMode();
         });
 
-        viewModel.getDomainEventPublisher().register(EditorInitializedEvent.class, () -> editorViewProgress.setVisible(false));
+        viewModel.getDomainEventHandler().register(EditorInitializedEvent.class, () -> editorViewProgress.setVisible(false));
 
         viewModel.loadEditor().thenConsume(editor -> {
 
             EditorFxImageView editorImageView = editor.getImageView();
 
             editorView.getChildren().add(editorImageView);
-            viewModel.getDomainEventPublisher().raise(new EditorInitializedEvent());
+            viewModel.getDomainEventHandler().raise(new EditorInitializedEvent());
         });
     }
 

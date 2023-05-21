@@ -3,7 +3,7 @@ package com.malte3d.suturo.sme.ui;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.jme3.util.LWJGLBufferAllocator;
-import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
+import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
 import com.malte3d.suturo.commons.javafx.notification.NotificationHandler;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.ui.util.UiResources;
@@ -32,7 +32,7 @@ import java.util.Objects;
 @Slf4j
 public class MainApplication extends Application implements Provider<HostServices> {
 
-    private final DomainEventPublisher domainEventPublisher;
+    private final DomainEventHandler domainEventHandler;
 
     private final MainApplicationViewFactory viewFactory;
 
@@ -48,14 +48,14 @@ public class MainApplication extends Application implements Provider<HostService
         setupJfxLwjglEnvironment();
 
         Injector injector = InjectorProvider.get();
-        this.domainEventPublisher = injector.getInstance(DomainEventPublisher.class);
+        this.domainEventHandler = injector.getInstance(DomainEventHandler.class);
         this.viewFactory = injector.getInstance(MainApplicationViewFactory.class);
 
         registerEventConsumer();
     }
 
     private void registerEventConsumer() {
-        domainEventPublisher.register(ExitApplicationEvent.class, MainApplication::exit);
+        domainEventHandler.register(ExitApplicationEvent.class, MainApplication::exit);
     }
 
     @Override

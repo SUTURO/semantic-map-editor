@@ -1,7 +1,7 @@
 package com.malte3d.suturo.sme.application.service.settings;
 
 import com.malte3d.suturo.commons.ddd.annotation.ApplicationService;
-import com.malte3d.suturo.commons.ddd.event.domain.DomainEventPublisher;
+import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
 import com.malte3d.suturo.sme.domain.model.application.settings.Settings;
 import com.malte3d.suturo.sme.domain.model.application.settings.SettingsChangedEvent;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
@@ -25,7 +25,7 @@ public class SettingsService {
     private final SettingsRepository settingsRepository;
 
     @NonNull
-    private final DomainEventPublisher domainEventPublisher;
+    private final DomainEventHandler domainEventHandler;
 
     /**
      * Loads the current settings.
@@ -48,7 +48,7 @@ public class SettingsService {
 
         settingsRepository.save(settings);
 
-        domainEventPublisher.raise(new SettingsChangedEvent(settings));
+        domainEventHandler.raise(new SettingsChangedEvent(settings));
 
         checkCameraBehaviourChanged(oldSettings, settings);
         checkDebugModeChanged(oldSettings, settings);
@@ -63,7 +63,7 @@ public class SettingsService {
         CameraBehaviour newCameraBehaviour = newSettings.getKeymap().getCameraBehaviour();
 
         if (oldCameraBehaviour != newCameraBehaviour)
-            domainEventPublisher.raise(new CameraBehaviourChangedEvent(newCameraBehaviour));
+            domainEventHandler.raise(new CameraBehaviourChangedEvent(newCameraBehaviour));
     }
 
     /**
@@ -75,7 +75,7 @@ public class SettingsService {
         DebugMode newDebugMode = newSettings.getAdvanced().getDebugMode();
 
         if (oldDebugMode != newDebugMode)
-            domainEventPublisher.raise(new DebugModeChangedEvent(newDebugMode));
+            domainEventHandler.raise(new DebugModeChangedEvent(newDebugMode));
     }
 
 }
