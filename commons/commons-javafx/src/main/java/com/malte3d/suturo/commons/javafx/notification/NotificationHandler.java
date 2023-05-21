@@ -14,7 +14,7 @@ import org.controlsfx.control.Notifications;
 @UtilityClass
 public class NotificationHandler {
 
-    private static final int MAX_NOTIFICATIONS = 2;
+    private static final int MAX_NOTIFICATIONS = 10;
 
     public static Window stage;
 
