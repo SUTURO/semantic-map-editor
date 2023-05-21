@@ -251,15 +251,35 @@ public class EditorCamera implements AnalogListener, ActionListener {
         cam.setLocation(cam.getLocation().add(dir.mult(delta)));
     }
 
+    /**
+     * Calculates the move target based on the camera's direction.
+     *
+     * @return The move target
+     */
     private Vector3f getMoveTarget() {
         return cam.getDirection().mult(DEFAULT_TARGET_DISTANCE);
     }
 
+    /**
+     * Calculates the zoom target based on the cursor position.
+     *
+     * @return THe zoom target
+     */
     private Vector3f getZoomTarget() {
         Vector2f cursor2d = inputManager.getCursorPosition();
         return cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 0f).clone();
     }
 
+    /**
+     * Calculates the rotation target based on the cursor position.
+     *
+     * <p>
+     * It casts a ray from the cursor position and returns the first collision point with the objects of the scene graph.
+     * If no collision is found, it returns the {@link #getDefaultRotationTarget()}.
+     * </p>
+     *
+     * @return The rotation target
+     */
     private Vector3f getRotationTarget() {
 
         Vector2f cursor2d = inputManager.getCursorPosition();
