@@ -63,50 +63,6 @@ public class MainViewModel extends UiService {
         domainEventPublisher.register(CameraBehaviourChangedEvent.class, this::onCameraBehaviourChanged);
     }
 
-    private void onCameraBehaviourChanged(CameraBehaviourChangedEvent event) {
-
-        Preconditions.checkNotNull(editor, "Editor must be initialized before camera behaviour can be changed.");
-
-        CameraBehaviour cameraBehaviour = event.getNewCameraBehaviour();
-
-        if (cameraBehaviour == CameraBehaviour.BLENDER)
-            editor.setCameraKeymap(CameraKeymapBlender.class);
-        else
-            editor.setCameraKeymap(CameraKeymapCinema4D.class);
-    }
-
-    private void onDebugModeChanged(DebugModeChangedEvent event) {
-
-        Preconditions.checkNotNull(editor, "Editor must be initialized before debug mode can be changed.");
-
-        DebugMode debugMode = event.getNewDebugMode();
-
-        if (debugMode.isEnabled()) {
-
-            editor.getStateManager().attach(new StatsAppState());
-            editor.getStateManager().attach(new DebugKeysAppState());
-
-        } else {
-
-            editor.getStateManager().detach(editor.getStateManager().getState(StatsAppState.class));
-            editor.getStateManager().detach(editor.getStateManager().getState(DebugKeysAppState.class));
-        }
-    }
-
-    /**
-     * Opens the URL of the copyright owner in the default browser.
-     */
-    public void openCopyrightOwnerUrl() {
-        hostServices.get().showDocument(Messages.getString("Application.Help.About.CopyrightOwnerUrl"));
-    }
-
-    /**
-     * Raises an {@link ExitApplicationEvent} to exit the application.
-     */
-    public void exitApplication() {
-        domainEventPublisher.raise(new ExitApplicationEvent());
-    }
-
     /**
      * @return a {@link CompletableFutureTask} that loads the 3d-editor and returns it.
      */
@@ -138,6 +94,24 @@ public class MainViewModel extends UiService {
         return editor;
     }
 
+    public void openSettings() {
+
+    }
+
+    /**
+     * Raises an {@link ExitApplicationEvent} to exit the application.
+     */
+    public void exitApplication() {
+        domainEventPublisher.raise(new ExitApplicationEvent());
+    }
+
+    /**
+     * Opens the URL of the copyright owner in the default browser.
+     */
+    public void openCopyrightOwnerUrl() {
+        hostServices.get().showDocument(Messages.getString("Application.Help.About.CopyrightOwnerUrl"));
+    }
+
     /**
      * Toggles the debug mode and saves the new mode to the application settings.
      */
@@ -156,5 +130,36 @@ public class MainViewModel extends UiService {
 
                     return newDebugMode;
                 });
+    }
+
+    private void onDebugModeChanged(DebugModeChangedEvent event) {
+
+        Preconditions.checkNotNull(editor, "Editor must be initialized before debug mode can be changed.");
+
+        DebugMode debugMode = event.getNewDebugMode();
+
+        if (debugMode.isEnabled()) {
+
+            editor.getStateManager().attach(new StatsAppState());
+            editor.getStateManager().attach(new DebugKeysAppState());
+
+        } else {
+
+            editor.getStateManager().detach(editor.getStateManager().getState(StatsAppState.class));
+            editor.getStateManager().detach(editor.getStateManager().getState(DebugKeysAppState.class));
+        }
+    }
+
+
+    private void onCameraBehaviourChanged(CameraBehaviourChangedEvent event) {
+
+        Preconditions.checkNotNull(editor, "Editor must be initialized before camera behaviour can be changed.");
+
+        CameraBehaviour cameraBehaviour = event.getNewCameraBehaviour();
+
+        if (cameraBehaviour == CameraBehaviour.BLENDER)
+            editor.setCameraKeymap(CameraKeymapBlender.class);
+        else
+            editor.setCameraKeymap(CameraKeymapCinema4D.class);
     }
 }

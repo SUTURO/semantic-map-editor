@@ -123,7 +123,9 @@ public class MainView {
         menuFileExport.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
         menuFileSettings.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHIFT_DOWN, KeyCombination.ALT_DOWN));
 
-        menuFileClose.setOnAction(event -> onCloseClicked());
+        menuFileClose.setOnAction(event -> showHelloWorldNotification());
+
+        menuFileSettings.setOnAction(event -> viewModel.openSettings());
         menuFileExit.setOnAction(event -> viewModel.exitApplication());
 
         /* TODO: Actual implementation for file menu  */
@@ -155,7 +157,7 @@ public class MainView {
 
     private void initMenuHelp() {
 
-        menuHelpAbout.setOnAction(event -> showHelpAboutDialog());
+        menuHelpAbout.setOnAction(event -> openHelpAboutDialog());
     }
 
     private void initEditorView() {
@@ -177,7 +179,7 @@ public class MainView {
         });
     }
 
-    private void onCloseClicked() {
+    private void showHelloWorldNotification() {
 
         NotificationHandler.create()
                 .title(Messages.getString("Application.Notification.Title.Info"))
@@ -185,7 +187,7 @@ public class MainView {
                 .showInformation();
     }
 
-    private void showHelpAboutDialog() {
+    private void openHelpAboutDialog() {
 
         Hyperlink copyrightOwnerLink = new Hyperlink(Messages.getString("Application.Help.About.CopyrightOwner"));
         copyrightOwnerLink.setOnAction(event -> viewModel.openCopyrightOwnerUrl());
