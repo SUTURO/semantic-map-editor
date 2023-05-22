@@ -1,28 +1,23 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
-import com.jayfella.jfx.embedded.AbstractJmeApplication;
-import com.jme3.app.state.AppState;
-import com.jme3.asset.plugins.FileLocator;
-import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
-import com.jme3.material.Materials;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
-import com.jme3.scene.Node;
-import com.jme3.scene.debug.Arrow;
-import com.jme3.scene.shape.Box;
-import com.jme3.texture.Texture;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymap;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.EditorCameraAppState;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.floor.FloorGrid;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import com.jayfella.jfx.embedded.*;
+import com.jme3.app.state.*;
+import com.jme3.asset.plugins.*;
+import com.jme3.light.*;
+import com.jme3.material.*;
+import com.jme3.math.*;
+import com.jme3.scene.*;
+import com.jme3.scene.debug.*;
+import com.jme3.scene.shape.*;
+import com.jme3.texture.*;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.*;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.floor.*;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.hud.coordinatesystem.*;
+import lombok.*;
+import lombok.extern.slf4j.*;
 
-import java.io.File;
-import java.util.Collection;
+import java.io.*;
+import java.util.*;
 
 /**
  * The Editor is the main entry point for the 3D-Editor.
@@ -32,10 +27,13 @@ public class Editor extends AbstractJmeApplication {
 
     private static final ColorRGBA BACKGROUND_COLOR = new ColorRGBA(EditorUtil.hexToVec3("#fafafa"));
 
-    private static final Vector3f FRAME_ORIGIN = new Vector3f(0, 0, 0);
+    private static final Vector3f FRAME_ORIGIN = Vector3f.ZERO;
 
     @NonNull
     private Class<? extends CameraKeymap> cameraKeymap;
+
+    /* HUD */
+    private CoordinateAxes coordinateAxes;
 
     private FloorGrid floorGrid;
 
@@ -112,12 +110,14 @@ public class Editor extends AbstractJmeApplication {
         stateManager.attach(new EditorCameraAppState(cameraKeymap, rootNode, guiNode));
 
         viewPort.setBackgroundColor(BACKGROUND_COLOR);
-
+        
         AmbientLight ambientLight = new AmbientLight(ColorRGBA.White.mult(1.3f));
         DirectionalLight directionalLight = new DirectionalLight(new Vector3f(-1, -1, -1), ColorRGBA.White);
 
         rootNode.addLight(ambientLight);
         rootNode.addLight(directionalLight);
+
+        attachHudCoordinateAxes();
 
         attachFloorGrid();
         attachCoordinateAxes(rootNode);
@@ -131,36 +131,36 @@ public class Editor extends AbstractJmeApplication {
         box.rotate(tpf * .2f, tpf * .3f, tpf * .4f);
 
         floorGrid.update(cam);
+        coordinateAxes.update(cam);
     }
 
     private void attachCoordinateAxes(Node node) {
 
-        Arrow arrow = new Arrow(Vector3f.UNIT_X.mult(2));
-        attachCoordinateAxesShape(node, arrow, ColorRGBA.Red).setLocalTranslation(FRAME_ORIGIN);
-
-        arrow = new Arrow(Vector3f.UNIT_Y.mult(2));
-        attachCoordinateAxesShape(node, arrow, ColorRGBA.Green).setLocalTranslation(FRAME_ORIGIN);
-
-        arrow = new Arrow(Vector3f.UNIT_Z.mult(2));
-        attachCoordinateAxesShape(node, arrow, ColorRGBA.Blue).setLocalTranslation(FRAME_ORIGIN);
+        attachCoordinateAxesShape(node, new Arrow(Vector3f.UNIT_X.mult(2)), ColorRGBA.Red);
+        attachCoordinateAxesShape(node, new Arrow(Vector3f.UNIT_Y.mult(2)), ColorRGBA.Green);
+        attachCoordinateAxesShape(node, new Arrow(Vector3f.UNIT_Z.mult(2)), ColorRGBA.Blue);
     }
 
-    private Geometry attachCoordinateAxesShape(Node node, Mesh shape, ColorRGBA color) {
+    private void attachCoordinateAxesShape(Node node, Mesh shape, ColorRGBA color) {
 
         Material mat = new Material(assetManager, Materials.UNSHADED);
         mat.setColor("Color", color);
 
         Geometry coordinateAxis = new Geometry("coordinate axis", shape);
         coordinateAxis.setMaterial(mat);
+        coordinateAxis.setLocalTranslation(FRAME_ORIGIN);
 
         node.attachChild(coordinateAxis);
+    }
 
-        return coordinateAxis;
+    private void attachHudCoordinateAxes() {
+        this.coordinateAxes = new CoordinateAxes(assetManager);
+        guiNode.attachChild(coordinateAxes.getNode());
     }
 
     private void attachFloorGrid() {
         this.floorGrid = new FloorGrid(assetManager);
-        this.floorGrid.attachTo(rootNode);
+        rootNode.attachChild(floorGrid.getNode());
     }
 
     private void attachDebugBox() {

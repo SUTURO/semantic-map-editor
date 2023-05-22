@@ -1,21 +1,16 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor.camera;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
-import com.jme3.input.InputManager;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.AnalogListener;
+import com.jme3.asset.*;
+import com.jme3.collision.*;
+import com.jme3.input.*;
+import com.jme3.input.controls.*;
 import com.jme3.math.*;
-import com.jme3.renderer.Camera;
-import com.jme3.scene.Node;
-import com.jme3.texture.Texture2D;
-import com.jme3.ui.Picture;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import com.jme3.renderer.*;
+import com.jme3.scene.*;
+import com.jme3.texture.*;
+import com.jme3.ui.*;
+import lombok.*;
+import lombok.extern.slf4j.*;
 
 @Slf4j
 @EqualsAndHashCode
@@ -66,9 +61,6 @@ public class EditorCamera implements AnalogListener, ActionListener {
      */
     private Vector3f target = Vector3f.ZERO;
 
-    private float yaw;
-    private float pitch;
-
     private CameraKeymap keymap;
 
     public EditorCamera(@NonNull Camera cam, @NonNull AssetManager assetManager, @NonNull InputManager inputManager, @NonNull Class<? extends CameraKeymap> keymap, @NonNull Node rootNode, @NonNull Node guiNode) {
@@ -81,15 +73,8 @@ public class EditorCamera implements AnalogListener, ActionListener {
         setKeymap(keymap);
 
         /* Set initial camera position */
-        cam.setLocation(new Vector3f(5, 4, 5));
-        cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
-
-        /* Set initial pitch and yaw */
-        Quaternion camRotation = cam.getRotation();
-        float[] angles = new float[3];
-        camRotation.toAngles(angles);
-        this.pitch = angles[0];
-        this.yaw = angles[1];
+//        cam.setLocation(new Vector3f(5, 4, 5));
+//        cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
 
         /* Create crosshair */
         Texture2D texture = (Texture2D) assetManager.loadTexture("camera/crosshair.png");
