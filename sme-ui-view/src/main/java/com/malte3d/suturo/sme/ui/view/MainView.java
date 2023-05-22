@@ -212,7 +212,7 @@ public class MainView {
                 copyrightOwnerLink
         );
 
-        ButtonType closeButton = new ButtonType(Messages.getString("Application.Help.About.Button.Close"), ButtonBar.ButtonData.OK_DONE);
+        ButtonType closeButton = new ButtonType(Messages.getString("Application.Help.About.Button.Close"), ButtonBar.ButtonData.CANCEL_CLOSE);
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(Messages.getString("Application.Help.About.Title"));

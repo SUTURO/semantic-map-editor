@@ -2,6 +2,7 @@ package com.malte3d.suturo.sme.ui.view.settings;
 
 import com.malte3d.suturo.commons.javafx.fxml.EnumConverter;
 import com.malte3d.suturo.commons.messages.Language;
+import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.domain.model.application.settings.Settings;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.AdvancedSettings;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
@@ -9,11 +10,9 @@ import com.malte3d.suturo.sme.domain.model.application.settings.appearance.Appea
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.KeymapSettings;
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviour;
 import com.malte3d.suturo.sme.ui.viewmodel.settings.SettingsViewModel;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DialogPane;
+import javafx.scene.control.*;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
@@ -44,7 +43,9 @@ public class SettingsView {
 
     public void initialize() {
 
-        view.getButtonTypes().addAll(ButtonType.CLOSE);
+        ButtonType closeButton = new ButtonType(Messages.getString("Application.Settings.Button.Close"), ButtonBar.ButtonData.APPLY);
+
+        view.getButtonTypes().add(closeButton);
 
         initializeAppearance();
         initializeKeymap();
@@ -58,7 +59,7 @@ public class SettingsView {
         languageComboBox.getItems().addAll(Language.values());
         languageComboBox.setConverter(new EnumConverter<>());
         languageComboBox.getSelectionModel().select(appearanceSettings.getLanguage());
-        languageComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> saveSettings());
+        languageComboBox.getSelectionModel().selectedItemProperty().addListener(onSettingsChanged());
     }
 
     private void initializeKeymap() {
@@ -69,7 +70,7 @@ public class SettingsView {
         cameraBehaviourComboBox.getItems().addAll(CameraBehaviour.values());
         cameraBehaviourComboBox.setConverter(new EnumConverter<>());
         cameraBehaviourComboBox.getSelectionModel().select(cameraBehaviour);
-        cameraBehaviourComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> saveSettings());
+        cameraBehaviourComboBox.getSelectionModel().selectedItemProperty().addListener(onSettingsChanged());
     }
 
     private void initializeAdvanced() {
@@ -78,11 +79,11 @@ public class SettingsView {
 
         DebugMode debugMode = advancedSettings.getDebugMode();
         debugModeCheckBox.setSelected(debugMode.isEnabled());
-        debugModeCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> saveSettings());
+        debugModeCheckBox.selectedProperty().addListener(onSettingsChanged());
     }
 
-    public void saveSettings() {
-        viewModel.saveSettings(getCurrentSettings());
+    private <T> ChangeListener<? super T> onSettingsChanged() {
+        return (observable, oldValue, newValue) -> viewModel.saveSettings(getCurrentSettings());
     }
 
     private Settings getCurrentSettings() {
