@@ -1,29 +1,24 @@
 package com.malte3d.suturo.sme.ui.view;
 
-import com.jayfella.jfx.embedded.jfx.EditorFxImageView;
-import com.malte3d.suturo.commons.Version;
-import com.malte3d.suturo.commons.javafx.fxml.FxmlViewFactory;
-import com.malte3d.suturo.commons.javafx.notification.NotificationHandler;
-import com.malte3d.suturo.commons.messages.Messages;
-import com.malte3d.suturo.sme.ui.view.settings.SettingsView;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.EditorInitializedEvent;
-import com.malte3d.suturo.sme.ui.viewmodel.main.MainViewModel;
-import javafx.fxml.FXML;
-import javafx.scene.Parent;
+import com.jayfella.jfx.embedded.jfx.*;
+import com.malte3d.suturo.commons.*;
+import com.malte3d.suturo.commons.javafx.fxml.*;
+import com.malte3d.suturo.commons.javafx.notification.*;
+import com.malte3d.suturo.commons.messages.*;
+import com.malte3d.suturo.sme.ui.view.settings.*;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.*;
+import com.malte3d.suturo.sme.ui.viewmodel.main.*;
+import javafx.fxml.*;
+import javafx.scene.*;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
-import javafx.stage.Window;
-import lombok.extern.slf4j.Slf4j;
+import javafx.scene.input.*;
+import javafx.scene.layout.*;
+import javafx.scene.text.*;
+import javafx.stage.*;
+import lombok.extern.slf4j.*;
 
-import javax.inject.Inject;
-import java.time.Year;
+import javax.inject.*;
+import java.time.*;
 
 
 @Slf4j
@@ -98,8 +93,16 @@ public class MainView {
     @FXML
     private ProgressIndicator editorViewProgress;
 
+    /*
+     * Scenegraph & Properties View
+     * */
+
     @FXML
-    private AnchorPane optionsView;
+    private AnchorPane scenegraphView;
+
+    @FXML
+    private AnchorPane propertiesView;
+
 
     /*
      * Statusbar

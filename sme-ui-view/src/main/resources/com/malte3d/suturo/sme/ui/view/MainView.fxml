@@ -37,7 +37,7 @@
         </Menu>
     </MenuBar>
 
-    <SplitPane dividerPositions="0.75" focusTraversable="true" VBox.vgrow="ALWAYS">
+    <SplitPane dividerPositions="0.75" VBox.vgrow="ALWAYS">
 
         <AnchorPane>
             <StackPane fx:id="editorView" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
@@ -46,11 +46,17 @@
             </StackPane>
         </AnchorPane>
 
-        <ScrollPane>
-            <AnchorPane fx:id="optionsView">
+        <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS" orientation="VERTICAL">
+
+            <AnchorPane fx:id="scenegraphView">
 
             </AnchorPane>
-        </ScrollPane>
+
+            <AnchorPane fx:id="propertiesView">
+
+            </AnchorPane>
+
+        </SplitPane>
 
     </SplitPane>
 
