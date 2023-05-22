@@ -40,8 +40,11 @@
     <SplitPane dividerPositions="0.75" VBox.vgrow="ALWAYS">
 
         <AnchorPane>
-            <StackPane fx:id="editorView" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
-                       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <HBox AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                  prefHeight="40.0" styleClass="toolbar-top">
+            </HBox>
+            <StackPane fx:id="editorView" AnchorPane.topAnchor="40.0" AnchorPane.bottomAnchor="0.0"
+                       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" styleClass="editor-container">
                 <ProgressIndicator fx:id="editorViewProgress"/>
             </StackPane>
         </AnchorPane>

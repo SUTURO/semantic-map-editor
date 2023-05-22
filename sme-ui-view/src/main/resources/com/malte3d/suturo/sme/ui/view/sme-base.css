@@ -2,15 +2,17 @@
 
     primary_color: #032536;
     secondary_color: #d50b2e;
-    warning_color: #d65c0b;
+    warning_color: #ef660a;
     error_color: #d50b2e;
     light_color: #fafafa;
+    light_color_dark: #d4d4d4;
     gray_color: #888a8c;
-    dark_color: #060608;
+    dark_color: #01151f;
 
-    accent_color: secondary_color !important;
+    accent_color: primary_color !important;
 
     background_color: light_color !important;
+    background_color_dark: light_color_dark !important;
     dialog_background_color: white !important;
     tab_pane_background_color: light_color !important;
 }

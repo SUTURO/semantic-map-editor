@@ -1,3 +1,12 @@
+.toolbar-top {
+    -fx-border-color: background_color_dark;
+    -fx-border-width:  0px 0px 2px 0px;
+}
+
+.editor-container {
+
+}
+
 .statusbar {
     -fx-padding: 5px;
 }
