@@ -73,8 +73,8 @@ public class EditorCamera implements AnalogListener, ActionListener {
         setKeymap(keymap);
 
         /* Set initial camera position */
-//        cam.setLocation(new Vector3f(5, 4, 5));
-//        cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
+        cam.setLocation(new Vector3f(5, 4, 5));
+        cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
 
         /* Create crosshair */
         Texture2D texture = (Texture2D) assetManager.loadTexture("camera/crosshair.png");
