@@ -63,6 +63,7 @@ public class MainApplication extends Application implements Provider<HostService
 
         NotificationHandler.stage = stage;
 
+
         stage.setTitle(Messages.getString("Application.Name"));
         stage.getIcons().add(UiResources.APP_ICON);
         stage.setOnCloseRequest(windowEvent -> exit());
