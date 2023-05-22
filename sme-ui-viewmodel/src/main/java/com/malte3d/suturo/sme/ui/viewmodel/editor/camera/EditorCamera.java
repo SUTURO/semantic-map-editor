@@ -1,16 +1,22 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor.camera;
 
-import com.jme3.asset.*;
-import com.jme3.collision.*;
-import com.jme3.input.*;
-import com.jme3.input.controls.*;
+
+import com.jme3.asset.AssetManager;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
+import com.jme3.input.InputManager;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
 import com.jme3.math.*;
-import com.jme3.renderer.*;
-import com.jme3.scene.*;
-import com.jme3.texture.*;
-import com.jme3.ui.*;
-import lombok.*;
-import lombok.extern.slf4j.*;
+import com.jme3.renderer.Camera;
+import com.jme3.scene.Node;
+import com.jme3.texture.Texture2D;
+import com.jme3.ui.Picture;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @EqualsAndHashCode

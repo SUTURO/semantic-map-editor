@@ -1,23 +1,30 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
-import com.jayfella.jfx.embedded.*;
-import com.jme3.app.state.*;
-import com.jme3.asset.plugins.*;
-import com.jme3.light.*;
-import com.jme3.material.*;
-import com.jme3.math.*;
-import com.jme3.scene.*;
-import com.jme3.scene.debug.*;
-import com.jme3.scene.shape.*;
-import com.jme3.texture.*;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.*;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.floor.*;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.hud.coordinatesystem.*;
-import lombok.*;
-import lombok.extern.slf4j.*;
 
-import java.io.*;
-import java.util.*;
+import com.jayfella.jfx.embedded.AbstractJmeApplication;
+import com.jme3.app.state.AppState;
+import com.jme3.asset.plugins.FileLocator;
+import com.jme3.light.AmbientLight;
+import com.jme3.light.DirectionalLight;
+import com.jme3.material.Material;
+import com.jme3.material.Materials;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
+import com.jme3.scene.Node;
+import com.jme3.scene.debug.Arrow;
+import com.jme3.scene.shape.Box;
+import com.jme3.texture.Texture;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymap;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.EditorCameraAppState;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.floor.FloorGrid;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.hud.coordinatesystem.CoordinateAxes;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.File;
+import java.util.Collection;
 
 /**
  * The Editor is the main entry point for the 3D-Editor.
@@ -110,7 +117,7 @@ public class Editor extends AbstractJmeApplication {
         stateManager.attach(new EditorCameraAppState(cameraKeymap, rootNode, guiNode));
 
         viewPort.setBackgroundColor(BACKGROUND_COLOR);
-        
+
         AmbientLight ambientLight = new AmbientLight(ColorRGBA.White.mult(1.3f));
         DirectionalLight directionalLight = new DirectionalLight(new Vector3f(-1, -1, -1), ColorRGBA.White);
 

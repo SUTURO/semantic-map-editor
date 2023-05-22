@@ -10,7 +10,6 @@ import com.jme3.app.state.AppState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.ViewPort;
 import com.jme3.system.AppSettings;
-import javafx.scene.input.MouseEvent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -61,13 +60,9 @@ public abstract class AbstractJmeApplication extends SimpleApplication {
 
         imageView = new EditorFxImageView();
         imageView.getProperties().put(JfxMouseInput.PROP_USE_LOCAL_COORDS, true);
-        
-        imageView.setFocusTraversable(true);
-        imageView.addEventHandler(MouseEvent.ANY, event -> {
 
-            if (!imageView.isFocused())
-                imageView.requestFocus();
-        });
+        imageView.setFocusTraversable(true);
+        imageView.requestFocus();
 
         List<ViewPort> vps = renderManager.getPostViews();
         ViewPort last = vps.get(vps.size() - 1);
