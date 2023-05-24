@@ -19,7 +19,7 @@ import com.jme3.texture.Texture;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymap;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.EditorCameraAppState;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.floor.FloorGrid;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.hud.coordinatesystem.CoordinateAxes;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.hud.coordinateaxes.CoordinateAxes;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,10 +28,24 @@ import java.util.Collection;
 
 /**
  * The Editor is the main entry point for the 3D-Editor.
+ * <br>
+ * <br>
+ * <p>
+ * Coordinate System: (jMonkeyEngine)
+ * <ul>
+ *   <li>The coordinate system is right-handed</li>
+ *   <li>X-Axis: Right</li>
+ *   <li>Y-Axis: Up</li>
+ *   <li>Z-Axis: Front</li>
+ *   <li>Origin: (0, 0, 0)</li>
+ * </ul>
+ * <strong>Important:</strong>: This is different to the ROS default and the coordinate system used in the SUTURO projects semantic maps.
+ * </p>
  */
 @Slf4j
 public class Editor extends AbstractJmeApplication {
 
+    private static final String ASSETS_PATH = System.getProperty("user.dir") + File.separator + "assets";
     private static final ColorRGBA BACKGROUND_COLOR = new ColorRGBA(EditorUtil.hexToVec3("#fafafa"));
 
     private static final Vector3f FRAME_ORIGIN = Vector3f.ZERO;
@@ -112,7 +126,7 @@ public class Editor extends AbstractJmeApplication {
     @Override
     public void initApp() {
 
-        assetManager.registerLocator(System.getProperty("user.dir") + File.separator + "/assets", FileLocator.class);
+        assetManager.registerLocator(ASSETS_PATH, FileLocator.class);
 
         stateManager.attach(new EditorCameraAppState(cameraKeymap, rootNode, guiNode));
 
@@ -161,8 +175,7 @@ public class Editor extends AbstractJmeApplication {
     }
 
     private void attachHudCoordinateAxes() {
-        this.coordinateAxes = new CoordinateAxes(assetManager);
-        guiNode.attachChild(coordinateAxes.getNode());
+        this.coordinateAxes = new CoordinateAxes(guiNode, assetManager);
     }
 
     private void attachFloorGrid() {
