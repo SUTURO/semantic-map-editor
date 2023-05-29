@@ -42,6 +42,47 @@
         <AnchorPane>
             <HBox AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                   prefHeight="40.0" styleClass="toolbar-top">
+                <Button fx:id="btnMove" prefWidth="40.0" prefHeight="40.0">
+                    <tooltip>
+                        <Tooltip text="%Application.Main.Editor.Toolbar.Button.Tooltip.Move"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnRotate" prefWidth="40.0" prefHeight="40.0">
+                    <tooltip>
+                        <Tooltip text="%Application.Main.Editor.Toolbar.Button.Tooltip.Rotate"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnScale" prefWidth="40.0" prefHeight="40.0">
+                    <tooltip>
+                        <Tooltip text="%Application.Main.Editor.Toolbar.Button.Tooltip.Scale"/>
+                    </tooltip>
+                </Button>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnNull" prefWidth="40.0" prefHeight="40.0">
+                    <tooltip>
+                        <Tooltip text="%Application.Main.Editor.Toolbar.Button.Tooltip.Null"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnBox" prefWidth="40.0" prefHeight="40.0">
+                    <tooltip>
+                        <Tooltip text="%Application.Main.Editor.Toolbar.Button.Tooltip.Box"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnSphere" prefWidth="40.0" prefHeight="40.0">
+                    <tooltip>
+                        <Tooltip text="%Application.Main.Editor.Toolbar.Button.Tooltip.Sphere"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnCylinder" prefWidth="40.0" prefHeight="40.0">
+                    <tooltip>
+                        <Tooltip text="%Application.Main.Editor.Toolbar.Button.Tooltip.Cylinder"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnPlane" prefWidth="40.0" prefHeight="40.0">
+                    <tooltip>
+                        <Tooltip text="%Application.Main.Editor.Toolbar.Button.Tooltip.Plane"/>
+                    </tooltip>
+                </Button>
             </HBox>
             <StackPane fx:id="editorView" AnchorPane.topAnchor="40.0" AnchorPane.bottomAnchor="0.0"
                        AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" styleClass="editor-container">

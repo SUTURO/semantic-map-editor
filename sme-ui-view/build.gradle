@@ -17,4 +17,7 @@ dependencies {
     implementation "org.jmonkeyengine:jme3-lwjgl3:$versions.jmonkeyengine"
     implementation project(":jmonkeyengine-javafx")
 
+    // SVG
+    implementation "org.apache.xmlgraphics:batik-transcoder:$versions.batik"
+
 }

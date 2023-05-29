@@ -7,6 +7,7 @@ ext {
     versions.javaTarget     = 17
 
     versions.assertj        = "3.24.2"
+    versions.batik          = "1.16"
     versions.commonsCli     = "1.5.0"
     versions.controlsfx     = "11.1.2"
     versions.guava          = "31.1-jre"

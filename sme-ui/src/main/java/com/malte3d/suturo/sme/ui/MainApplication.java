@@ -6,8 +6,8 @@ import com.jme3.util.LWJGLBufferAllocator;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
 import com.malte3d.suturo.commons.javafx.notification.NotificationHandler;
 import com.malte3d.suturo.commons.messages.Messages;
-import com.malte3d.suturo.sme.ui.util.UiResources;
 import com.malte3d.suturo.sme.ui.view.MainView;
+import com.malte3d.suturo.sme.ui.view.icons.Icons;
 import com.malte3d.suturo.sme.ui.viewmodel.main.ExitApplicationEvent;
 import javafx.application.Application;
 import javafx.application.HostServices;
@@ -65,7 +65,7 @@ public class MainApplication extends Application implements Provider<HostService
 
 
         stage.setTitle(Messages.getString("Application.Name"));
-        stage.getIcons().add(UiResources.APP_ICON);
+        stage.getIcons().add(Icons.APP_ICON);
         stage.setOnCloseRequest(windowEvent -> exit());
 
         Parent mainView = viewFactory.loadView(MainView.class);

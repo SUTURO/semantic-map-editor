@@ -1,24 +1,31 @@
 package com.malte3d.suturo.sme.ui.view;
 
-import com.jayfella.jfx.embedded.jfx.*;
-import com.malte3d.suturo.commons.*;
-import com.malte3d.suturo.commons.javafx.fxml.*;
-import com.malte3d.suturo.commons.javafx.notification.*;
-import com.malte3d.suturo.commons.messages.*;
-import com.malte3d.suturo.sme.ui.view.settings.*;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.*;
-import com.malte3d.suturo.sme.ui.viewmodel.main.*;
-import javafx.fxml.*;
-import javafx.scene.*;
+import com.jayfella.jfx.embedded.jfx.EditorFxImageView;
+import com.malte3d.suturo.commons.Version;
+import com.malte3d.suturo.commons.javafx.fxml.FxmlViewFactory;
+import com.malte3d.suturo.commons.javafx.notification.NotificationHandler;
+import com.malte3d.suturo.commons.messages.Messages;
+import com.malte3d.suturo.sme.ui.view.icons.Icons;
+import com.malte3d.suturo.sme.ui.view.settings.SettingsView;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.EditorInitializedEvent;
+import com.malte3d.suturo.sme.ui.viewmodel.main.MainViewModel;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.input.*;
-import javafx.scene.layout.*;
-import javafx.scene.text.*;
-import javafx.stage.*;
-import lombok.extern.slf4j.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+import javafx.stage.Window;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.inject.*;
-import java.time.*;
+import javax.inject.Inject;
+import java.time.Year;
 
 
 @Slf4j
@@ -85,6 +92,26 @@ public class MainView {
     private MenuItem menuHelpAbout;
 
     /*
+     * Toolbar
+     */
+    @FXML
+    private Button btnMove;
+    @FXML
+    private Button btnRotate;
+    @FXML
+    private Button btnScale;
+    @FXML
+    private Button btnNull;
+    @FXML
+    private Button btnBox;
+    @FXML
+    private Button btnSphere;
+    @FXML
+    private Button btnCylinder;
+    @FXML
+    private Button btnPlane;
+
+    /*
      * Editor View
      */
 
@@ -95,7 +122,7 @@ public class MainView {
 
     /*
      * Scenegraph & Properties View
-     * */
+     */
 
     @FXML
     private AnchorPane scenegraphView;
@@ -114,7 +141,22 @@ public class MainView {
     public void initialize() {
 
         initMenuView();
+        initToolbarView();
         initEditorView();
+    }
+
+    private void initToolbarView() {
+
+        btnMove.setGraphic(new ImageView(Icons.TOOLBAR_MOVE));
+        btnRotate.setGraphic(new ImageView(Icons.TOOLBAR_ROTATE));
+        btnScale.setGraphic(new ImageView(Icons.TOOLBAR_SCALE));
+
+        btnNull.setGraphic(new ImageView(Icons.TOOLBAR_NULL));
+        btnBox.setGraphic(new ImageView(Icons.TOOLBAR_BOX));
+        btnSphere.setGraphic(new ImageView(Icons.TOOLBAR_SPHERE));
+        btnCylinder.setGraphic(new ImageView(Icons.TOOLBAR_CYLINDER));
+        btnPlane.setGraphic(new ImageView(Icons.TOOLBAR_PLANE));
+
     }
 
     private void initMenuView() {
