@@ -10,6 +10,7 @@ import com.jme3.app.state.AppState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.ViewPort;
 import com.jme3.system.AppSettings;
+import javafx.scene.input.MouseEvent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -60,8 +61,11 @@ public abstract class AbstractJmeApplication extends SimpleApplication {
 
         imageView = new EditorFxImageView();
         imageView.getProperties().put(JfxMouseInput.PROP_USE_LOCAL_COORDS, true);
+        imageView.addEventHandler(MouseEvent.ANY, event -> {
 
-        imageView.setFocusTraversable(true);
+            if (!imageView.isFocused())
+                imageView.requestFocus();
+        });
         imageView.requestFocus();
 
         List<ViewPort> vps = renderManager.getPostViews();
@@ -93,8 +97,8 @@ public abstract class AbstractJmeApplication extends SimpleApplication {
     }
 
     /**
-     * Indicates that the first of two phases of the engine startup sequence is complete. It has started.
-     * The engine is ready for input, but has not yet been initialized.
+     * Indicates that the first of two phases of the engine startup sequence is complete. It has started. The engine is
+     * ready for input, but has not yet been initialized.
      *
      * @return whether the engine has started.
      */
