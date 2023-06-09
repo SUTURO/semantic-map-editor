@@ -18,7 +18,8 @@ import java.util.TimerTask;
 @Setter
 public class EditorFxImageView extends ImageView {
 
-    private static final long DEFAULT_RESIZE_DELAY = 100;
+    private static final long DEFAULT_RESIZE_DELAY_MS = 100;
+    
     private static final double MIN_SIZE = 128;
     private static final double MAX_SIZE = Double.MAX_VALUE;
 
@@ -28,7 +29,7 @@ public class EditorFxImageView extends ImageView {
     private double maxWidth = MAX_SIZE;
     private double maxHeight = MAX_SIZE;
 
-    private long resizeDelayInMs = DEFAULT_RESIZE_DELAY;
+    private long resizeDelayInMs = DEFAULT_RESIZE_DELAY_MS;
     private double lastWidth = -1;
     private double lastHeight = -1;
 
