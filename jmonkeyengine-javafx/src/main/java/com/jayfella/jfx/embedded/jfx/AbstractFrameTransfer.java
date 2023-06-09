@@ -12,12 +12,14 @@ import javafx.scene.image.PixelWriter;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 /**
  * The base implementation of a frame transfer.
  *
  * @param <T> the destination's type.
  * @author JavaSaBr
+ * @author malte3d
  */
 public abstract class AbstractFrameTransfer<T> implements FrameTransfer {
 
@@ -204,16 +206,17 @@ public abstract class AbstractFrameTransfer<T> implements FrameTransfer {
                 System.arraycopy(byteBuffer, 0, imageByteBuffer, 0, byteBuffer.length);
             }
 
-            for (int i = 0, length = width * height * 4; i < length; i += 4) {
-                byte r = imageByteBuffer[i];
-                byte g = imageByteBuffer[i + 1];
-                byte b = imageByteBuffer[i + 2];
-                byte a = imageByteBuffer[i + 3];
-                imageByteBuffer[i] = b;
-                imageByteBuffer[i + 1] = g;
-                imageByteBuffer[i + 2] = r;
-                imageByteBuffer[i + 3] = a;
-            }
+            IntStream.range(0, width * height).parallel().forEach(i -> {
+                int index = i * 4;
+                byte r = imageByteBuffer[index];
+                byte g = imageByteBuffer[index + 1];
+                byte b = imageByteBuffer[index + 2];
+                byte a = imageByteBuffer[index + 3];
+                imageByteBuffer[index] = b;
+                imageByteBuffer[index + 1] = g;
+                imageByteBuffer[index + 2] = r;
+                imageByteBuffer[index + 3] = a;
+            });
 
             PixelFormat<ByteBuffer> pixelFormat = PixelFormat.getByteBgraInstance();
 
