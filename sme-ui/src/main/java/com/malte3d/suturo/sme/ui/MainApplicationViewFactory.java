@@ -1,9 +1,6 @@
 package com.malte3d.suturo.sme.ui;
 
 import com.malte3d.suturo.commons.javafx.fxml.FxmlViewFactory;
-import com.malte3d.suturo.commons.messages.Messages;
-import com.malte3d.suturo.sme.ui.view.MainView;
-import com.malte3d.suturo.sme.ui.view.settings.SettingsView;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
@@ -26,16 +23,10 @@ public class MainApplicationViewFactory extends FxmlViewFactory {
 
     @Override
     public Object call(Class<?> viewClass) {
-
-        if (viewClass.isAssignableFrom(MainView.class))
-            return views.computeIfAbsent(MainView.class, view -> createViewInstance(MainView.class));
-        else if (viewClass.isAssignableFrom(SettingsView.class))
-            return views.computeIfAbsent(SettingsView.class, view -> createViewInstance(SettingsView.class));
-
-        throw new IllegalArgumentException(Messages.format("No view could be created for the unknown class {}", viewClass.getName()));
+        return views.computeIfAbsent(viewClass, this::createViewInstance);
     }
 
-    private static Object createViewInstance(Class<?> viewClass) {
+    private Object createViewInstance(Class<?> viewClass) {
         return InjectorProvider.get().getInstance(viewClass);
     }
 }

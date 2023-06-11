@@ -6,6 +6,9 @@ import org.apache.batik.transcoder.image.ImageTranscoder;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * Transcoder for converting svg images to buffered images.
+ */
 class BufferedImageTranscoder extends ImageTranscoder {
 
     @Getter

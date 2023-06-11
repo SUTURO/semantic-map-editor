@@ -92,11 +92,12 @@
 
         <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS" orientation="VERTICAL">
 
-            <AnchorPane fx:id="scenegraphView">
+            <StackPane fx:id="scenegraphView">
 
-            </AnchorPane>
+            </StackPane>
 
-            <AnchorPane fx:id="propertiesView">
+            <AnchorPane fx:id="propertiesView" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                        AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
 
             </AnchorPane>
 

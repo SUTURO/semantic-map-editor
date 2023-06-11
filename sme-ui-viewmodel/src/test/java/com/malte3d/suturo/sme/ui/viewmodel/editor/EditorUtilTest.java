@@ -1,6 +1,7 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
 import com.jme3.math.Vector3f;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

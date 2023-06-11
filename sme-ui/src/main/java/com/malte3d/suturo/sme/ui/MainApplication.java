@@ -8,7 +8,7 @@ import com.malte3d.suturo.commons.javafx.notification.NotificationHandler;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.ui.view.MainView;
 import com.malte3d.suturo.sme.ui.view.icons.Icons;
-import com.malte3d.suturo.sme.ui.viewmodel.main.ExitApplicationEvent;
+import com.malte3d.suturo.sme.ui.viewmodel.ExitApplicationEvent;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.application.Platform;

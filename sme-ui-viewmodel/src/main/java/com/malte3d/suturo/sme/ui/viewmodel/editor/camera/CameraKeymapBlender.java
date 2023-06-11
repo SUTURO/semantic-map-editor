@@ -13,7 +13,8 @@ import lombok.NonNull;
  * Keymapping for Blender-like camera controls.
  *
  * <p>
- * Press the middle mouse button to rotate the camera. Hold down SHIFT and press the middle mouse button to move the camera. Hold down CTRL and press the middle mouse button to zoom the camera.
+ * Press the middle mouse button to rotate the camera. Hold down SHIFT and press the middle mouse button to move the
+ * camera. Hold down CTRL and press the middle mouse button to zoom the camera.
  * </p>
  */
 public class CameraKeymapBlender extends CameraKeymap {

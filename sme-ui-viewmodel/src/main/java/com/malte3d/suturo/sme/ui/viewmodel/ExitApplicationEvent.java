@@ -1,4 +1,4 @@
-package com.malte3d.suturo.sme.ui.viewmodel.main;
+package com.malte3d.suturo.sme.ui.viewmodel;
 
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEvent;
 import lombok.EqualsAndHashCode;

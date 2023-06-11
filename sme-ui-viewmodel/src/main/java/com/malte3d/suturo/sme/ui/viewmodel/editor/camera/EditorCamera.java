@@ -265,8 +265,8 @@ public class EditorCamera implements AnalogListener, ActionListener {
      * Calculates the rotation target based on the cursor position.
      *
      * <p>
-     * It casts a ray from the cursor position and returns the first collision point with the objects of the scene graph.
-     * If no collision is found, it returns the {@link #getDefaultRotationTarget()}.
+     * It casts a ray from the cursor position and returns the first collision point with the objects of the scene
+     * graph. If no collision is found, it returns the {@link #getDefaultRotationTarget()}.
      * </p>
      *
      * @return The rotation target
@@ -292,7 +292,8 @@ public class EditorCamera implements AnalogListener, ActionListener {
     }
 
     /**
-     * The default rotation target is maximum {@link #DEFAULT_TARGET_DISTANCE}  units away from the camera, but preferably on the floor.
+     * The default rotation target is maximum {@link #DEFAULT_TARGET_DISTANCE}  units away from the camera, but
+     * preferably on the floor.
      *
      * @return The default rotation target of the camera.
      */

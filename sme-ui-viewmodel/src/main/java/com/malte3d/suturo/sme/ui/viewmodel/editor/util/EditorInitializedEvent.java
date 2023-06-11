@@ -1,4 +1,4 @@
-package com.malte3d.suturo.sme.ui.viewmodel.editor;
+package com.malte3d.suturo.sme.ui.viewmodel.editor.util;
 
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEvent;
 import lombok.EqualsAndHashCode;

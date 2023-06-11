@@ -13,6 +13,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
+/**
+ * Utility class for icons used in the application.
+ *
+ * <p>
+ * Provides utility method to convert svg images to JavaFX images.
+ * </p>
+ */
 @Slf4j
 @UtilityClass
 public class Icons {

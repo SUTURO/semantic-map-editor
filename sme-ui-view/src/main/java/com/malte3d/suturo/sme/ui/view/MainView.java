@@ -6,9 +6,10 @@ import com.malte3d.suturo.commons.javafx.fxml.FxmlViewFactory;
 import com.malte3d.suturo.commons.javafx.notification.NotificationHandler;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.ui.view.icons.Icons;
+import com.malte3d.suturo.sme.ui.view.scenegraph.ScenegraphView;
 import com.malte3d.suturo.sme.ui.view.settings.SettingsView;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.EditorInitializedEvent;
-import com.malte3d.suturo.sme.ui.viewmodel.main.MainViewModel;
+import com.malte3d.suturo.sme.ui.viewmodel.MainViewModel;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorInitializedEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -38,14 +39,14 @@ public class MainView {
     private FxmlViewFactory viewFactory;
 
     @FXML
-    Parent view;
+    private Parent view;
 
     /*
      * Menu
      */
 
     @FXML
-    public MenuBar menuBar;
+    private MenuBar menuBar;
 
     /* File */
     @FXML
@@ -71,7 +72,7 @@ public class MainView {
 
     /* Edit */
     @FXML
-    public Menu menuEdit;
+    private Menu menuEdit;
     @FXML
     private MenuItem menuEditUndo;
     @FXML
@@ -87,7 +88,7 @@ public class MainView {
 
     /* Help */
     @FXML
-    public Menu menuHelp;
+    private Menu menuHelp;
     @FXML
     private MenuItem menuHelpAbout;
 
@@ -125,7 +126,7 @@ public class MainView {
      */
 
     @FXML
-    private AnchorPane scenegraphView;
+    private StackPane scenegraphView;
 
     @FXML
     private AnchorPane propertiesView;
@@ -136,13 +137,15 @@ public class MainView {
      */
 
     @FXML
-    public HBox statusbar;
+    private HBox statusbar;
 
     public void initialize() {
 
         initMenuView();
         initToolbarView();
         initEditorView();
+
+        scenegraphView.getChildren().add(viewFactory.loadView(ScenegraphView.class));
     }
 
     private void initToolbarView() {

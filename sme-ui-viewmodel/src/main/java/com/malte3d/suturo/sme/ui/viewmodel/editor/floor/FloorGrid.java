@@ -1,12 +1,19 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor.floor;
 
-import com.jme3.asset.*;
-import com.jme3.material.*;
-import com.jme3.math.*;
-import com.jme3.renderer.*;
-import com.jme3.scene.*;
-import com.jme3.scene.debug.*;
-import lombok.*;
+import com.jme3.asset.AssetManager;
+import com.jme3.material.Material;
+import com.jme3.material.Materials;
+import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.debug.Grid;
+import lombok.Getter;
+import lombok.NonNull;
 
 /**
  * A floor grid that can be attached to a node and updated based on the camera position to change its visibility.

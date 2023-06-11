@@ -20,6 +20,7 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymap;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.EditorCameraAppState;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.floor.FloorGrid;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.hud.coordinateaxes.CoordinateAxes;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorUtil;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
