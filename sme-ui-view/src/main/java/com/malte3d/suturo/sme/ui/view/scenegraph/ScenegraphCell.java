@@ -6,12 +6,12 @@ import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primiti
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Plane;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Sphere;
 import com.malte3d.suturo.sme.ui.view.icons.Icons;
-import javafx.scene.control.cell.TextFieldTreeCell;
+import javafx.scene.control.TreeCell;
 import javafx.scene.image.ImageView;
 
-public class ScenegraphCell extends TextFieldTreeCell<SmObject> {
+public class ScenegraphCell extends TreeCell<SmObject> {
 
-    private String text;
+    private static final int ICON_SIZE = 16;
 
     @Override
     public void updateItem(SmObject object, boolean empty) {
@@ -26,13 +26,16 @@ public class ScenegraphCell extends TextFieldTreeCell<SmObject> {
 
         } else {
 
+            ImageView icon = getIcon(object);
+            icon.setFitHeight(ICON_SIZE);
+            icon.setFitWidth(ICON_SIZE);
+
             setText(object.getName().getValue());
-            setGraphic(getIcon(object));
-            setEditable(true);
+            setGraphic(icon);
 
         }
     }
-    
+
     /**
      * Returns the respective icon for the given object.
      *
