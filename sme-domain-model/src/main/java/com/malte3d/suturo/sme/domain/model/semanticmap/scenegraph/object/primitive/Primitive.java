@@ -4,7 +4,12 @@ import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Positio
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Rotation;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObject;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectName;
-import lombok.*;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 /**
@@ -16,7 +21,7 @@ import lombok.experimental.FieldDefaults;
 @ToString
 public abstract class Primitive extends SmObject {
 
-    protected Primitive(@NonNull SmObjectName name, @NonNull Position position, @NonNull Rotation rotation) {
-        super(name, position, rotation);
+    protected Primitive(@NonNull SmObjectName name, @NonNull SmObjectType type, @NonNull Position position, @NonNull Rotation rotation) {
+        super(name, type, position, rotation);
     }
 }

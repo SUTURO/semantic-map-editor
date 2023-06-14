@@ -4,7 +4,12 @@ import com.malte3d.suturo.commons.ddd.annotation.ValueObject;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Position;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Rotation;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectName;
-import lombok.*;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 /**
@@ -18,7 +23,7 @@ import lombok.experimental.FieldDefaults;
 @ToString
 public class Plane extends Primitive {
 
-    public static final Plane DEFAULT = new Plane(SmObjectName.of("Plane"), Position.ZERO, Rotation.IDENTITY, 4.0f, 4.0f);
+    public static final Plane DEFAULT = new Plane(SmObjectName.of("Plane"), Position.of(-1.5f, 0f, 0f), Rotation.FLIP_Z, 3.0f, 2.0f);
 
     /**
      * The width of the plane in meter.
@@ -30,7 +35,7 @@ public class Plane extends Primitive {
     float height;
 
     public Plane(@NonNull SmObjectName name, @NonNull Position position, @NonNull Rotation rotation, float width, float height) {
-        super(name, position, rotation);
+        super(name, SmObjectType.PLANE, position, rotation);
         this.width = width;
         this.height = height;
     }

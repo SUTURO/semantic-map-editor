@@ -1,7 +1,12 @@
 package com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object;
 
 import com.malte3d.suturo.commons.ddd.annotation.ValueObject;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 /**
@@ -22,6 +27,9 @@ public abstract class SmObject {
 
     @NonNull
     SmObjectName name;
+
+    @NonNull
+    SmObjectType type;
 
     @NonNull
     Position position;

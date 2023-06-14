@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import com.google.common.base.Preconditions;
 import com.jme3.app.DebugKeysAppState;
@@ -19,6 +20,7 @@ import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMo
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugModeChangedEvent;
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviour;
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviourChangedEvent;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObject;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymap;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymapBlender;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymapCinema4D;
@@ -29,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
  * View model for the 3D-Editor.
  */
 @Slf4j
+@Singleton
 public class EditorViewModel extends UiService {
 
     private final DomainEventHandler domainEventHandler;
@@ -74,6 +77,10 @@ public class EditorViewModel extends UiService {
         this.editor = Editor.create(cameraKeymap, initialAppStates);
 
         return editor;
+    }
+
+    public void addObjectToScene(@NonNull SmObject object) {
+        editor.addObjectToScene(object);
     }
 
     private void onDebugModeChanged(DebugModeChangedEvent event) {

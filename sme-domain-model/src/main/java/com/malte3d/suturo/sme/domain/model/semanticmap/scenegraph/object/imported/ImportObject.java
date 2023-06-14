@@ -5,7 +5,12 @@ import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Positio
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Rotation;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObject;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectName;
-import lombok.*;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 /**
@@ -20,14 +25,14 @@ import lombok.experimental.FieldDefaults;
 public class ImportObject extends SmObject {
 
     @NonNull
-    ImportObjectType type;
+    ImportObjectType importType;
 
     @NonNull
     ImportObjectPath path;
 
-    public ImportObject(@NonNull SmObjectName name, @NonNull Position position, @NonNull Rotation rotation, @NonNull ImportObjectType type, @NonNull ImportObjectPath path) {
-        super(name, position, rotation);
-        this.type = type;
+    public ImportObject(@NonNull SmObjectName name, @NonNull Position position, @NonNull Rotation rotation, @NonNull ImportObjectType importType, @NonNull ImportObjectPath path) {
+        super(name, SmObjectType.IMPORT, position, rotation);
+        this.importType = importType;
         this.path = path;
     }
 }

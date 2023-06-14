@@ -1,18 +1,36 @@
 package com.malte3d.suturo.sme.ui.view;
 
+import java.time.Year;
+
+import javax.inject.Inject;
+
 import com.jayfella.jfx.embedded.jfx.EditorFxImageView;
 import com.malte3d.suturo.commons.Version;
 import com.malte3d.suturo.commons.javafx.fxml.FxmlViewFactory;
 import com.malte3d.suturo.commons.javafx.notification.NotificationHandler;
 import com.malte3d.suturo.commons.messages.Messages;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.general.NullObject;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Box;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Cylinder;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Plane;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Sphere;
 import com.malte3d.suturo.sme.ui.view.icons.Icons;
 import com.malte3d.suturo.sme.ui.view.scenegraph.ScenegraphView;
 import com.malte3d.suturo.sme.ui.view.settings.SettingsView;
 import com.malte3d.suturo.sme.ui.viewmodel.MainViewModel;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.EditorViewModel;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorInitializedEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -25,15 +43,15 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Window;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.inject.Inject;
-import java.time.Year;
-
 
 @Slf4j
 public class MainView {
 
     @Inject
-    private MainViewModel viewModel;
+    private MainViewModel mainViewModel;
+
+    @Inject
+    private EditorViewModel editorViewModel;
 
     @Inject
     private FxmlViewFactory viewFactory;
@@ -155,11 +173,19 @@ public class MainView {
         btnScale.setGraphic(new ImageView(Icons.TOOLBAR_SCALE));
 
         btnNull.setGraphic(new ImageView(Icons.TOOLBAR_NULL));
-        btnBox.setGraphic(new ImageView(Icons.TOOLBAR_BOX));
-        btnSphere.setGraphic(new ImageView(Icons.TOOLBAR_SPHERE));
-        btnCylinder.setGraphic(new ImageView(Icons.TOOLBAR_CYLINDER));
-        btnPlane.setGraphic(new ImageView(Icons.TOOLBAR_PLANE));
+        btnNull.setOnAction(event -> editorViewModel.addObjectToScene(NullObject.DEFAULT));
 
+        btnBox.setGraphic(new ImageView(Icons.TOOLBAR_BOX));
+        btnBox.setOnAction(event -> editorViewModel.addObjectToScene(Box.DEFAULT));
+
+        btnSphere.setGraphic(new ImageView(Icons.TOOLBAR_SPHERE));
+        btnSphere.setOnAction(event -> editorViewModel.addObjectToScene(Sphere.DEFAULT));
+
+        btnCylinder.setGraphic(new ImageView(Icons.TOOLBAR_CYLINDER));
+        btnCylinder.setOnAction(event -> editorViewModel.addObjectToScene(Cylinder.DEFAULT));
+
+        btnPlane.setGraphic(new ImageView(Icons.TOOLBAR_PLANE));
+        btnPlane.setOnAction(event -> editorViewModel.addObjectToScene(Plane.DEFAULT));
     }
 
     private void initMenuView() {
@@ -179,7 +205,7 @@ public class MainView {
         menuFileClose.setOnAction(event -> showHelloWorldNotification());
 
         menuFileSettings.setOnAction(event -> openSettings());
-        menuFileExit.setOnAction(event -> viewModel.exitApplication());
+        menuFileExit.setOnAction(event -> mainViewModel.exitApplication());
 
         /* TODO: Actual implementation for file menu  */
         menuFileNew.setDisable(true);
@@ -218,17 +244,17 @@ public class MainView {
         view.setOnKeyPressed(event -> {
 
             if (event.getCode() == KeyCode.F3)
-                viewModel.toggleDebugMode();
+                mainViewModel.toggleDebugMode();
         });
 
-        viewModel.getDomainEventHandler().register(EditorInitializedEvent.class, () -> editorViewProgress.setVisible(false));
+        mainViewModel.getDomainEventHandler().register(EditorInitializedEvent.class, () -> editorViewProgress.setVisible(false));
 
-        viewModel.loadEditor().thenConsume(editor -> {
+        mainViewModel.loadEditor().thenConsume(editor -> {
 
             EditorFxImageView editorImageView = editor.getImageView();
 
             editorView.getChildren().add(editorImageView);
-            viewModel.getDomainEventHandler().raise(new EditorInitializedEvent());
+            mainViewModel.getDomainEventHandler().raise(new EditorInitializedEvent());
         });
     }
 
@@ -252,7 +278,7 @@ public class MainView {
     private void openHelpAboutDialog() {
 
         Hyperlink copyrightOwnerLink = new Hyperlink(Messages.getString("Application.Help.About.CopyrightOwner"));
-        copyrightOwnerLink.setOnAction(event -> viewModel.openCopyrightOwnerUrl());
+        copyrightOwnerLink.setOnAction(event -> mainViewModel.openCopyrightOwnerUrl());
 
         TextFlow copyrightText = new TextFlow(
                 new Text(Messages.getString("Application.Help.About.Copyright", Year.now().getValue())),

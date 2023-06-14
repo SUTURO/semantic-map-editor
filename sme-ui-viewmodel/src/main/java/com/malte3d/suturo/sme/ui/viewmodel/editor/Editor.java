@@ -11,14 +11,21 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.material.Materials;
+import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Cylinder;
+import com.jme3.scene.shape.Quad;
+import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObject;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymap;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.EditorCameraAppState;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.floor.FloorGrid;
@@ -51,6 +58,8 @@ public class Editor extends AbstractJmeApplication {
 
     private static final Vector3f FRAME_ORIGIN = Vector3f.ZERO;
 
+    public static final String OBJECT_TYPE = "OBJECT_TYPE";
+
     @NonNull
     private Class<? extends CameraKeymap> cameraKeymap;
 
@@ -59,7 +68,7 @@ public class Editor extends AbstractJmeApplication {
 
     private FloorGrid floorGrid;
 
-    private Node box;
+    private Node debugBox;
 
     /**
      * Use the factory method to create a new instance of the 3D-Editor.
@@ -150,10 +159,62 @@ public class Editor extends AbstractJmeApplication {
     @Override
     public void simpleUpdate(float tpf) {
 
-        box.rotate(tpf * .2f, tpf * .3f, tpf * .4f);
+        debugBox.rotate(tpf * .2f, tpf * .3f, tpf * .4f);
 
         floorGrid.update(cam);
         coordinateAxes.update(cam);
+    }
+
+    public void addObjectToScene(@NonNull SmObject object) {
+
+        if (object instanceof com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Box box)
+            attachBox(box);
+        else if (object instanceof com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Sphere sphere)
+            attachSphere(sphere);
+        else if (object instanceof com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Cylinder cylinder)
+            attachCylinder(cylinder);
+        else if (object instanceof com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Plane plane)
+            attachPlane(plane);
+        else
+            log.error("Unsupported object type: {}", object.getType());
+    }
+
+    private void attachBox(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Box object) {
+        Box mesh = new Box(object.getWidth(), object.getHeight(), object.getDepth());
+        attachObject(mesh, object);
+    }
+
+    private void attachCylinder(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Cylinder object) {
+        Cylinder mesh = new Cylinder(32, 32, object.getRadius(), object.getHeight(), true);
+        attachObject(mesh, object);
+    }
+
+    private void attachSphere(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Sphere object) {
+        Sphere mesh = new Sphere(32, 32, object.getRadius());
+        attachObject(mesh, object);
+    }
+
+    private void attachPlane(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Plane object) {
+        Quad mesh = new Quad(object.getWidth(), object.getHeight());
+        attachObject(mesh, object);
+    }
+
+    private void attachObject(Mesh mesh, SmObject object) {
+
+        Geometry geometry = new Geometry(object.getName().getValue(), mesh);
+        geometry.setUserData(OBJECT_TYPE, object.getType().eternalId);
+
+        Material material = createDefaultMaterial();
+
+        if (object.getType().equals(SmObjectType.PLANE))
+            material.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
+
+        geometry.setMaterial(material);
+
+        geometry.setLocalTranslation(object.getPosition().getX(), object.getPosition().getY(), object.getPosition().getZ());
+        geometry.setLocalRotation(new Quaternion(object.getRotation().getX(), object.getRotation().getY(), object.getRotation().getZ(), object.getRotation().getW()));
+
+        rootNode.attachChild(geometry);
     }
 
     private void attachCoordinateAxes(Node node) {
@@ -188,19 +249,37 @@ public class Editor extends AbstractJmeApplication {
 
         Texture texture = assetManager.loadTexture("com/jme3/app/Monkey.png");
 
-        Geometry debugBox = new Geometry("Box", new Box(0.5f, 0.5f, 0.5f));
-        debugBox.setMaterial(new Material(assetManager, Materials.PBR));
-        debugBox.getMaterial().setTexture("BaseColorMap", texture);
-        debugBox.getMaterial().setColor("BaseColor", ColorRGBA.White);
-        debugBox.getMaterial().setFloat("Roughness", 0.001f);
-        debugBox.getMaterial().setFloat("Metallic", 0.001f);
+        Geometry debugBoxMesh = new Geometry("Box", new Box(0.5f, 0.5f, 0.5f));
+        debugBoxMesh.setMaterial(new Material(assetManager, Materials.PBR));
+        debugBoxMesh.getMaterial().setTexture("BaseColorMap", texture);
+        debugBoxMesh.getMaterial().setColor("BaseColor", ColorRGBA.White);
+        debugBoxMesh.getMaterial().setFloat("Roughness", 0.001f);
+        debugBoxMesh.getMaterial().setFloat("Metallic", 0.001f);
 
-        box = new Node("box");
-        box.attachChild(debugBox);
-        box.move(0, 2, 0);
-        attachCoordinateAxes(box);
+        this.debugBox = new Node("box");
+        this.debugBox.attachChild(debugBoxMesh);
+        this.debugBox.move(0, 2, 0);
+        attachCoordinateAxes(this.debugBox);
 
-        rootNode.attachChild(box);
+        rootNode.attachChild(this.debugBox);
+    }
+
+    private Material createDefaultMaterial() {
+
+        Material material = new Material(assetManager, Materials.PBR);
+        material.setColor("BaseColor", ColorRGBA.Gray);
+        material.setFloat("Roughness", 0.001f);
+        material.setFloat("Metallic", 0.001f);
+
+        return material;
+    }
+
+    private Material createDefaultUnshadedMaterial(ColorRGBA color) {
+
+        Material material = new Material(assetManager, Materials.UNSHADED);
+        material.setColor("Color", color);
+
+        return material;
     }
 
 }

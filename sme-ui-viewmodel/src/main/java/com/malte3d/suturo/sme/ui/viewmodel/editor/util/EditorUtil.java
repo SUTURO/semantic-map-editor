@@ -3,6 +3,7 @@ package com.malte3d.suturo.sme.ui.viewmodel.editor.util;
 import com.google.common.base.Preconditions;
 import com.jme3.math.Vector3f;
 import com.malte3d.suturo.commons.javafx.fxml.Color;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Rotation;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
@@ -26,5 +27,15 @@ public class EditorUtil {
                 Integer.valueOf(hexColorValue.substring(2, 4), 16) / 255f,
                 Integer.valueOf(hexColorValue.substring(4, 6), 16) / 255f
         );
+    }
+
+    public static Vector3f toNormalVector(Rotation rotation) {
+
+        float magnitude = (float) Math.sqrt(rotation.getX() * rotation.getX() + rotation.getY() * rotation.getY() + rotation.getZ() * rotation.getZ() + rotation.getW() * rotation.getW());
+        float x = rotation.getX() / magnitude;
+        float y = rotation.getY() / magnitude;
+        float z = rotation.getZ() / magnitude;
+
+        return new Vector3f(x, y, z);
     }
 }

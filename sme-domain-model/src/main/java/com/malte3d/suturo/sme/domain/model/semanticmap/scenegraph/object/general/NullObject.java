@@ -5,6 +5,7 @@ import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Positio
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Rotation;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObject;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectName;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -35,6 +36,6 @@ public class NullObject extends SmObject {
     public static final NullObject ROOT = new NullObject(SmObjectName.of("ROOT"), Position.ZERO, Rotation.IDENTITY);
 
     public NullObject(@NonNull SmObjectName name, @NonNull Position position, @NonNull Rotation rotation) {
-        super(name, position, rotation);
+        super(name, SmObjectType.NULL, position, rotation);
     }
 }

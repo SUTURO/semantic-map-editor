@@ -1,5 +1,11 @@
 package com.malte3d.suturo.sme.ui.viewmodel;
 
+import java.util.concurrent.Executor;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
 import com.malte3d.suturo.commons.javafx.service.CompletableFutureTask;
 import com.malte3d.suturo.commons.javafx.service.GlobalExecutor;
@@ -15,12 +21,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import java.util.concurrent.Executor;
-
 @Slf4j
 @Getter
+@Singleton
 public class MainViewModel extends UiService {
 
     private final DomainEventHandler domainEventHandler;

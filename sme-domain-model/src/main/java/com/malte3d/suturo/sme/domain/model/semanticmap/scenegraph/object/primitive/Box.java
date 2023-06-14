@@ -4,7 +4,12 @@ import com.malte3d.suturo.commons.ddd.annotation.ValueObject;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Position;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Rotation;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectName;
-import lombok.*;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 /**
@@ -18,7 +23,7 @@ import lombok.experimental.FieldDefaults;
 @ToString
 public class Box extends Primitive {
 
-    public static final Box DEFAULT = new Box(SmObjectName.of("Box"), Position.ZERO, Rotation.IDENTITY, 1.0f, 1.0f, 1.0f);
+    public static final Box DEFAULT = new Box(SmObjectName.of("Box"), Position.of(0f, 1f, 0f), Rotation.IDENTITY, 1.0f, 1.0f, 1.0f);
 
     /**
      * The width of the box in meter.
@@ -34,7 +39,7 @@ public class Box extends Primitive {
     float depth;
 
     public Box(@NonNull SmObjectName name, @NonNull Position position, @NonNull Rotation rotation, float width, float height, float depth) {
-        super(name, position, rotation);
+        super(name, SmObjectType.BOX, position, rotation);
         this.width = width;
         this.height = height;
         this.depth = depth;
