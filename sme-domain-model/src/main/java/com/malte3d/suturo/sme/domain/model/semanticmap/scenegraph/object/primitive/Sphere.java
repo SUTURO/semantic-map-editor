@@ -5,11 +5,7 @@ import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Positio
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Rotation;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectName;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 /**
@@ -23,7 +19,7 @@ import lombok.experimental.FieldDefaults;
 @ToString
 public class Sphere extends Primitive {
 
-    public static final Sphere DEFAULT = new Sphere(SmObjectName.of("Sphere"), Position.of(0f, 1f, 0f), Rotation.IDENTITY, 1.0f);
+    public static final Sphere DEFAULT = new Sphere(SmObjectName.of("Sphere"), Position.ZERO, Rotation.IDENTITY, 0.5f);
 
     /**
      * The radius of the sphere in meter.

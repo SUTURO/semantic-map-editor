@@ -1,9 +1,6 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
 
-import java.io.File;
-import java.util.Collection;
-
 import com.jayfella.jfx.embedded.AbstractJmeApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.plugins.FileLocator;
@@ -13,7 +10,6 @@ import com.jme3.material.Material;
 import com.jme3.material.Materials;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
@@ -24,6 +20,7 @@ import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Position;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObject;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymap;
@@ -33,6 +30,9 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.hud.coordinateaxes.CoordinateA
 import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorUtil;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.File;
+import java.util.Collection;
 
 /**
  * The Editor is the main entry point for the 3D-Editor.
@@ -180,41 +180,63 @@ public class Editor extends AbstractJmeApplication {
     }
 
     private void attachBox(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Box object) {
-        Box mesh = new Box(object.getWidth(), object.getHeight(), object.getDepth());
-        attachObject(mesh, object);
+
+        Box mesh = new Box(object.getWidth() / 2, object.getHeight() / 2, object.getDepth() / 2);
+
+        Geometry geometry = createGeometry(mesh, object);
+        geometry.setLocalTranslation(EditorUtil.toVector3f(object.getPosition()));
+        geometry.setLocalRotation(EditorUtil.toQuaternion(object.getRotation()));
+
+        rootNode.attachChild(geometry);
     }
 
     private void attachCylinder(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Cylinder object) {
+
         Cylinder mesh = new Cylinder(32, 32, object.getRadius(), object.getHeight(), true);
-        attachObject(mesh, object);
+
+        Geometry geometry = createGeometry(mesh, object);
+        geometry.setLocalTranslation(EditorUtil.toVector3f(object.getPosition()));
+        geometry.setLocalRotation(EditorUtil.toQuaternion(object.getRotation()));
+
+        rootNode.attachChild(geometry);
     }
 
     private void attachSphere(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Sphere object) {
+
         Sphere mesh = new Sphere(32, 32, object.getRadius());
-        attachObject(mesh, object);
+        
+        Geometry geometry = createGeometry(mesh, object);
+        geometry.setLocalTranslation(EditorUtil.toVector3f(object.getPosition()));
+        geometry.setLocalRotation(EditorUtil.toQuaternion(object.getRotation()));
+
+        rootNode.attachChild(geometry);
     }
 
     private void attachPlane(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Plane object) {
+
         Quad mesh = new Quad(object.getWidth(), object.getHeight());
-        attachObject(mesh, object);
+
+        Geometry geometry = createGeometry(mesh, object);
+        Position position = object.getPosition();
+        geometry.setLocalTranslation(position.getX() - object.getWidth() / 2, position.getY() - object.getHeight() / 2, position.getZ());
+        geometry.setLocalRotation(EditorUtil.toQuaternion(object.getRotation()));
+
+        rootNode.attachChild(geometry);
     }
 
-    private void attachObject(Mesh mesh, SmObject object) {
+    private Geometry createGeometry(Mesh mesh, SmObject object) {
 
         Geometry geometry = new Geometry(object.getName().getValue(), mesh);
         geometry.setUserData(OBJECT_TYPE, object.getType().eternalId);
 
         Material material = createDefaultMaterial();
 
-        if (object.getType().equals(SmObjectType.PLANE))
+        if (SmObjectType.PLANE.equals(object.getType()))
             material.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
 
         geometry.setMaterial(material);
 
-        geometry.setLocalTranslation(object.getPosition().getX(), object.getPosition().getY(), object.getPosition().getZ());
-        geometry.setLocalRotation(new Quaternion(object.getRotation().getX(), object.getRotation().getY(), object.getRotation().getZ(), object.getRotation().getW()));
-
-        rootNode.attachChild(geometry);
+        return geometry;
     }
 
     private void attachCoordinateAxes(Node node) {

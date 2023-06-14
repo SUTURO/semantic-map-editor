@@ -16,14 +16,14 @@ public class Rotation {
     /**
      * Identity quaternion, that represents no rotation.
      */
-    public static final Rotation IDENTITY = Rotation.of(1, 0, 0, 0);
-    public static final Rotation FLIP_X = Rotation.of(0, 1, 0, 0);
-    public static final Rotation FLIP_Y = Rotation.of(0, 0, 1, 0);
-    public static final Rotation FLIP_Z = Rotation.of(0, 0, 0, 1);
+    public static final Rotation IDENTITY = Rotation.of(0, 0, 0, 1);
+    public static final Rotation FLIP_X = Rotation.of(1, 0, 0, 0);
+    public static final Rotation FLIP_Y = Rotation.of(0, 1, 0, 0);
+    public static final Rotation FLIP_Z = Rotation.of(0, 0, 1, 0);
 
     float x;
     float y;
     float z;
     float w;
-    
+
 }

@@ -1,8 +1,10 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor.util;
 
 import com.google.common.base.Preconditions;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.malte3d.suturo.commons.javafx.fxml.Color;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Position;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Rotation;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -29,7 +31,15 @@ public class EditorUtil {
         );
     }
 
-    public static Vector3f toNormalVector(Rotation rotation) {
+    public static Quaternion toQuaternion(@NonNull Rotation rotation) {
+        return new Quaternion(rotation.getX(), rotation.getY(), rotation.getZ(), rotation.getW());
+    }
+
+    public static Vector3f toVector3f(@NonNull Position position) {
+        return new Vector3f(position.getX(), position.getY(), position.getZ());
+    }
+
+    public static Vector3f toNormalVector3f(@NonNull Rotation rotation) {
 
         float magnitude = (float) Math.sqrt(rotation.getX() * rotation.getX() + rotation.getY() * rotation.getY() + rotation.getZ() * rotation.getZ() + rotation.getW() * rotation.getW());
         float x = rotation.getX() / magnitude;

@@ -5,11 +5,7 @@ import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Positio
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Rotation;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectName;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 /**
@@ -23,7 +19,10 @@ import lombok.experimental.FieldDefaults;
 @ToString
 public class Box extends Primitive {
 
-    public static final Box DEFAULT = new Box(SmObjectName.of("Box"), Position.of(0f, 1f, 0f), Rotation.IDENTITY, 1.0f, 1.0f, 1.0f);
+    /**
+     * A default box that is positioned at the origin above the floor.
+     */
+    public static final Box DEFAULT = new Box(SmObjectName.of("Box"), Position.of(0f, 0.5f, 0f), Rotation.IDENTITY, 1.0f, 1.0f, 1.0f);
 
     /**
      * The width of the box in meter.

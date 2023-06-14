@@ -5,11 +5,7 @@ import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Positio
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Rotation;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectName;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 /**
@@ -23,7 +19,7 @@ import lombok.experimental.FieldDefaults;
 @ToString
 public class Cylinder extends Primitive {
 
-    public static final Cylinder DEFAULT = new Cylinder(SmObjectName.of("Cylinder"), Position.of(0f, 0.5f, 0f), Rotation.IDENTITY, 2.0f, 0.5f);
+    public static final Cylinder DEFAULT = new Cylinder(SmObjectName.of("Cylinder"), Position.of(0f, 0f, 0f), Rotation.IDENTITY, 1.0f, 0.25f);
 
     /**
      * The height of the cylinder in meter.

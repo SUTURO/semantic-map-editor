@@ -5,11 +5,7 @@ import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Positio
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Rotation;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectName;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 /**
@@ -23,7 +19,10 @@ import lombok.experimental.FieldDefaults;
 @ToString
 public class Plane extends Primitive {
 
-    public static final Plane DEFAULT = new Plane(SmObjectName.of("Plane"), Position.of(-1.5f, 0f, 0f), Rotation.FLIP_Z, 3.0f, 2.0f);
+    /**
+     * A default plane that is positioned at the origin above the floor.
+     */
+    public static final Plane DEFAULT = new Plane(SmObjectName.of("Plane"), Position.of(0f, 0.5f, 0f), Rotation.IDENTITY, 2.0f, 1.0f);
 
     /**
      * The width of the plane in meter.
