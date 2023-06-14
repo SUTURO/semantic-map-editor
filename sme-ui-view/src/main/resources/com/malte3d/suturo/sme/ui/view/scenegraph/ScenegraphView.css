@@ -1,3 +1,30 @@
-.tree-view .cell {
+.scenegraph-table {
     -fx-background-color: background_color;
+}
+
+.scenegraph-table .placeholder {
+    -fx-background-color: background_color;
+}
+
+.scenegraph-table .column-header-background {
+    visibility: hidden;
+    -fx-padding: -1em;
+}
+
+.scenegraph-table .tree-table-row-cell {
+    -fx-background-color: background_color !important;
+}
+
+.scenegraph-table .cell {
+    -fx-background-color: background_color;
+}
+
+.scenegraph-column {
+    -fx-background-color: background_color;
+    -fx-border-color: light_color_dark;
+    -fx-border-width: 0 1px 0 0;
+}
+
+.scenegraph-column:last-visible {
+    -fx-border-width: 0 0 0 0;
 }

@@ -5,7 +5,11 @@ import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Positio
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Rotation;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObject;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectName;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 /**
@@ -24,6 +28,11 @@ import lombok.experimental.FieldDefaults;
 public class NullObject extends SmObject {
 
     public static final NullObject DEFAULT = new NullObject(SmObjectName.of("Null"), Position.ZERO, Rotation.IDENTITY);
+
+    /**
+     * The root object of the scene graph.
+     */
+    public static final NullObject ROOT = new NullObject(SmObjectName.of("ROOT"), Position.ZERO, Rotation.IDENTITY);
 
     public NullObject(@NonNull SmObjectName name, @NonNull Position position, @NonNull Rotation rotation) {
         super(name, position, rotation);
