@@ -1,5 +1,9 @@
 package com.malte3d.suturo.sme.ui;
 
+import java.util.Objects;
+
+import org.lwjgl.system.Configuration;
+
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.jme3.util.LWJGLBufferAllocator;
@@ -18,9 +22,6 @@ import javafx.stage.Stage;
 import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
 import lombok.extern.slf4j.Slf4j;
-import org.lwjgl.system.Configuration;
-
-import java.util.Objects;
 
 /**
  * Entry point for the application
@@ -62,7 +63,6 @@ public class MainApplication extends Application implements Provider<HostService
     public void start(Stage stage) {
 
         NotificationHandler.stage = stage;
-
 
         stage.setTitle(Messages.getString("Application.Name"));
         stage.getIcons().add(Icons.APP_ICON);

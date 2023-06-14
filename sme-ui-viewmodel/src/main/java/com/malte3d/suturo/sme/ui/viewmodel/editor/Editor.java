@@ -1,6 +1,9 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
 
+import java.io.File;
+import java.util.Collection;
+
 import com.jayfella.jfx.embedded.AbstractJmeApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.plugins.FileLocator;
@@ -23,9 +26,6 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.hud.coordinateaxes.CoordinateA
 import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorUtil;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.File;
-import java.util.Collection;
 
 /**
  * The Editor is the main entry point for the 3D-Editor.
