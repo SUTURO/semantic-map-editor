@@ -7,7 +7,11 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
-import com.jme3.math.*;
+import com.jme3.math.Plane;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture2D;
@@ -56,7 +60,7 @@ public class EditorCamera implements AnalogListener, ActionListener {
     private final Picture crosshair;
 
     @NonNull
-    private final Node rootNode;
+    private final Node scenegraph;
     @NonNull
     private final Node guiNode;
 
@@ -69,11 +73,11 @@ public class EditorCamera implements AnalogListener, ActionListener {
 
     private CameraKeymap keymap;
 
-    public EditorCamera(@NonNull Camera cam, @NonNull AssetManager assetManager, @NonNull InputManager inputManager, @NonNull Class<? extends CameraKeymap> keymap, @NonNull Node rootNode, @NonNull Node guiNode) {
+    public EditorCamera(@NonNull Camera cam, @NonNull AssetManager assetManager, @NonNull InputManager inputManager, @NonNull Class<? extends CameraKeymap> keymap, @NonNull Node scenegraph, @NonNull Node guiNode) {
 
         this.cam = cam;
         this.inputManager = inputManager;
-        this.rootNode = rootNode;
+        this.scenegraph = scenegraph;
         this.guiNode = guiNode;
 
         setKeymap(keymap);
@@ -194,8 +198,7 @@ public class EditorCamera implements AnalogListener, ActionListener {
      */
     private void moveCamera(float value, Vector3f axis) {
 
-        Vector3f delta = axis.clone();
-        delta.multLocal(value * moveSpeed);
+        Vector3f delta = axis.mult(value * moveSpeed);
 
         cam.setLocation(cam.getLocation().add(delta));
     }
@@ -236,7 +239,7 @@ public class EditorCamera implements AnalogListener, ActionListener {
         float delta = value * zoomSpeed;
 
         Vector3f cursor2d = cam.getScreenCoordinates(target);
-        Vector3f dir = cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 1f).subtractLocal(target);
+        Vector3f dir = cam.getWorldCoordinates(new Vector2f(cursor2d.x, cursor2d.y), 1f).subtract(target);
         dir.normalizeLocal();
 
         cam.setLocation(cam.getLocation().add(dir.mult(delta)));
@@ -265,8 +268,8 @@ public class EditorCamera implements AnalogListener, ActionListener {
      * Calculates the rotation target based on the cursor position.
      *
      * <p>
-     * It casts a ray from the cursor position and returns the first collision point with the objects of the scene
-     * graph. If no collision is found, it returns the {@link #getDefaultRotationTarget()}.
+     * It casts a ray from the cursor position and returns the first collision point with the objects of the scene graph. If no collision is found, it returns
+     * the {@link #getDefaultRotationTarget()}.
      * </p>
      *
      * @return The rotation target
@@ -282,7 +285,7 @@ public class EditorCamera implements AnalogListener, ActionListener {
         Ray ray = new Ray(cursor3d, dir);
         CollisionResults results = new CollisionResults();
 
-        rootNode.collideWith(ray, results);
+        scenegraph.collideWith(ray, results);
         CollisionResult closestCollision = results.getClosestCollision();
 
         if (closestCollision == null)
@@ -292,8 +295,7 @@ public class EditorCamera implements AnalogListener, ActionListener {
     }
 
     /**
-     * The default rotation target is maximum {@link #DEFAULT_TARGET_DISTANCE}  units away from the camera, but
-     * preferably on the floor.
+     * The default rotation target is maximum {@link #DEFAULT_TARGET_DISTANCE}  units away from the camera, but preferably on the floor.
      *
      * @return The default rotation target of the camera.
      */

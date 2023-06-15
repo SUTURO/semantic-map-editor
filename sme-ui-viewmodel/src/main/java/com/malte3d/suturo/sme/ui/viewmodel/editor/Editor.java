@@ -70,6 +70,8 @@ public class Editor extends AbstractJmeApplication {
 
     private Node debugBox;
 
+    private final Node scenegraph = new Node("SceneGraph");
+
     /**
      * Use the factory method to create a new instance of the 3D-Editor.
      *
@@ -138,7 +140,7 @@ public class Editor extends AbstractJmeApplication {
 
         assetManager.registerLocator(ASSETS_PATH, FileLocator.class);
 
-        stateManager.attach(new EditorCameraAppState(cameraKeymap, rootNode, guiNode));
+        stateManager.attach(new EditorCameraAppState(cameraKeymap, scenegraph, guiNode));
 
         viewPort.setBackgroundColor(BACKGROUND_COLOR);
 
@@ -154,6 +156,7 @@ public class Editor extends AbstractJmeApplication {
         attachCoordinateAxes(rootNode);
 
         attachDebugBox();
+        rootNode.attachChild(scenegraph);
     }
 
     @Override
@@ -187,7 +190,7 @@ public class Editor extends AbstractJmeApplication {
         geometry.setLocalTranslation(EditorUtil.toVector3f(object.getPosition()));
         geometry.setLocalRotation(EditorUtil.toQuaternion(object.getRotation()));
 
-        rootNode.attachChild(geometry);
+        scenegraph.attachChild(geometry);
     }
 
     private void attachCylinder(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Cylinder object) {
@@ -198,7 +201,7 @@ public class Editor extends AbstractJmeApplication {
         geometry.setLocalTranslation(EditorUtil.toVector3f(object.getPosition()));
         geometry.setLocalRotation(EditorUtil.toQuaternion(object.getRotation()));
 
-        rootNode.attachChild(geometry);
+        scenegraph.attachChild(geometry);
     }
 
     private void attachSphere(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Sphere object) {
@@ -209,7 +212,7 @@ public class Editor extends AbstractJmeApplication {
         geometry.setLocalTranslation(EditorUtil.toVector3f(object.getPosition()));
         geometry.setLocalRotation(EditorUtil.toQuaternion(object.getRotation()));
 
-        rootNode.attachChild(geometry);
+        scenegraph.attachChild(geometry);
     }
 
     private void attachPlane(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Plane object) {
@@ -221,7 +224,7 @@ public class Editor extends AbstractJmeApplication {
         geometry.setLocalTranslation(position.getX() - object.getWidth() / 2, position.getY() - object.getHeight() / 2, position.getZ());
         geometry.setLocalRotation(EditorUtil.toQuaternion(object.getRotation()));
 
-        rootNode.attachChild(geometry);
+        scenegraph.attachChild(geometry);
     }
 
     private Geometry createGeometry(Mesh mesh, SmObject object) {
@@ -274,12 +277,13 @@ public class Editor extends AbstractJmeApplication {
         Material material = new Material(assetManager, Materials.LIGHTING);
         material.setTexture("DiffuseMap", texture);
 
-        Geometry debugBoxMesh = new Geometry("Box", new Box(0.5f, 0.5f, 0.5f));
+        Geometry debugBoxMesh = new Geometry("DebugBoxGeom", new Box(0.5f, 0.5f, 0.5f));
         debugBoxMesh.setMaterial(material);
 
-        this.debugBox = new Node("box");
+        this.debugBox = new Node("DebugBoxNode");
         this.debugBox.attachChild(debugBoxMesh);
         this.debugBox.move(0, 2, 0);
+
         attachCoordinateAxes(this.debugBox);
 
         rootNode.attachChild(this.debugBox);

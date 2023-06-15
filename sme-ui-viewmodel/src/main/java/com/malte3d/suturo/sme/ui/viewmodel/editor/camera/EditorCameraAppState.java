@@ -11,7 +11,7 @@ import lombok.NonNull;
 public class EditorCameraAppState extends AbstractAppState {
 
     @NonNull
-    private final Node rootNode;
+    private final Node scenegraph;
     @NonNull
     private final Node guiNode;
 
@@ -23,9 +23,9 @@ public class EditorCameraAppState extends AbstractAppState {
     @Getter
     private EditorCamera camera;
 
-    public EditorCameraAppState(@NonNull Class<? extends CameraKeymap> keymap, @NonNull Node rootNode, @NonNull Node guiNode) {
+    public EditorCameraAppState(@NonNull Class<? extends CameraKeymap> keymap, @NonNull Node scenegraph, @NonNull Node guiNode) {
         this.keymap = keymap;
-        this.rootNode = rootNode;
+        this.scenegraph = scenegraph;
         this.guiNode = guiNode;
     }
 
@@ -45,7 +45,7 @@ public class EditorCameraAppState extends AbstractAppState {
         super.initialize(stateManager, app);
 
         this.inputManager = app.getInputManager();
-        this.camera = new EditorCamera(app.getCamera(), app.getAssetManager(), inputManager, keymap, rootNode, guiNode);
+        this.camera = new EditorCamera(app.getCamera(), app.getAssetManager(), inputManager, keymap, scenegraph, guiNode);
     }
 
     @Override
