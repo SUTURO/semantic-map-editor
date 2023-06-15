@@ -1,6 +1,9 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
 
+import java.io.File;
+import java.util.Collection;
+
 import com.jayfella.jfx.embedded.AbstractJmeApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.plugins.FileLocator;
@@ -30,9 +33,6 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.hud.coordinateaxes.CoordinateA
 import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorUtil;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.File;
-import java.util.Collection;
 
 /**
  * The Editor is the main entry point for the 3D-Editor.
@@ -142,8 +142,8 @@ public class Editor extends AbstractJmeApplication {
 
         viewPort.setBackgroundColor(BACKGROUND_COLOR);
 
-        AmbientLight ambientLight = new AmbientLight(ColorRGBA.White.mult(1.3f));
-        DirectionalLight directionalLight = new DirectionalLight(new Vector3f(-1, -1, -1), ColorRGBA.White);
+        AmbientLight ambientLight = new AmbientLight(ColorRGBA.White);
+        DirectionalLight directionalLight = new DirectionalLight(new Vector3f(-1.3f, -1.1f, -1.2f), ColorRGBA.White);
 
         rootNode.addLight(ambientLight);
         rootNode.addLight(directionalLight);
@@ -204,7 +204,7 @@ public class Editor extends AbstractJmeApplication {
     private void attachSphere(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Sphere object) {
 
         Sphere mesh = new Sphere(32, 32, object.getRadius());
-        
+
         Geometry geometry = createGeometry(mesh, object);
         geometry.setLocalTranslation(EditorUtil.toVector3f(object.getPosition()));
         geometry.setLocalRotation(EditorUtil.toQuaternion(object.getRotation()));
@@ -271,12 +271,11 @@ public class Editor extends AbstractJmeApplication {
 
         Texture texture = assetManager.loadTexture("com/jme3/app/Monkey.png");
 
+        Material material = new Material(assetManager, Materials.LIGHTING);
+        material.setTexture("DiffuseMap", texture);
+
         Geometry debugBoxMesh = new Geometry("Box", new Box(0.5f, 0.5f, 0.5f));
-        debugBoxMesh.setMaterial(new Material(assetManager, Materials.PBR));
-        debugBoxMesh.getMaterial().setTexture("BaseColorMap", texture);
-        debugBoxMesh.getMaterial().setColor("BaseColor", ColorRGBA.White);
-        debugBoxMesh.getMaterial().setFloat("Roughness", 0.001f);
-        debugBoxMesh.getMaterial().setFloat("Metallic", 0.001f);
+        debugBoxMesh.setMaterial(material);
 
         this.debugBox = new Node("box");
         this.debugBox.attachChild(debugBoxMesh);
@@ -288,10 +287,12 @@ public class Editor extends AbstractJmeApplication {
 
     private Material createDefaultMaterial() {
 
-        Material material = new Material(assetManager, Materials.PBR);
-        material.setColor("BaseColor", ColorRGBA.Gray);
-        material.setFloat("Roughness", 0.001f);
-        material.setFloat("Metallic", 0.001f);
+        Material material = new Material(assetManager, Materials.LIGHTING);
+        material.setBoolean("UseMaterialColors", true);
+        material.setColor("Diffuse", ColorRGBA.DarkGray);
+        material.setColor("Ambient", ColorRGBA.DarkGray);
+        material.setColor("Specular", ColorRGBA.White);
+        material.setFloat("Shininess", 1f);
 
         return material;
     }
