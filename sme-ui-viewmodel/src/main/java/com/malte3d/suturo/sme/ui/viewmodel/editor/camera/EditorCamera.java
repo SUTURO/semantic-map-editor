@@ -69,7 +69,7 @@ public class EditorCamera implements AnalogListener, ActionListener {
     /**
      * The target of the camera
      */
-    private Vector3f target = Vector3f.ZERO;
+    private Vector3f target = Vector3f.ZERO.clone();
 
     private CameraKeymap keymap;
 
@@ -306,7 +306,7 @@ public class EditorCamera implements AnalogListener, ActionListener {
 
         Ray ray = new Ray(origin, dir);
 
-        Vector3f intersectionPoint = Vector3f.ZERO;
+        Vector3f intersectionPoint = Vector3f.ZERO.clone();
         ray.intersectsWherePlane(floor, intersectionPoint);
 
         if (intersectionPoint.distance(origin) > DEFAULT_TARGET_DISTANCE)
