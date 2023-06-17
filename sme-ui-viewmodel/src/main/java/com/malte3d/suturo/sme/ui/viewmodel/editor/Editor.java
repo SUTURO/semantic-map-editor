@@ -17,20 +17,24 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
+import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Position;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObject;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymap;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.EditorCameraAppState;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.event.ObjectAttachedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.floor.FloorGrid;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.hud.coordinateaxes.CoordinateAxes;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorUtil;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,6 +65,9 @@ public class Editor extends AbstractJmeApplication {
     public static final String OBJECT_TYPE = "OBJECT_TYPE";
 
     @NonNull
+    private final DomainEventHandler domainEventHandler;
+
+    @NonNull
     private Class<? extends CameraKeymap> cameraKeymap;
 
     /* HUD */
@@ -70,19 +77,26 @@ public class Editor extends AbstractJmeApplication {
 
     private Node debugBox;
 
+    @Getter
     private final Node scenegraph = new Node("SceneGraph");
 
     /**
      * Use the factory method to create a new instance of the 3D-Editor.
      *
-     * @param cameraKeymap  The keymap to be used for the camera
-     * @param initialStates The initial states to be added to the 3D-Editor
+     * @param domainEventHandler The domain event handler to be used
+     * @param keymap             The keymap to be used for the camera
+     * @param initialStates      The initial states to be added to the 3D-Editor
      */
-    private Editor(@NonNull Class<? extends CameraKeymap> cameraKeymap, @NonNull AppState... initialStates) {
+    private Editor(
+            @NonNull DomainEventHandler domainEventHandler,
+            @NonNull Class<? extends CameraKeymap> keymap,
+            @NonNull AppState... initialStates) {
 
         super(initialStates);
 
-        this.cameraKeymap = cameraKeymap;
+        this.domainEventHandler = domainEventHandler;
+
+        this.cameraKeymap = keymap;
     }
 
     /**
@@ -91,13 +105,17 @@ public class Editor extends AbstractJmeApplication {
      * <b>Warning:</b> This call is blocking an may take some time to complete.
      * </p>
      *
-     * @param keymap        The keymap to be used for the camera
-     * @param initialStates The initial states to be added to the 3D-Editor
+     * @param domainEventHandler The domain event handler to be used
+     * @param keymap             The keymap to be used for the camera
+     * @param initialStates      The initial states to be added to the 3D-Editor
      * @return A new initialized instance of the 3D-Editor
      */
-    public static Editor create(@NonNull Class<? extends CameraKeymap> keymap, @NonNull AppState... initialStates) {
+    public static Editor create(
+            @NonNull DomainEventHandler domainEventHandler,
+            @NonNull Class<? extends CameraKeymap> keymap,
+            @NonNull AppState... initialStates) {
 
-        Editor editor = new Editor(keymap, initialStates);
+        Editor editor = new Editor(domainEventHandler, keymap, initialStates);
 
         try {
 
@@ -120,8 +138,12 @@ public class Editor extends AbstractJmeApplication {
      * @param initialStates The initial states to be added to the 3D-Editor
      * @return A new initialized instance of the 3D-Editor
      */
-    public static Editor create(@NonNull Class<? extends CameraKeymap> keymap, @NonNull Collection<AppState> initialStates) {
-        return create(keymap, initialStates.toArray(new AppState[0]));
+    public static Editor create(
+            @NonNull DomainEventHandler domainEventHandler,
+            @NonNull Class<? extends CameraKeymap> keymap,
+            @NonNull Collection<AppState> initialStates
+    ) {
+        return create(domainEventHandler, keymap, initialStates.toArray(new AppState[0]));
     }
 
     /**
@@ -156,6 +178,8 @@ public class Editor extends AbstractJmeApplication {
         attachCoordinateAxes(rootNode);
 
         attachDebugBox();
+
+        scenegraph.setUserData(OBJECT_TYPE, SmObjectType.NULL.eternalId);
         rootNode.attachChild(scenegraph);
     }
 
@@ -190,7 +214,7 @@ public class Editor extends AbstractJmeApplication {
         geometry.setLocalTranslation(EditorUtil.toVector3f(object.getPosition()));
         geometry.setLocalRotation(EditorUtil.toQuaternion(object.getRotation()));
 
-        scenegraph.attachChild(geometry);
+        attachObjectToScenegraph(geometry);
     }
 
     private void attachCylinder(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Cylinder object) {
@@ -201,7 +225,7 @@ public class Editor extends AbstractJmeApplication {
         geometry.setLocalTranslation(EditorUtil.toVector3f(object.getPosition()));
         geometry.setLocalRotation(EditorUtil.toQuaternion(object.getRotation()));
 
-        scenegraph.attachChild(geometry);
+        attachObjectToScenegraph(geometry);
     }
 
     private void attachSphere(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Sphere object) {
@@ -212,7 +236,7 @@ public class Editor extends AbstractJmeApplication {
         geometry.setLocalTranslation(EditorUtil.toVector3f(object.getPosition()));
         geometry.setLocalRotation(EditorUtil.toQuaternion(object.getRotation()));
 
-        scenegraph.attachChild(geometry);
+        attachObjectToScenegraph(geometry);
     }
 
     private void attachPlane(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Plane object) {
@@ -224,7 +248,14 @@ public class Editor extends AbstractJmeApplication {
         geometry.setLocalTranslation(position.getX() - object.getWidth() / 2, position.getY() - object.getHeight() / 2, position.getZ());
         geometry.setLocalRotation(EditorUtil.toQuaternion(object.getRotation()));
 
-        scenegraph.attachChild(geometry);
+        attachObjectToScenegraph(geometry);
+    }
+
+    private void attachObjectToScenegraph(Spatial object) {
+
+        scenegraph.attachChild(object);
+
+        domainEventHandler.raise(new ObjectAttachedEvent(object));
     }
 
     private Geometry createGeometry(Mesh mesh, SmObject object) {

@@ -11,6 +11,7 @@ import com.google.common.base.Preconditions;
 import com.jme3.app.DebugKeysAppState;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppState;
+import com.jme3.scene.Node;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
 import com.malte3d.suturo.commons.javafx.service.GlobalExecutor;
 import com.malte3d.suturo.commons.javafx.service.UiService;
@@ -59,7 +60,19 @@ public class EditorViewModel extends UiService {
         domainEventHandler.register(CameraBehaviourChangedEvent.class, this::onCameraBehaviourChanged);
     }
 
+    /**
+     * Initializes the editor.
+     *
+     * <p>
+     * Should only be called once.
+     * </p>
+     *
+     * @return The editor instance.
+     */
     public Editor initializeEditor() {
+
+        if (editor != null)
+            throw new IllegalStateException("Editor already initialized.");
 
         Settings settings = settingsService.get();
 
@@ -74,13 +87,17 @@ public class EditorViewModel extends UiService {
         CameraBehaviour cameraBehaviour = settings.getKeymap().getCameraBehaviour();
         Class<? extends CameraKeymap> cameraKeymap = cameraBehaviour == CameraBehaviour.BLENDER ? CameraKeymapBlender.class : CameraKeymapCinema4D.class;
 
-        this.editor = Editor.create(cameraKeymap, initialAppStates);
+        this.editor = Editor.create(domainEventHandler, cameraKeymap, initialAppStates);
 
         return editor;
     }
 
     public void addObjectToScene(@NonNull SmObject object) {
         editor.addObjectToScene(object);
+    }
+
+    public Node getScenegraph() {
+        return editor.getScenegraph();
     }
 
     private void onDebugModeChanged(DebugModeChangedEvent event) {
