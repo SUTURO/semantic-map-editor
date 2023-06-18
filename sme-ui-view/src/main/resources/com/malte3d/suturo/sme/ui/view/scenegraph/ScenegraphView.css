@@ -15,16 +15,17 @@
     -fx-background-color: background_color !important;
 }
 
-.scenegraph-table .cell {
-    -fx-background-color: background_color;
+.scenegraph-table .tree-table-row-cell:drag-target {
+    -fx-background-color: light_color_dark !important;
+    -fx-border-color: gray_color;
+    -fx-border-width: 0 0 2px 0;
 }
 
-.scenegraph-column {
-    -fx-background-color: background_color;
+.scenegraph-table .scenegraph-column {
     -fx-border-color: light_color_dark;
     -fx-border-width: 0 1px 0 0;
 }
 
-.scenegraph-column:last-visible {
+.scenegraph-table .scenegraph-column:last-visible {
     -fx-border-width: 0 0 0 0;
 }

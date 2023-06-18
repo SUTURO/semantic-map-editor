@@ -26,15 +26,15 @@ public class Icons {
 
     public static final Image APP_ICON = new Image(Objects.requireNonNull(Icons.class.getResourceAsStream("semantic-map-editor-app-icon-128.png")));
 
-    public static final Image TOOLBAR_MOVE = svgToImage("move.svg");
-    public static final Image TOOLBAR_ROTATE = svgToImage("rotate.svg");
-    public static final Image TOOLBAR_SCALE = svgToImage("scale.svg");
+    public static final Image TRANSFORM_MOVE = svgToImage("move.svg");
+    public static final Image TRANSFORM_ROTATE = svgToImage("rotate.svg");
+    public static final Image TRANSFORM_SCALE = svgToImage("scale.svg");
 
-    public static final Image TOOLBAR_NULL = svgToImage("stack.svg");
-    public static final Image TOOLBAR_BOX = svgToImage("box.svg");
-    public static final Image TOOLBAR_SPHERE = svgToImage("circle.svg");
-    public static final Image TOOLBAR_CYLINDER = svgToImage("cylinder.svg");
-    public static final Image TOOLBAR_PLANE = svgToImage("plane.svg");
+    public static final Image OBJECT_NULL = svgToImage("stack.svg");
+    public static final Image OBJECT_BOX = svgToImage("box.svg");
+    public static final Image OBJECT_SPHERE = svgToImage("circle.svg");
+    public static final Image OBJECT_CYLINDER = svgToImage("cylinder.svg");
+    public static final Image OBJECT_PLANE = svgToImage("plane.svg");
 
     private static Image svgToImage(@NonNull String path) {
 

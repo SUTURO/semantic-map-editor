@@ -8,6 +8,7 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorInitializedEvent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -27,6 +28,7 @@ import java.util.Optional;
 public class ScenegraphView {
 
     private static final DataFormat SERIALIZED_MIME_TYPE = new DataFormat("application/x-java-serialized-object");
+    private static final PseudoClass DRAG_TARGET = PseudoClass.getPseudoClass("drag-target");
 
     @Inject
     private EditorViewModel editorViewModel;
@@ -66,8 +68,9 @@ public class ScenegraphView {
         scenegraphTable.getSelectionModel().setCellSelectionEnabled(true);
 
         objectColumn.setCellValueFactory(param -> new ReadOnlyStringWrapper(param.getValue().getValue().getName()));
-        objectColumn.prefWidthProperty().bind(view.widthProperty().multiply(0.7));
+        objectColumn.setCellFactory(param -> new ScenegraphViewCell());
 
+        objectColumn.prefWidthProperty().bind(view.widthProperty().multiply(0.7));
         visibilityColumn.prefWidthProperty().bind(view.widthProperty().multiply(0.25));
 
         setupScrolling();
@@ -108,6 +111,29 @@ public class ScenegraphView {
             }
         });
 
+        row.setOnDragEntered(event -> {
+
+            Dragboard db = event.getDragboard();
+
+            if (acceptable(db, row)) {
+
+                if (!row.isEmpty())
+                    row.pseudoClassStateChanged(DRAG_TARGET, true);
+
+                event.consume();
+            }
+        });
+
+        row.setOnDragExited(event -> {
+
+            Dragboard db = event.getDragboard();
+
+            if (acceptable(db, row)) {
+                row.pseudoClassStateChanged(DRAG_TARGET, false);
+                event.consume();
+            }
+        });
+
         row.setOnDragOver(event -> {
 
             Dragboard db = event.getDragboard();
@@ -133,7 +159,7 @@ public class ScenegraphView {
                 scenegraphTable.getSelectionModel().clearSelection();
                 scenegraphTable.getSelectionModel().select(item);
                 scenegraphTable.refresh();
-                
+
                 event.setDropCompleted(true);
                 event.consume();
             }

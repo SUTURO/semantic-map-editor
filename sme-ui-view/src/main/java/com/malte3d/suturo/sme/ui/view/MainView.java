@@ -1,9 +1,5 @@
 package com.malte3d.suturo.sme.ui.view;
 
-import java.time.Year;
-
-import javax.inject.Inject;
-
 import com.jayfella.jfx.embedded.jfx.EditorFxImageView;
 import com.malte3d.suturo.commons.Version;
 import com.malte3d.suturo.commons.javafx.fxml.FxmlViewFactory;
@@ -22,15 +18,7 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.EditorViewModel;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorInitializedEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -42,6 +30,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Window;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.inject.Inject;
+import java.time.Year;
 
 
 @Slf4j
@@ -168,23 +159,23 @@ public class MainView {
 
     private void initToolbarView() {
 
-        btnMove.setGraphic(new ImageView(Icons.TOOLBAR_MOVE));
-        btnRotate.setGraphic(new ImageView(Icons.TOOLBAR_ROTATE));
-        btnScale.setGraphic(new ImageView(Icons.TOOLBAR_SCALE));
+        btnMove.setGraphic(new ImageView(Icons.TRANSFORM_MOVE));
+        btnRotate.setGraphic(new ImageView(Icons.TRANSFORM_ROTATE));
+        btnScale.setGraphic(new ImageView(Icons.TRANSFORM_SCALE));
 
-        btnNull.setGraphic(new ImageView(Icons.TOOLBAR_NULL));
+        btnNull.setGraphic(new ImageView(Icons.OBJECT_NULL));
         btnNull.setOnAction(event -> editorViewModel.addObjectToScene(NullObject.DEFAULT));
 
-        btnBox.setGraphic(new ImageView(Icons.TOOLBAR_BOX));
+        btnBox.setGraphic(new ImageView(Icons.OBJECT_BOX));
         btnBox.setOnAction(event -> editorViewModel.addObjectToScene(Box.DEFAULT));
 
-        btnSphere.setGraphic(new ImageView(Icons.TOOLBAR_SPHERE));
+        btnSphere.setGraphic(new ImageView(Icons.OBJECT_SPHERE));
         btnSphere.setOnAction(event -> editorViewModel.addObjectToScene(Sphere.DEFAULT));
 
-        btnCylinder.setGraphic(new ImageView(Icons.TOOLBAR_CYLINDER));
+        btnCylinder.setGraphic(new ImageView(Icons.OBJECT_CYLINDER));
         btnCylinder.setOnAction(event -> editorViewModel.addObjectToScene(Cylinder.DEFAULT));
 
-        btnPlane.setGraphic(new ImageView(Icons.TOOLBAR_PLANE));
+        btnPlane.setGraphic(new ImageView(Icons.OBJECT_PLANE));
         btnPlane.setOnAction(event -> editorViewModel.addObjectToScene(Plane.DEFAULT));
     }
 
