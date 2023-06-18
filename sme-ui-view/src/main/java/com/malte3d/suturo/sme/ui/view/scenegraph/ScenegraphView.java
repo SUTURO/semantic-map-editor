@@ -8,15 +8,11 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorInitializedEvent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +24,8 @@ import java.util.Optional;
 public class ScenegraphView {
 
     private static final DataFormat SERIALIZED_MIME_TYPE = new DataFormat("application/x-java-serialized-object");
-    private static final PseudoClass DRAG_TARGET = PseudoClass.getPseudoClass("drag-target");
+
+    private static final double DRAG_TARGET_THRESHOLD = 0.9;
 
     @Inject
     private EditorViewModel editorViewModel;
@@ -111,25 +108,12 @@ public class ScenegraphView {
             }
         });
 
-        row.setOnDragEntered(event -> {
-
-            Dragboard db = event.getDragboard();
-
-            if (acceptable(db, row)) {
-
-                if (!row.isEmpty())
-                    row.pseudoClassStateChanged(DRAG_TARGET, true);
-
-                event.consume();
-            }
-        });
-
         row.setOnDragExited(event -> {
 
             Dragboard db = event.getDragboard();
 
-            if (acceptable(db, row)) {
-                row.pseudoClassStateChanged(DRAG_TARGET, false);
+            if (acceptable(db, row, event)) {
+                activateDragTargetState(row, null);
                 event.consume();
             }
         });
@@ -138,7 +122,24 @@ public class ScenegraphView {
 
             Dragboard db = event.getDragboard();
 
-            if (acceptable(db, row)) {
+            if (acceptable(db, row, event)) {
+
+                if (!row.isEmpty()) {
+
+                    DragTarget<Spatial> target = getDragTarget(row, event);
+
+                    if (target.isBetween()) {
+
+                        if (target.isNext())
+                            activateDragTargetState(row, DragTargetState.NEXT);
+                        else
+                            activateDragTargetState(row, DragTargetState.PREVIOUS);
+
+                    } else {
+
+                        activateDragTargetState(row, DragTargetState.THIS);
+                    }
+                }
 
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                 event.consume();
@@ -149,12 +150,13 @@ public class ScenegraphView {
 
             Dragboard db = event.getDragboard();
 
-            if (acceptable(db, row)) {
+            if (acceptable(db, row, event)) {
 
                 int rowIndex = (Integer) db.getContent(SERIALIZED_MIME_TYPE);
                 TreeItem<Spatial> item = scenegraphTable.getTreeItem(rowIndex);
                 item.getParent().getChildren().remove(item);
-                getDragTarget(row).getChildren().add(item);
+                DragTarget<Spatial> target = getDragTarget(row, event);
+                target.getItem().getChildren().add(target.getIndex(), item);
 
                 scenegraphTable.getSelectionModel().clearSelection();
                 scenegraphTable.getSelectionModel().select(item);
@@ -168,6 +170,17 @@ public class ScenegraphView {
         return row;
     }
 
+    private void activateDragTargetState(TreeTableRow<Spatial> row, DragTargetState activeState) {
+
+        for (DragTargetState state : DragTargetState.values()) {
+
+            row.pseudoClassStateChanged(state.pseudoClass, false);
+
+            if (activeState != null && state == activeState)
+                row.pseudoClassStateChanged(state.pseudoClass, true);
+        }
+    }
+
     /**
      * Checks if the row is acceptable to be dragged to
      *
@@ -175,9 +188,7 @@ public class ScenegraphView {
      * @param row The row
      * @return true, if the row is acceptable to be dragged to
      */
-    private boolean acceptable(Dragboard db, TreeTableRow<Spatial> row) {
-
-        boolean result = false;
+    private boolean acceptable(Dragboard db, TreeTableRow<Spatial> row, DragEvent event) {
 
         if (db.hasContent(SERIALIZED_MIME_TYPE)) {
 
@@ -185,27 +196,51 @@ public class ScenegraphView {
 
             if (row.getIndex() != index) {
 
-                TreeItem<Spatial> target = getDragTarget(row);
+                DragTarget<Spatial> target = getDragTarget(row, event);
                 TreeItem<Spatial> item = scenegraphTable.getTreeItem(index);
-                result = !isParent(item, target);
+
+                return !item.equals(target.getItem()) && !isParent(item, target.getItem());
             }
         }
 
-        return result;
+        return false;
     }
 
     /**
      * Gets the drag target for the given row
      *
-     * @param row The row
+     * @param row   The row
+     * @param event The drag event
      * @return The drag target for the row
      */
-    private TreeItem<Spatial> getDragTarget(TreeTableRow<Spatial> row) {
+    private DragTarget<Spatial> getDragTarget(TreeTableRow<Spatial> row, DragEvent event) {
 
         if (row.isEmpty())
-            return scenegraphTable.getRoot();
+            return new DragTarget<>(scenegraphTable.getRoot().getChildren().size(), scenegraphTable.getRoot());
 
-        return row.getTreeItem();
+        double height = row.getHeight();
+        double localY = event.getY();
+
+        double max = height * DRAG_TARGET_THRESHOLD;
+        double min = height - max;
+
+        if (localY < min)
+            return new DragTarget<>(getRowIndexInParent(row), row.getTreeItem().getParent(), true, false);
+        else if (localY > max)
+            return new DragTarget<>(getRowIndexInParent(row) + 1, row.getTreeItem().getParent(), true, true);
+
+        return new DragTarget<>(0, row.getTreeItem());
+    }
+
+    private int getRowIndexInParent(TreeTableRow<Spatial> row) {
+
+        TreeItem<Spatial> treeItem = row.getTreeItem();
+        TreeItem<Spatial> parent = treeItem.getParent();
+
+        if (parent != null)
+            return parent.getChildren().indexOf(treeItem);
+
+        return 0;
     }
 
     /**

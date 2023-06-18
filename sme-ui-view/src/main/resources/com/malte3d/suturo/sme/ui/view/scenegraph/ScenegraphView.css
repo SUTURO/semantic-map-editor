@@ -17,6 +17,14 @@
 
 .scenegraph-table .tree-table-row-cell:drag-target {
     -fx-background-color: light_color_dark !important;
+}
+
+.scenegraph-table .tree-table-row-cell:drag-target-previous {
+    -fx-border-color: gray_color;
+    -fx-border-width: 2px 0 0 0;
+}
+
+.scenegraph-table .tree-table-row-cell:drag-target-next {
     -fx-border-color: gray_color;
     -fx-border-width: 0 0 2px 0;
 }
