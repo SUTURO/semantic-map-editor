@@ -2,6 +2,7 @@ package com.malte3d.suturo.sme.ui.view.scenegraph;
 
 import com.jme3.scene.Spatial;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.general.NullObject;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.EditorViewModel;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.ObjectAttachedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorInitializedEvent;
@@ -145,6 +146,10 @@ public class ScenegraphView {
 
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                 event.consume();
+
+            } else {
+
+                activateDragTargetState(row, null);
             }
         });
 
@@ -184,7 +189,11 @@ public class ScenegraphView {
     }
 
     /**
-     * Checks if the row is acceptable to be dragged to
+     * Checks if the row is acceptable to be dragged to.
+     *
+     * <p>
+     * Geometries can't be dragged as children to other geometries, only to nodes ({@link NullObject}s).
+     * </p>
      *
      * @param db  The dragboard
      * @param row The row
@@ -192,20 +201,19 @@ public class ScenegraphView {
      */
     private boolean acceptable(Dragboard db, TreeTableRow<Spatial> row, DragEvent event) {
 
-        if (db.hasContent(SERIALIZED_MIME_TYPE)) {
+        if (row.isEmpty() || !db.hasContent(SERIALIZED_MIME_TYPE))
+            return true;
 
-            int index = (Integer) db.getContent(SERIALIZED_MIME_TYPE);
+        int index = (Integer) db.getContent(SERIALIZED_MIME_TYPE);
 
-            if (row.getIndex() != index) {
+        if (row.getIndex() == index)
+            return false;
 
-                DragTarget<Spatial> target = getDragTarget(row, event);
-                TreeItem<Spatial> item = scenegraphTable.getTreeItem(index);
+        DragTarget<Spatial> target = getDragTarget(row, event);
+        TreeItem<Spatial> item = scenegraphTable.getTreeItem(index);
+        boolean isParent = isParent(item, target.getItem());
 
-                return !item.equals(target.getItem()) && !isParent(item, target.getItem());
-            }
-        }
-
-        return false;
+        return !isParent && (target.isBetween() || row.getItem() instanceof com.jme3.scene.Node);
     }
 
     /**
@@ -250,9 +258,12 @@ public class ScenegraphView {
      *
      * @param parent The potential parent node
      * @param child  The child node
-     * @return true, if parent is a parent of child
+     * @return true, if parent is a parent of child or if parent and child are equal
      */
     private boolean isParent(TreeItem<Spatial> parent, TreeItem<Spatial> child) {
+
+        if (parent.equals(child))
+            return true;
 
         boolean result = false;
 
@@ -303,4 +314,22 @@ public class ScenegraphView {
         return Optional.empty();
     }
 
+    private Spatial getCurrentView() {
+        return treeToSpatial(root);
+    }
+
+    private Spatial treeToSpatial(TreeItem<Spatial> tree) {
+
+        Spatial spatial = tree.getValue();
+
+        if (spatial instanceof com.jme3.scene.Node node) {
+
+            node.detachAllChildren();
+
+            for (TreeItem<Spatial> child : tree.getChildren())
+                node.attachChild(treeToSpatial(child));
+        }
+
+        return spatial;
+    }
 }
