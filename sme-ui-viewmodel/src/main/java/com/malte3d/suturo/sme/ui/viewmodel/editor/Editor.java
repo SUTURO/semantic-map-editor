@@ -1,9 +1,6 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
 
-import java.io.File;
-import java.util.Collection;
-
 import com.jayfella.jfx.embedded.AbstractJmeApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.plugins.FileLocator;
@@ -37,6 +34,9 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.File;
+import java.util.Collection;
 
 /**
  * The Editor is the main entry point for the 3D-Editor.
@@ -166,7 +166,7 @@ public class Editor extends AbstractJmeApplication {
 
         viewPort.setBackgroundColor(BACKGROUND_COLOR);
 
-        AmbientLight ambientLight = new AmbientLight(ColorRGBA.White);
+        AmbientLight ambientLight = new AmbientLight(ColorRGBA.Gray);
         DirectionalLight directionalLight = new DirectionalLight(new Vector3f(-1.3f, -1.1f, -1.2f), ColorRGBA.White);
 
         rootNode.addLight(ambientLight);
@@ -194,6 +194,8 @@ public class Editor extends AbstractJmeApplication {
 
     public void addObjectToScene(@NonNull SmObject object) {
 
+        if (object instanceof com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.general.NullObject nullObject)
+            attachNullObject(nullObject);
         if (object instanceof com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Box box)
             attachBox(box);
         else if (object instanceof com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Sphere sphere)
@@ -204,6 +206,16 @@ public class Editor extends AbstractJmeApplication {
             attachPlane(plane);
         else
             log.error("Unsupported object type: {}", object.getType());
+    }
+
+    private void attachNullObject(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.general.NullObject object) {
+
+        Node node = new Node(object.getName().getValue());
+        node.setUserData(OBJECT_TYPE, object.getType().eternalId);
+        node.setLocalTranslation(EditorUtil.toVector3f(object.getPosition()));
+        node.setLocalRotation(EditorUtil.toQuaternion(object.getRotation()));
+
+        attachObjectToScenegraph(node);
     }
 
     private void attachBox(@NonNull com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Box object) {

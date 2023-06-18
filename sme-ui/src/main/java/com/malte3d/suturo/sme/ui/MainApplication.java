@@ -1,12 +1,9 @@
 package com.malte3d.suturo.sme.ui;
 
-import java.util.Objects;
-
-import org.lwjgl.system.Configuration;
-
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.jme3.util.LWJGLBufferAllocator;
+import com.malte3d.suturo.commons.Version;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
 import com.malte3d.suturo.commons.javafx.notification.NotificationHandler;
 import com.malte3d.suturo.commons.messages.Messages;
@@ -22,6 +19,9 @@ import javafx.stage.Stage;
 import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
 import lombok.extern.slf4j.Slf4j;
+import org.lwjgl.system.Configuration;
+
+import java.util.Objects;
 
 /**
  * Entry point for the application
@@ -44,7 +44,7 @@ public class MainApplication extends Application implements Provider<HostService
      */
     public MainApplication() {
 
-        log.info("Starting application");
+        log.info("Starting application (v{})", Version.getVersion());
 
         setupJfxLwjglEnvironment();
 
