@@ -61,7 +61,7 @@ public class ScenegraphView {
         scenegraphTable.setEditable(true);
         scenegraphTable.setRowFactory(this::rowFactory);
 
-        scenegraphTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        scenegraphTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         scenegraphTable.getSelectionModel().setCellSelectionEnabled(true);
 
         objectColumn.setCellValueFactory(param -> new ReadOnlyStringWrapper(param.getValue().getValue().getName()));
@@ -99,11 +99,13 @@ public class ScenegraphView {
 
             if (!row.isEmpty()) {
 
-                Dragboard db = row.startDragAndDrop(TransferMode.MOVE);
-                db.setDragView(row.snapshot(null, null));
                 ClipboardContent cc = new ClipboardContent();
                 cc.put(SERIALIZED_MIME_TYPE, row.getIndex());
+
+                Dragboard db = row.startDragAndDrop(TransferMode.MOVE);
+                db.setDragView(row.snapshot(null, null));
                 db.setContent(cc);
+
                 event.consume();
             }
         });
