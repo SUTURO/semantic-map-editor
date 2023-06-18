@@ -7,11 +7,7 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
-import com.jme3.math.Plane;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Ray;
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
+import com.jme3.math.*;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture2D;
@@ -201,6 +197,7 @@ public class EditorCamera implements AnalogListener, ActionListener {
         Vector3f delta = axis.mult(value * moveSpeed);
 
         cam.setLocation(cam.getLocation().add(delta));
+        updateSpeed();
     }
 
     /**
@@ -227,6 +224,7 @@ public class EditorCamera implements AnalogListener, ActionListener {
         Vector3f newCamPosition = target.add(targetToCam);
 
         cam.setLocation(newCamPosition);
+        updateSpeed();
     }
 
     /**
@@ -243,6 +241,27 @@ public class EditorCamera implements AnalogListener, ActionListener {
         dir.normalizeLocal();
 
         cam.setLocation(cam.getLocation().add(dir.mult(delta)));
+        updateSpeed();
+    }
+
+
+    /**
+     * Adjusts the camera's speed based on the camera's height.
+     */
+    private void updateSpeed() {
+
+        if (FastMath.abs(cam.getLocation().getY()) < 3) {
+
+            moveSpeed = DEFAULT_MOVE_SPEED * 0.5f;
+            rotationSpeed = DEFAULT_ROTATION_SPEED * 0.75f;
+            zoomSpeed = DEFAULT_ZOOM_SPEED * 0.5f;
+
+        } else {
+
+            moveSpeed = DEFAULT_MOVE_SPEED;
+            rotationSpeed = DEFAULT_ROTATION_SPEED;
+            zoomSpeed = DEFAULT_ZOOM_SPEED;
+        }
     }
 
     /**
@@ -268,8 +287,8 @@ public class EditorCamera implements AnalogListener, ActionListener {
      * Calculates the rotation target based on the cursor position.
      *
      * <p>
-     * It casts a ray from the cursor position and returns the first collision point with the objects of the scene graph. If no collision is found, it returns
-     * the {@link #getDefaultRotationTarget()}.
+     * It casts a ray from the cursor position and returns the first collision point with the objects of the scene
+     * graph. If no collision is found, it returns the {@link #getDefaultRotationTarget()}.
      * </p>
      *
      * @return The rotation target
@@ -295,7 +314,8 @@ public class EditorCamera implements AnalogListener, ActionListener {
     }
 
     /**
-     * The default rotation target is maximum {@link #DEFAULT_TARGET_DISTANCE}  units away from the camera, but preferably on the floor.
+     * The default rotation target is maximum {@link #DEFAULT_TARGET_DISTANCE}  units away from the camera, but
+     * preferably on the floor.
      *
      * @return The default rotation target of the camera.
      */
