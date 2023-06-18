@@ -78,7 +78,7 @@ public class Editor extends AbstractJmeApplication {
     private Node debugBox;
 
     @Getter
-    private final Node scenegraph = new Node("SceneGraph");
+    private Node scenegraph = new Node("SceneGraph");
 
     /**
      * Use the factory method to create a new instance of the 3D-Editor.
@@ -190,6 +190,12 @@ public class Editor extends AbstractJmeApplication {
 
         floorGrid.update(cam);
         coordinateAxes.update(cam);
+    }
+
+    public void setScenegraph(@NonNull Node scenegraph) {
+        rootNode.detachChild(this.scenegraph);
+        this.scenegraph = scenegraph;
+        rootNode.attachChild(this.scenegraph);
     }
 
     public void addObjectToScene(@NonNull SmObject object) {

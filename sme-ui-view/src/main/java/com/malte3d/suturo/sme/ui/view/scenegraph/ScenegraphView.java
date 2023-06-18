@@ -26,7 +26,7 @@ public class ScenegraphView {
 
     private static final DataFormat SERIALIZED_MIME_TYPE = new DataFormat("application/x-java-serialized-object");
 
-    private static final double DRAG_TARGET_THRESHOLD = 0.9;
+    private static final double DRAG_TARGET_THRESHOLD = 0.85;
 
     @Inject
     private EditorViewModel editorViewModel;
@@ -167,6 +167,8 @@ public class ScenegraphView {
 
                 scenegraphTable.getSelectionModel().clearSelection();
                 scenegraphTable.getSelectionModel().select(item);
+
+                editorViewModel.setScenegraph(getCurrentView());
                 scenegraphTable.refresh();
 
                 event.setDropCompleted(true);
@@ -314,8 +316,8 @@ public class ScenegraphView {
         return Optional.empty();
     }
 
-    private Spatial getCurrentView() {
-        return treeToSpatial(root);
+    private com.jme3.scene.Node getCurrentView() {
+        return (com.jme3.scene.Node) treeToSpatial(root);
     }
 
     private Spatial treeToSpatial(TreeItem<Spatial> tree) {

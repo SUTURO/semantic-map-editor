@@ -1,12 +1,5 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Executor;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import com.google.common.base.Preconditions;
 import com.jme3.app.DebugKeysAppState;
 import com.jme3.app.StatsAppState;
@@ -27,6 +20,12 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymapBlender;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymapCinema4D;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * View model for the 3D-Editor.
@@ -98,6 +97,10 @@ public class EditorViewModel extends UiService {
 
     public Node getScenegraph() {
         return editor.getScenegraph();
+    }
+
+    public void setScenegraph(Node scenegraph) {
+        editor.enqueue(() -> editor.setScenegraph(scenegraph));
     }
 
     private void onDebugModeChanged(DebugModeChangedEvent event) {
