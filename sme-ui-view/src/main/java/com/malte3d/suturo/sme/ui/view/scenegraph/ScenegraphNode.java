@@ -1,7 +1,5 @@
 package com.malte3d.suturo.sme.ui.view.scenegraph;
 
-import java.util.List;
-
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
@@ -10,6 +8,8 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.Editor;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
+
+import java.util.List;
 
 public class ScenegraphNode extends TreeItem<Spatial> {
 
@@ -25,6 +25,7 @@ public class ScenegraphNode extends TreeItem<Spatial> {
         ImageView icon = getIcon(objectType);
         icon.setFitHeight(ICON_SIZE);
         icon.setFitWidth(ICON_SIZE);
+        setExpanded(true);
 
         setGraphic(icon);
     }

@@ -196,7 +196,7 @@ public class Editor extends AbstractJmeApplication {
 
         if (object instanceof com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.general.NullObject nullObject)
             attachNullObject(nullObject);
-        if (object instanceof com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Box box)
+        else if (object instanceof com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Box box)
             attachBox(box);
         else if (object instanceof com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Sphere sphere)
             attachSphere(sphere);
