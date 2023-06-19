@@ -1,4 +1,4 @@
-package com.malte3d.suturo.sme.ui.viewmodel.editor.floor;
+package com.malte3d.suturo.sme.ui.viewmodel.editor.scene.floor;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;

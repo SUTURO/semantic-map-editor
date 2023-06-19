@@ -1,4 +1,4 @@
-package com.malte3d.suturo.sme.ui.viewmodel.editor.hud.coordinateaxes;
+package com.malte3d.suturo.sme.ui.viewmodel.editor.scene.coordinateaxes;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
@@ -13,6 +13,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.Arrow;
+import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
 import lombok.NonNull;
 
 import java.util.HashMap;
@@ -25,7 +26,7 @@ import java.util.Map;
  * Similar to Blender/Cinema4D, the coordinate axes will be displayed on the HUD in the upper right corner.
  * </p>
  */
-public class CoordinateAxes {
+public class HudCoordinateAxes {
 
     private static final float AXES_SIZE = 20f;
     private static final float LABEL_SIZE = 12f;
@@ -37,19 +38,26 @@ public class CoordinateAxes {
     private final AssetManager assetManager;
     private final BitmapFont font;
 
-    private final Node axes = new Node("CoordinateAxes");
+    private final Node axes = new Node("HudCoordinateAxes");
     private final Map<String, Node> axesLabels = new HashMap<>();
 
-    public CoordinateAxes(@NonNull Node guiNode, @NonNull AssetManager assetManager) {
+    @NonNull
+    private DebugMode debugMode;
+
+    public HudCoordinateAxes(@NonNull DebugMode debugMode, @NonNull Node guiNode, @NonNull AssetManager assetManager) {
 
         this.assetManager = assetManager;
         this.font = assetManager.loadFont("Interface/Fonts/Default.fnt");
 
-        createAndAttachAxis(Vector3f.UNIT_X, "X", ColorRGBA.Red);
-        createAndAttachAxis(Vector3f.UNIT_Y, "Y", ColorRGBA.Green);
-        createAndAttachAxis(Vector3f.UNIT_Z, "Z", ColorRGBA.Blue);
+        this.debugMode = debugMode;
 
+        setupAxes();
         guiNode.attachChild(axes);
+    }
+
+    public void setDebugMode(@NonNull DebugMode debugMode) {
+        this.debugMode = debugMode;
+        setupAxes();
     }
 
     public void update(@NonNull Camera cam) {
@@ -62,6 +70,41 @@ public class CoordinateAxes {
 
         for (Node label : axesLabels.values())
             label.setLocalRotation(rotation);
+    }
+
+    /**
+     * Creates and attaches axes based on the current debug mode.
+     */
+    private void setupAxes() {
+
+        if (debugMode.isEnabled())
+            useJme3Axes();
+        else
+            useRosAxes();
+    }
+
+    /**
+     * Creates and attaches axes using the default JME3 coordinate system.
+     */
+    private void useJme3Axes() {
+
+        axes.detachAllChildren();
+
+        createAndAttachAxis(Vector3f.UNIT_X, "X", ColorRGBA.Red);
+        createAndAttachAxis(Vector3f.UNIT_Y, "Y", ColorRGBA.Green);
+        createAndAttachAxis(Vector3f.UNIT_Z, "Z", ColorRGBA.Blue);
+    }
+
+    /**
+     * Creates and attaches axes using the ROS coordinate system.
+     */
+    private void useRosAxes() {
+
+        axes.detachAllChildren();
+
+        createAndAttachAxis(Vector3f.UNIT_Z, "X", ColorRGBA.Red);
+        createAndAttachAxis(Vector3f.UNIT_X, "Y", ColorRGBA.Green);
+        createAndAttachAxis(Vector3f.UNIT_Y, "Z", ColorRGBA.Blue);
     }
 
     private void createAndAttachAxis(Vector3f extend, String label, ColorRGBA color) {
@@ -103,11 +146,23 @@ public class CoordinateAxes {
 
         float offset = AXES_SIZE + text.getLineHeight() / 2;
 
-        switch (label) {
-            case "X" -> labelNode.setLocalTranslation(offset, 0, 0);
-            case "Y" -> labelNode.setLocalTranslation(0, offset, 0);
-            case "Z" -> labelNode.setLocalTranslation(0, 0, offset);
+        if (debugMode.isEnabled()) {
+
+            switch (label) {
+                case "X" -> labelNode.setLocalTranslation(offset, 0, 0);
+                case "Y" -> labelNode.setLocalTranslation(0, offset, 0);
+                case "Z" -> labelNode.setLocalTranslation(0, 0, offset);
+            }
+
+        } else {
+
+            switch (label) {
+                case "X" -> labelNode.setLocalTranslation(0, 0, offset);
+                case "Y" -> labelNode.setLocalTranslation(offset, 0, 0);
+                case "Z" -> labelNode.setLocalTranslation(0, offset, 0);
+            }
         }
+
 
         return labelNode;
     }

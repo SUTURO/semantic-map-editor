@@ -20,16 +20,17 @@ import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
-import com.jme3.texture.Texture;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
+import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
+import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugModeChangedEvent;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Position;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObject;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymap;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.EditorCameraAppState;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.ObjectAttachedEvent;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.floor.FloorGrid;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.hud.coordinateaxes.CoordinateAxes;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.coordinateaxes.HudCoordinateAxes;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.floor.FloorGrid;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorUtil;
 import lombok.Getter;
 import lombok.NonNull;
@@ -60,6 +61,8 @@ public class Editor extends AbstractJmeApplication {
     private static final String ASSETS_PATH = System.getProperty("user.dir") + File.separator + "assets";
     private static final ColorRGBA BACKGROUND_COLOR = new ColorRGBA(EditorUtil.hexToVec3("#fafafa"));
 
+    private static final String COORDINATE_AXIS = "CoordinateAxis";
+
     private static final Vector3f FRAME_ORIGIN = Vector3f.ZERO;
 
     public static final String OBJECT_TYPE = "OBJECT_TYPE";
@@ -71,30 +74,40 @@ public class Editor extends AbstractJmeApplication {
     private Class<? extends CameraKeymap> cameraKeymap;
 
     /* HUD */
-    private CoordinateAxes coordinateAxes;
 
+    private DebugMode debugMode;
+
+    private HudCoordinateAxes hudCoordinateAxes;
     private FloorGrid floorGrid;
 
-    private Node debugBox;
+    private final Node axes = new Node("CoordinateAxes");
+
+    /* Scenegraph */
 
     @Getter
-    private Node scenegraph = new Node("SceneGraph");
+    private Node scenegraph = new Node("Scenegraph");
+
+    @Getter
+    private Spatial currentSelection;
 
     /**
      * Use the factory method to create a new instance of the 3D-Editor.
      *
      * @param domainEventHandler The domain event handler to be used
+     * @param debugMode          The initial debug mode to be used
      * @param keymap             The keymap to be used for the camera
      * @param initialStates      The initial states to be added to the 3D-Editor
      */
     private Editor(
             @NonNull DomainEventHandler domainEventHandler,
+            @NonNull DebugMode debugMode,
             @NonNull Class<? extends CameraKeymap> keymap,
             @NonNull AppState... initialStates) {
 
         super(initialStates);
 
         this.domainEventHandler = domainEventHandler;
+        this.debugMode = debugMode;
 
         this.cameraKeymap = keymap;
     }
@@ -106,16 +119,18 @@ public class Editor extends AbstractJmeApplication {
      * </p>
      *
      * @param domainEventHandler The domain event handler to be used
+     * @param debugMode          The initial debug mode to be used
      * @param keymap             The keymap to be used for the camera
      * @param initialStates      The initial states to be added to the 3D-Editor
      * @return A new initialized instance of the 3D-Editor
      */
     public static Editor create(
             @NonNull DomainEventHandler domainEventHandler,
+            @NonNull DebugMode debugMode,
             @NonNull Class<? extends CameraKeymap> keymap,
             @NonNull AppState... initialStates) {
 
-        Editor editor = new Editor(domainEventHandler, keymap, initialStates);
+        Editor editor = new Editor(domainEventHandler, debugMode, keymap, initialStates);
 
         try {
 
@@ -134,16 +149,19 @@ public class Editor extends AbstractJmeApplication {
      * <b>Warning:</b> This call is blocking an may take some time to complete.
      * </p>
      *
-     * @param keymap        The keymap to be used for the camera
-     * @param initialStates The initial states to be added to the 3D-Editor
+     * @param domainEventHandler The domain event handler to be used
+     * @param debugMode          The initial debug mode to be used
+     * @param keymap             The keymap to be used for the camera
+     * @param initialStates      The initial states to be added to the 3D-Editor
      * @return A new initialized instance of the 3D-Editor
      */
     public static Editor create(
             @NonNull DomainEventHandler domainEventHandler,
+            @NonNull DebugMode debugMode,
             @NonNull Class<? extends CameraKeymap> keymap,
             @NonNull Collection<AppState> initialStates
     ) {
-        return create(domainEventHandler, keymap, initialStates.toArray(new AppState[0]));
+        return create(domainEventHandler, debugMode, keymap, initialStates.toArray(new AppState[0]));
     }
 
     /**
@@ -160,6 +178,8 @@ public class Editor extends AbstractJmeApplication {
     @Override
     public void initApp() {
 
+        domainEventHandler.register(DebugModeChangedEvent.class, event -> enqueue(() -> onDebugModeChanged(event)));
+
         assetManager.registerLocator(ASSETS_PATH, FileLocator.class);
 
         stateManager.attach(new EditorCameraAppState(cameraKeymap, scenegraph, guiNode));
@@ -172,24 +192,25 @@ public class Editor extends AbstractJmeApplication {
         rootNode.addLight(ambientLight);
         rootNode.addLight(directionalLight);
 
-        attachHudCoordinateAxes();
-
-        attachFloorGrid();
-        attachCoordinateAxes(rootNode);
-
-        attachDebugBox();
+        setUpFloorGrid();
+        setUpCoordinateAxes();
+        setUpHudCoordinateAxes();
 
         scenegraph.setUserData(OBJECT_TYPE, SmObjectType.NULL.eternalId);
+
         rootNode.attachChild(scenegraph);
     }
 
     @Override
     public void simpleUpdate(float tpf) {
-
-        debugBox.rotate(tpf * .2f, tpf * .3f, tpf * .4f);
-
         floorGrid.update(cam);
-        coordinateAxes.update(cam);
+        hudCoordinateAxes.update(cam);
+    }
+
+    private void onDebugModeChanged(DebugModeChangedEvent event) {
+        this.debugMode = event.getNewDebugMode();
+        hudCoordinateAxes.setDebugMode(debugMode);
+        setUpCoordinateAxes();
     }
 
     public void setScenegraph(@NonNull Node scenegraph) {
@@ -291,11 +312,34 @@ public class Editor extends AbstractJmeApplication {
         return geometry;
     }
 
-    private void attachCoordinateAxes(Node node) {
+    private void setUpCoordinateAxes() {
+
+        rootNode.detachChild(axes);
+
+        if (debugMode.isEnabled())
+            useJme3CoordinateAxes(axes);
+        else
+            useRosCoordinateAxes(axes);
+
+        rootNode.attachChild(axes);
+    }
+
+    private void useJme3CoordinateAxes(Node node) {
+
+        while (node.detachChildNamed(COORDINATE_AXIS) != -1) ;
 
         attachCoordinateAxesShape(node, new Arrow(Vector3f.UNIT_X.mult(2)), ColorRGBA.Red);
         attachCoordinateAxesShape(node, new Arrow(Vector3f.UNIT_Y.mult(2)), ColorRGBA.Green);
         attachCoordinateAxesShape(node, new Arrow(Vector3f.UNIT_Z.mult(2)), ColorRGBA.Blue);
+    }
+
+    private void useRosCoordinateAxes(Node node) {
+
+        while (node.detachChildNamed(COORDINATE_AXIS) != -1) ;
+
+        attachCoordinateAxesShape(node, new Arrow(Vector3f.UNIT_Z.mult(2)), ColorRGBA.Red);
+        attachCoordinateAxesShape(node, new Arrow(Vector3f.UNIT_X.mult(2)), ColorRGBA.Green);
+        attachCoordinateAxesShape(node, new Arrow(Vector3f.UNIT_Y.mult(2)), ColorRGBA.Blue);
     }
 
     private void attachCoordinateAxesShape(Node node, Mesh shape, ColorRGBA color) {
@@ -303,39 +347,20 @@ public class Editor extends AbstractJmeApplication {
         Material mat = new Material(assetManager, Materials.UNSHADED);
         mat.setColor("Color", color);
 
-        Geometry coordinateAxis = new Geometry("coordinate axis", shape);
+        Geometry coordinateAxis = new Geometry(COORDINATE_AXIS, shape);
         coordinateAxis.setMaterial(mat);
         coordinateAxis.setLocalTranslation(FRAME_ORIGIN);
 
         node.attachChild(coordinateAxis);
     }
 
-    private void attachHudCoordinateAxes() {
-        this.coordinateAxes = new CoordinateAxes(guiNode, assetManager);
+    private void setUpHudCoordinateAxes() {
+        this.hudCoordinateAxes = new HudCoordinateAxes(debugMode, guiNode, assetManager);
     }
 
-    private void attachFloorGrid() {
+    private void setUpFloorGrid() {
         this.floorGrid = new FloorGrid(assetManager);
         rootNode.attachChild(floorGrid.getNode());
-    }
-
-    private void attachDebugBox() {
-
-        Texture texture = assetManager.loadTexture("com/jme3/app/Monkey.png");
-
-        Material material = new Material(assetManager, Materials.LIGHTING);
-        material.setTexture("DiffuseMap", texture);
-
-        Geometry debugBoxMesh = new Geometry("DebugBoxGeom", new Box(0.5f, 0.5f, 0.5f));
-        debugBoxMesh.setMaterial(material);
-
-        this.debugBox = new Node("DebugBoxNode");
-        this.debugBox.attachChild(debugBoxMesh);
-        this.debugBox.move(0, 2, 0);
-
-        attachCoordinateAxes(this.debugBox);
-
-        rootNode.attachChild(this.debugBox);
     }
 
     private Material createDefaultMaterial() {

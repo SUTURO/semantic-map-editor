@@ -9,6 +9,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Base class for camera keymaps.
+ */
 @RequiredArgsConstructor
 public abstract class CameraKeymap {
 

@@ -1,8 +1,6 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
 import com.google.common.base.Preconditions;
-import com.jme3.app.DebugKeysAppState;
-import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppState;
 import com.jme3.scene.Node;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
@@ -18,6 +16,7 @@ import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjec
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymap;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymapBlender;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymapCinema4D;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.util.DebugAppState;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -74,19 +73,17 @@ public class EditorViewModel extends UiService {
             throw new IllegalStateException("Editor already initialized.");
 
         Settings settings = settingsService.get();
-
+        DebugMode debugMode = settings.getAdvanced().getDebugMode();
+        
         List<AppState> initialAppStates = new ArrayList<>();
 
-        if (settings.getAdvanced().getDebugMode().isEnabled()) {
-
-            initialAppStates.add(new StatsAppState());
-            initialAppStates.add(new DebugKeysAppState());
-        }
+        if (debugMode.isEnabled())
+            initialAppStates.add(new DebugAppState(editor.getStateManager()));
 
         CameraBehaviour cameraBehaviour = settings.getKeymap().getCameraBehaviour();
         Class<? extends CameraKeymap> cameraKeymap = cameraBehaviour == CameraBehaviour.BLENDER ? CameraKeymapBlender.class : CameraKeymapCinema4D.class;
 
-        this.editor = Editor.create(domainEventHandler, cameraKeymap, initialAppStates);
+        this.editor = Editor.create(domainEventHandler, debugMode, cameraKeymap, initialAppStates);
 
         return editor;
     }
@@ -109,16 +106,10 @@ public class EditorViewModel extends UiService {
 
         DebugMode debugMode = event.getNewDebugMode();
 
-        if (debugMode.isEnabled()) {
-
-            editor.getStateManager().attach(new StatsAppState());
-            editor.getStateManager().attach(new DebugKeysAppState());
-
-        } else {
-
-            editor.getStateManager().detach(editor.getStateManager().getState(StatsAppState.class));
-            editor.getStateManager().detach(editor.getStateManager().getState(DebugKeysAppState.class));
-        }
+        if (debugMode.isEnabled())
+            editor.getStateManager().attach(new DebugAppState(editor.getStateManager()));
+        else
+            editor.getStateManager().detach(editor.getStateManager().getState(DebugAppState.class));
     }
 
     private void onCameraBehaviourChanged(CameraBehaviourChangedEvent event) {

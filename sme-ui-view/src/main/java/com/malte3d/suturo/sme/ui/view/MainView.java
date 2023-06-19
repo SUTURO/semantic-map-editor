@@ -15,7 +15,7 @@ import com.malte3d.suturo.sme.ui.view.scenegraph.ScenegraphView;
 import com.malte3d.suturo.sme.ui.view.settings.SettingsView;
 import com.malte3d.suturo.sme.ui.viewmodel.MainViewModel;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.EditorViewModel;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorInitializedEvent;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.event.EditorInitializedEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
