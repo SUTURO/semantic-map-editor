@@ -26,11 +26,12 @@ import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMo
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Position;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObject;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymap;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.EditorCameraAppState;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.ObjectAttachedEvent;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymap;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.EditorCameraAppState;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.coordinateaxes.HudCoordinateAxes;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.floor.FloorGrid;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.transform.TransformHandler;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorUtil;
 import lombok.Getter;
 import lombok.NonNull;
@@ -73,6 +74,9 @@ public class Editor extends AbstractJmeApplication {
     @NonNull
     private Class<? extends CameraKeymap> cameraKeymap;
 
+    @Getter
+    private TransformHandler transformHandler;
+
     /* HUD */
 
     private DebugMode debugMode;
@@ -86,9 +90,6 @@ public class Editor extends AbstractJmeApplication {
 
     @Getter
     private Node scenegraph = new Node("Scenegraph");
-
-    @Getter
-    private Spatial currentSelection;
 
     /**
      * Use the factory method to create a new instance of the 3D-Editor.
@@ -164,17 +165,6 @@ public class Editor extends AbstractJmeApplication {
         return create(domainEventHandler, debugMode, keymap, initialStates.toArray(new AppState[0]));
     }
 
-    /**
-     * Updates the keymap to be used for the camera.
-     *
-     * @param cameraKeymap The keymap to be used for the camera
-     */
-    public void setCameraKeymap(@NonNull Class<? extends CameraKeymap> cameraKeymap) {
-        this.cameraKeymap = cameraKeymap;
-        EditorCameraAppState editorCameraAppState = getStateManager().getState(EditorCameraAppState.class);
-        editorCameraAppState.setKeymap(cameraKeymap);
-    }
-
     @Override
     public void initApp() {
 
@@ -182,7 +172,9 @@ public class Editor extends AbstractJmeApplication {
 
         assetManager.registerLocator(ASSETS_PATH, FileLocator.class);
 
-        stateManager.attach(new EditorCameraAppState(cameraKeymap, scenegraph, guiNode));
+        stateManager.attach(new EditorCameraAppState(domainEventHandler, cameraKeymap, scenegraph, guiNode));
+
+        transformHandler = new TransformHandler(domainEventHandler, cam, inputManager, scenegraph);
 
         viewPort.setBackgroundColor(BACKGROUND_COLOR);
 
@@ -192,9 +184,9 @@ public class Editor extends AbstractJmeApplication {
         rootNode.addLight(ambientLight);
         rootNode.addLight(directionalLight);
 
-        setUpFloorGrid();
-        setUpCoordinateAxes();
-        setUpHudCoordinateAxes();
+        initFloorGrid();
+        initCoordinateAxes();
+        initHudCoordinateAxes();
 
         scenegraph.setUserData(OBJECT_TYPE, SmObjectType.NULL.eternalId);
 
@@ -210,15 +202,36 @@ public class Editor extends AbstractJmeApplication {
     private void onDebugModeChanged(DebugModeChangedEvent event) {
         this.debugMode = event.getNewDebugMode();
         hudCoordinateAxes.setDebugMode(debugMode);
-        setUpCoordinateAxes();
+        initCoordinateAxes();
     }
 
+    /**
+     * Updates the keymap to be used for the camera.
+     *
+     * @param cameraKeymap The keymap to be used for the camera
+     */
+    public void setCameraKeymap(@NonNull Class<? extends CameraKeymap> cameraKeymap) {
+        this.cameraKeymap = cameraKeymap;
+        EditorCameraAppState editorCameraAppState = getStateManager().getState(EditorCameraAppState.class);
+        editorCameraAppState.setKeymap(cameraKeymap);
+    }
+
+    /**
+     * Updates the scenegraph to be used.
+     *
+     * @param scenegraph The new scenegraph to be used
+     */
     public void setScenegraph(@NonNull Node scenegraph) {
         rootNode.detachChild(this.scenegraph);
         this.scenegraph = scenegraph;
         rootNode.attachChild(this.scenegraph);
     }
 
+    /**
+     * Adds a new object to the scene.
+     *
+     * @param object The object to be added to the scene
+     */
     public void addObjectToScene(@NonNull SmObject object) {
 
         if (object instanceof com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.general.NullObject nullObject)
@@ -312,7 +325,7 @@ public class Editor extends AbstractJmeApplication {
         return geometry;
     }
 
-    private void setUpCoordinateAxes() {
+    private void initCoordinateAxes() {
 
         rootNode.detachChild(axes);
 
@@ -354,11 +367,11 @@ public class Editor extends AbstractJmeApplication {
         node.attachChild(coordinateAxis);
     }
 
-    private void setUpHudCoordinateAxes() {
+    private void initHudCoordinateAxes() {
         this.hudCoordinateAxes = new HudCoordinateAxes(debugMode, guiNode, assetManager);
     }
 
-    private void setUpFloorGrid() {
+    private void initFloorGrid() {
         this.floorGrid = new FloorGrid(assetManager);
         rootNode.attachChild(floorGrid.getNode());
     }

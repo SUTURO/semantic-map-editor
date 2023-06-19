@@ -13,9 +13,9 @@ import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMo
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviour;
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviourChangedEvent;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObject;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymap;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymapBlender;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.camera.CameraKeymapCinema4D;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymap;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymapBlender;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymapCinema4D;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.util.DebugAppState;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +74,7 @@ public class EditorViewModel extends UiService {
 
         Settings settings = settingsService.get();
         DebugMode debugMode = settings.getAdvanced().getDebugMode();
-        
+
         List<AppState> initialAppStates = new ArrayList<>();
 
         if (debugMode.isEnabled())
@@ -89,7 +89,7 @@ public class EditorViewModel extends UiService {
     }
 
     public void addObjectToScene(@NonNull SmObject object) {
-        editor.addObjectToScene(object);
+        editor.enqueue(() -> editor.addObjectToScene(object));
     }
 
     public Node getScenegraph() {

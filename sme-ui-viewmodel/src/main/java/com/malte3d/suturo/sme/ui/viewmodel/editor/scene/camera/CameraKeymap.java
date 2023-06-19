@@ -1,4 +1,4 @@
-package com.malte3d.suturo.sme.ui.viewmodel.editor.camera;
+package com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera;
 
 import com.jme3.input.InputManager;
 import com.jme3.input.MouseInput;
@@ -91,6 +91,13 @@ public abstract class CameraKeymap {
                 inputManager.deleteMapping(mapping);
 
         inputManager.removeListener(inputListener);
+    }
+
+    /**
+     * @return true if any of the camera controls is active
+     */
+    public boolean isActive() {
+        return move.isActive() || rotate.isActive() || zoom.isActive();
     }
 
 }

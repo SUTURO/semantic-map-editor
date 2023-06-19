@@ -1,4 +1,4 @@
-package com.malte3d.suturo.sme.ui.viewmodel.editor.util;
+package com.malte3d.suturo.sme.ui.viewmodel.editor.scene.transform;
 
 import com.malte3d.suturo.commons.ddd.annotation.ValueObject;
 import com.malte3d.suturo.commons.exception.UnsupportedEnumException;

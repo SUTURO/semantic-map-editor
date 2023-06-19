@@ -6,8 +6,10 @@ import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.general
 import com.malte3d.suturo.sme.ui.viewmodel.editor.EditorViewModel;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.EditorInitializedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.ObjectAttachedEvent;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.event.ObjectSelectedEvent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
@@ -53,8 +55,9 @@ public class ScenegraphView {
 
     public void initialize() {
 
-        domainEventHandler.register(EditorInitializedEvent.class, this::onEditorInitialized);
-        domainEventHandler.register(ObjectAttachedEvent.class, this::onObjectAttached);
+        domainEventHandler.register(EditorInitializedEvent.class, event -> Platform.runLater(() -> onEditorInitialized(event)));
+        domainEventHandler.register(ObjectAttachedEvent.class, event -> Platform.runLater(() -> onObjectAttached(event)));
+        domainEventHandler.register(ObjectSelectedEvent.class, event -> Platform.runLater(() -> onObjectSelected(event)));
 
         scenegraphTable.prefHeightProperty().bind(view.heightProperty());
         scenegraphTable.prefWidthProperty().bind(view.widthProperty());
@@ -64,6 +67,13 @@ public class ScenegraphView {
 
         scenegraphTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         scenegraphTable.getSelectionModel().setCellSelectionEnabled(true);
+        scenegraphTable.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection) -> {
+
+            if (newSelection != null)
+                domainEventHandler.raise(new ObjectSelectedEvent(Optional.ofNullable(newSelection.getValue()), ObjectSelectedEvent.Origin.SCENEGRAPH_VIEW));
+            else
+                domainEventHandler.raise(new ObjectSelectedEvent(Optional.empty(), ObjectSelectedEvent.Origin.SCENEGRAPH_VIEW));
+        });
 
         objectColumn.setCellValueFactory(param -> new ReadOnlyStringWrapper(param.getValue().getValue().getName()));
         objectColumn.setCellFactory(param -> new ScenegraphViewCell());
@@ -92,9 +102,32 @@ public class ScenegraphView {
         }
     }
 
+    private void onObjectSelected(ObjectSelectedEvent event) {
+
+        if (ObjectSelectedEvent.Origin.EDITOR.equals(event.getOrigin())) {
+
+            event.getSelectedObject().ifPresentOrElse(spatial -> {
+
+                findTreeItem(root, spatial).ifPresent(item -> {
+
+                    int row = scenegraphTable.getRow(item);
+                    scenegraphTable.requestFocus();
+                    scenegraphTable.getSelectionModel().select(row);
+                    scenegraphTable.scrollTo(row);
+                });
+
+            }, () -> scenegraphTable.getSelectionModel().clearSelection());
+        }
+    }
+
     private TreeTableRow<Spatial> rowFactory(TreeTableView<Spatial> view) {
 
         TreeTableRow<Spatial> row = new TreeTableRow<>();
+
+        row.selectedProperty().addListener((observable, oldValue, isSelected) -> {
+            row.updateSelected(true);
+            log.info("Selected: {}", row);
+        });
 
         row.setOnDragDetected(event -> {
 
@@ -311,6 +344,30 @@ public class ScenegraphView {
             if (node instanceof ScrollBar scrollBar)
                 if (scrollBar.getOrientation().equals(Orientation.VERTICAL))
                     return Optional.of(scrollBar);
+        }
+
+        return Optional.empty();
+    }
+
+    /**
+     * Finds the tree item for the given target node. Starts the search at the given root node.
+     *
+     * @param root   The root node
+     * @param target The target node
+     * @return The tree item for the target node or an empty optional if the target node is not in the tree
+     */
+    private Optional<TreeItem<Spatial>> findTreeItem(TreeItem<Spatial> root, Spatial target) {
+
+        if (root.getValue().equals(target))
+            return Optional.of(root);
+
+
+        for (TreeItem<Spatial> child : root.getChildren()) {
+
+            Optional<TreeItem<Spatial>> result = findTreeItem(child, target);
+
+            if (result.isPresent())
+                return result;
         }
 
         return Optional.empty();

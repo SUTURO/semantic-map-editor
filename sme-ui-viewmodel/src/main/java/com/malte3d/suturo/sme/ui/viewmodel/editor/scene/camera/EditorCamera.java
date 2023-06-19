@@ -1,4 +1,4 @@
-package com.malte3d.suturo.sme.ui.viewmodel.editor.camera;
+package com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera;
 
 
 import com.jme3.asset.AssetManager;
@@ -12,6 +12,8 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture2D;
 import com.jme3.ui.Picture;
+import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.event.CameraStateChangedEvent;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -28,6 +30,9 @@ public class EditorCamera implements AnalogListener, ActionListener {
     private static final float DEFAULT_ZOOM_SCROLL = 0.04f;
 
     private static final float DEFAULT_TARGET_DISTANCE = 20.0f;
+
+    @NonNull
+    private final DomainEventHandler domainEventHandler;
 
     /**
      * The rotation-rate multiplier
@@ -67,9 +72,19 @@ public class EditorCamera implements AnalogListener, ActionListener {
      */
     private Vector3f target = Vector3f.ZERO.clone();
 
+    @Getter
     private CameraKeymap keymap;
 
-    public EditorCamera(@NonNull Camera cam, @NonNull AssetManager assetManager, @NonNull InputManager inputManager, @NonNull Class<? extends CameraKeymap> keymap, @NonNull Node scenegraph, @NonNull Node guiNode) {
+    public EditorCamera(
+            @NonNull DomainEventHandler domainEventHandler,
+            @NonNull Camera cam,
+            @NonNull AssetManager assetManager,
+            @NonNull InputManager inputManager,
+            @NonNull Class<? extends CameraKeymap> keymap,
+            @NonNull Node scenegraph,
+            @NonNull Node guiNode) {
+
+        this.domainEventHandler = domainEventHandler;
 
         this.cam = cam;
         this.inputManager = inputManager;
@@ -143,7 +158,7 @@ public class EditorCamera implements AnalogListener, ActionListener {
         else if (keymap.getRotate().isActive())
             target = getRotationTarget();
 
-        if (keymap.getRotate().isActive() || keymap.getMove().isActive() || keymap.getZoom().isActive())
+        if (keymap.isActive())
             showCrosshair();
         else
             hideCrosshair();
@@ -343,9 +358,12 @@ public class EditorCamera implements AnalogListener, ActionListener {
 
         crosshair.setLocalTranslation(position);
         guiNode.attachChild(crosshair);
+
+        domainEventHandler.raise(new CameraStateChangedEvent(true));
     }
 
     private void hideCrosshair() {
         guiNode.detachChild(crosshair);
+        domainEventHandler.raise(new CameraStateChangedEvent(false));
     }
 }

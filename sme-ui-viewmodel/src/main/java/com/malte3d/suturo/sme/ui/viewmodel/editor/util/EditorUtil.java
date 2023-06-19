@@ -38,14 +38,5 @@ public class EditorUtil {
     public static Vector3f toVector3f(@NonNull Position position) {
         return new Vector3f(position.getX(), position.getY(), position.getZ());
     }
-
-    public static Vector3f toNormalVector3f(@NonNull Rotation rotation) {
-
-        float magnitude = (float) Math.sqrt(rotation.getX() * rotation.getX() + rotation.getY() * rotation.getY() + rotation.getZ() * rotation.getZ() + rotation.getW() * rotation.getW());
-        float x = rotation.getX() / magnitude;
-        float y = rotation.getY() / magnitude;
-        float z = rotation.getZ() / magnitude;
-
-        return new Vector3f(x, y, z);
-    }
+    
 }

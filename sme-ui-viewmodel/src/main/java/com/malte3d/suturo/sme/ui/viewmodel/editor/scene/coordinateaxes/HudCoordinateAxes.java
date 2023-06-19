@@ -51,13 +51,13 @@ public class HudCoordinateAxes {
 
         this.debugMode = debugMode;
 
-        setupAxes();
+        initAxes();
         guiNode.attachChild(axes);
     }
 
     public void setDebugMode(@NonNull DebugMode debugMode) {
         this.debugMode = debugMode;
-        setupAxes();
+        initAxes();
     }
 
     public void update(@NonNull Camera cam) {
@@ -75,7 +75,7 @@ public class HudCoordinateAxes {
     /**
      * Creates and attaches axes based on the current debug mode.
      */
-    private void setupAxes() {
+    private void initAxes() {
 
         if (debugMode.isEnabled())
             useJme3Axes();

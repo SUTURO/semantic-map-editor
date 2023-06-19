@@ -1,14 +1,18 @@
-package com.malte3d.suturo.sme.ui.viewmodel.editor.camera;
+package com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.input.InputManager;
 import com.jme3.scene.Node;
+import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
 import lombok.Getter;
 import lombok.NonNull;
 
 public class EditorCameraAppState extends AbstractAppState {
+
+    @NonNull
+    private final DomainEventHandler domainEventHandler;
 
     @NonNull
     private final Node scenegraph;
@@ -23,7 +27,13 @@ public class EditorCameraAppState extends AbstractAppState {
     @Getter
     private EditorCamera camera;
 
-    public EditorCameraAppState(@NonNull Class<? extends CameraKeymap> keymap, @NonNull Node scenegraph, @NonNull Node guiNode) {
+    public EditorCameraAppState(
+            @NonNull DomainEventHandler domainEventHandler,
+            @NonNull Class<? extends CameraKeymap> keymap,
+            @NonNull Node scenegraph,
+            @NonNull Node guiNode) {
+
+        this.domainEventHandler = domainEventHandler;
         this.keymap = keymap;
         this.scenegraph = scenegraph;
         this.guiNode = guiNode;
@@ -45,7 +55,7 @@ public class EditorCameraAppState extends AbstractAppState {
         super.initialize(stateManager, app);
 
         this.inputManager = app.getInputManager();
-        this.camera = new EditorCamera(app.getCamera(), app.getAssetManager(), inputManager, keymap, scenegraph, guiNode);
+        this.camera = new EditorCamera(domainEventHandler, app.getCamera(), app.getAssetManager(), inputManager, keymap, scenegraph, guiNode);
     }
 
     @Override

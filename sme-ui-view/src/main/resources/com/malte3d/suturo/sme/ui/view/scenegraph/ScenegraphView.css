@@ -15,6 +15,10 @@
     -fx-background-color: background_color !important;
 }
 
+.scenegraph-table .tree-table-row-cell:focused {
+    -fx-background-color: light_color_dark !important;
+}
+
 .scenegraph-table .tree-table-row-cell:drag-target {
     -fx-background-color: light_color_dark !important;
 }

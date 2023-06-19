@@ -10,13 +10,15 @@
       fx:id="view"
       fx:controller="com.malte3d.suturo.sme.ui.view.scenegraph.ScenegraphView">
 
-    <TreeTableView fx:id="scenegraphTable" styleClass="scenegraph-table">
+    <TreeTableView fx:id="scenegraphTable" styleClass="scenegraph-table" focusTraversable="false">
         <placeholder>
-            <Label text="%Application.Main.Scenegraph.TreeTable.Empty" />
+            <Label text="%Application.Main.Scenegraph.TreeTable.Empty"/>
         </placeholder>
         <columns>
-            <TreeTableColumn fx:id="objectColumn" text="%Application.Main.Scenegraph.TreeTable.Column.Name" styleClass="scenegraph-column" />
-            <TreeTableColumn fx:id="visibilityColumn" text="%Application.Main.Scenegraph.TreeTable.Column.Visibility" styleClass="scenegraph-column" />
+            <TreeTableColumn fx:id="objectColumn" text="%Application.Main.Scenegraph.TreeTable.Column.Name"
+                             styleClass="scenegraph-column"/>
+            <TreeTableColumn fx:id="visibilityColumn" text="%Application.Main.Scenegraph.TreeTable.Column.Visibility"
+                             styleClass="scenegraph-column"/>
         </columns>
     </TreeTableView>
 

@@ -1,4 +1,4 @@
-package com.malte3d.suturo.sme.ui.viewmodel.editor.camera;
+package com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera;
 
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;

@@ -1,17 +1,19 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor.event;
 
-import com.jme3.scene.Spatial;
+import com.malte3d.suturo.commons.ddd.annotation.ValueObject;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEvent;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 /**
- * Raised when an object has been attached to the scene graph.
+ * Raised when the state of the camera changes.
  */
+@ValueObject
+
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class ObjectAttachedEvent extends DomainEvent {
+public class CameraStateChangedEvent extends DomainEvent {
 
-    Spatial object;
+    boolean isActive;
 
 }
