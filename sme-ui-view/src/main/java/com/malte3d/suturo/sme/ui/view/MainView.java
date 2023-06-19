@@ -2,6 +2,7 @@ package com.malte3d.suturo.sme.ui.view;
 
 import com.jayfella.jfx.embedded.jfx.EditorFxImageView;
 import com.malte3d.suturo.commons.Version;
+import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
 import com.malte3d.suturo.commons.javafx.fxml.FxmlViewFactory;
 import com.malte3d.suturo.commons.javafx.notification.NotificationHandler;
 import com.malte3d.suturo.commons.messages.Messages;
@@ -16,6 +17,10 @@ import com.malte3d.suturo.sme.ui.view.settings.SettingsView;
 import com.malte3d.suturo.sme.ui.viewmodel.MainViewModel;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.EditorViewModel;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.EditorInitializedEvent;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.event.TransformModeChangedEvent;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.transform.TransformMode;
+import javafx.application.Platform;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -37,6 +42,11 @@ import java.time.Year;
 
 @Slf4j
 public class MainView {
+
+    private static final PseudoClass SELECTED = PseudoClass.getPseudoClass("selected");
+
+    @Inject
+    private DomainEventHandler domainEventHandler;
 
     @Inject
     private MainViewModel mainViewModel;
@@ -159,9 +169,16 @@ public class MainView {
 
     private void initToolbarView() {
 
+        domainEventHandler.register(TransformModeChangedEvent.class, event -> Platform.runLater(() -> onTransformModeChanged(event)));
+
         btnMove.setGraphic(new ImageView(Icons.TRANSFORM_MOVE));
+        btnMove.setOnAction(event -> editorViewModel.setTransformMode(TransformMode.MOVE));
+
         btnRotate.setGraphic(new ImageView(Icons.TRANSFORM_ROTATE));
+        btnRotate.setOnAction(event -> editorViewModel.setTransformMode(TransformMode.ROTATE));
+
         btnScale.setGraphic(new ImageView(Icons.TRANSFORM_SCALE));
+        btnScale.setOnAction(event -> editorViewModel.setTransformMode(TransformMode.SCALE));
 
         btnNull.setGraphic(new ImageView(Icons.OBJECT_NULL));
         btnNull.setOnAction(event -> editorViewModel.addObjectToScene(NullObject.DEFAULT));
@@ -247,6 +264,15 @@ public class MainView {
             editorView.getChildren().add(editorImageView);
             mainViewModel.getDomainEventHandler().raise(new EditorInitializedEvent());
         });
+    }
+
+    private void onTransformModeChanged(TransformModeChangedEvent event) {
+
+        TransformMode transformMode = event.getTransformMode();
+
+        btnMove.pseudoClassStateChanged(SELECTED, transformMode == TransformMode.MOVE);
+        btnRotate.pseudoClassStateChanged(SELECTED, transformMode == TransformMode.ROTATE);
+        btnScale.pseudoClassStateChanged(SELECTED, transformMode == TransformMode.SCALE);
     }
 
     private void showHelloWorldNotification() {

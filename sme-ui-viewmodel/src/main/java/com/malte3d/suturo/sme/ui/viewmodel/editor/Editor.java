@@ -380,8 +380,8 @@ public class Editor extends AbstractJmeApplication {
 
         Material material = new Material(assetManager, Materials.LIGHTING);
         material.setBoolean("UseMaterialColors", true);
-        material.setColor("Diffuse", ColorRGBA.DarkGray);
-        material.setColor("Ambient", ColorRGBA.DarkGray);
+        material.setColor("Diffuse", ColorRGBA.Gray);
+        material.setColor("Ambient", ColorRGBA.Gray);
         material.setColor("Specular", ColorRGBA.White);
         material.setFloat("Shininess", 1f);
 

@@ -16,7 +16,10 @@ import lombok.Value;
 @EqualsAndHashCode(callSuper = true)
 public class TransformModeChangedEvent extends DomainEvent {
 
+    /**
+     * The new transform mode.
+     */
     @NonNull
-    TransformMode newTransformMode;
-    
+    TransformMode transformMode;
+
 }

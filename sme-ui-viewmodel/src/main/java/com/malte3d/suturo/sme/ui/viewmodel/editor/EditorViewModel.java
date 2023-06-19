@@ -13,9 +13,11 @@ import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMo
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviour;
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviourChangedEvent;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObject;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.event.TransformModeChangedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymap;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymapBlender;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymapCinema4D;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.transform.TransformMode;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.util.DebugAppState;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -96,8 +98,13 @@ public class EditorViewModel extends UiService {
         return editor.getScenegraph();
     }
 
-    public void setScenegraph(Node scenegraph) {
+    public void setScenegraph(@NonNull Node scenegraph) {
         editor.enqueue(() -> editor.setScenegraph(scenegraph));
+    }
+
+    public void setTransformMode(@NonNull TransformMode transformMode) {
+        editor.getTransformHandler().setTransformMode(transformMode);
+        domainEventHandler.raise(new TransformModeChangedEvent(transformMode));
     }
 
     private void onDebugModeChanged(DebugModeChangedEvent event) {

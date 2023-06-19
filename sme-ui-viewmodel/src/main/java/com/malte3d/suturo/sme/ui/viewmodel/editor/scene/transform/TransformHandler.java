@@ -18,6 +18,7 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.event.CameraStateChangedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.ObjectSelectedEvent;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
@@ -41,10 +42,18 @@ public class TransformHandler implements AnalogListener, ActionListener {
 
     private boolean isBlocked = false;
 
-    private TransformMode currentTransformMode = TransformMode.MOVE;
-
+    /**
+     * The current transform mode.
+     */
     @Getter
-    private Spatial currentSelection;
+    @Setter
+    private TransformMode transformMode = TransformMode.MOVE;
+
+    /**
+     * The currently selected object. Might be null.
+     */
+    @Getter
+    private Spatial selection;
 
     public TransformHandler(
             @NonNull DomainEventHandler domainEventHandler,
@@ -88,7 +97,7 @@ public class TransformHandler implements AnalogListener, ActionListener {
     private void onObjectSelected(ObjectSelectedEvent event) {
 
         if (ObjectSelectedEvent.Origin.SCENEGRAPH_VIEW.equals(event.getOrigin()))
-            this.currentSelection = event.getSelectedObject().orElse(null);
+            this.selection = event.getSelectedObject().orElse(null);
     }
 
     /**
