@@ -173,6 +173,7 @@ public class MainView {
 
         btnMove.setGraphic(new ImageView(Icons.TRANSFORM_MOVE));
         btnMove.setOnAction(event -> editorViewModel.setTransformMode(TransformMode.MOVE));
+        btnMove.pseudoClassStateChanged(SELECTED, true);
 
         btnRotate.setGraphic(new ImageView(Icons.TRANSFORM_ROTATE));
         btnRotate.setOnAction(event -> editorViewModel.setTransformMode(TransformMode.ROTATE));
