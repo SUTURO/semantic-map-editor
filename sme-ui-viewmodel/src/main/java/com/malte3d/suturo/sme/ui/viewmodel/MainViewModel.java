@@ -23,39 +23,32 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-@Singleton
 public class MainViewModel extends UiService {
 
     private final DomainEventHandler domainEventHandler;
 
     private final EditorViewModel editorViewModel;
 
-    private final Provider<HostServices> hostServices;
-
     private final SettingsService settingsService;
+
+    private final Provider<HostServices> hostServices;
 
     @Inject
     public MainViewModel(
             @NonNull @GlobalExecutor Executor executor,
             @NonNull DomainEventHandler domainEventHandler,
             @NonNull EditorViewModel editorViewModel,
-            @NonNull Provider<HostServices> hostServices,
-            @NonNull SettingsService settingsService) {
+            @NonNull SettingsService settingsService,
+            @NonNull Provider<HostServices> hostServices) {
 
         super(executor);
 
         this.domainEventHandler = domainEventHandler;
 
         this.editorViewModel = editorViewModel;
-
-        this.hostServices = hostServices;
         this.settingsService = settingsService;
 
-        registerEventConsumer();
-    }
-
-    private void registerEventConsumer() {
-
+        this.hostServices = hostServices;
     }
 
     /**
@@ -66,7 +59,7 @@ public class MainViewModel extends UiService {
         return this.<Editor>createFutureTask()
                 .withNotificationMessageOnError("Application.Main.Editor.Initialization.Error")
                 .withLoggerMessageOnError("Error while initializing 3D-Editor")
-                .withTask(editorViewModel::initializeEditor);
+                .withTask(editorViewModel::getEditor);
     }
 
 

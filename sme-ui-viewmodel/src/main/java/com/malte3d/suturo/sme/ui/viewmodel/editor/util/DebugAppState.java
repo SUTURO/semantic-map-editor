@@ -8,16 +8,16 @@ import com.jme3.app.state.AppStateManager;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class DebugAppState extends AbstractAppState {
 
-    @NonNull
-    private final AppStateManager stateManager;
+    private AppStateManager stateManager;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
 
         super.initialize(stateManager, app);
+
+        this.stateManager = stateManager;
 
         stateManager.attach(new StatsAppState());
         stateManager.attach(new DebugKeysAppState());
@@ -27,6 +27,9 @@ public class DebugAppState extends AbstractAppState {
     public void cleanup() {
 
         super.cleanup();
+
+        if(stateManager == null)
+            return;
 
         stateManager.detach(stateManager.getState(StatsAppState.class));
         stateManager.detach(stateManager.getState(DebugKeysAppState.class));

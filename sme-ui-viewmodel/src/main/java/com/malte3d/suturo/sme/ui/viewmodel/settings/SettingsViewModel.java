@@ -17,8 +17,6 @@ import java.util.concurrent.Executor;
 
 public class SettingsViewModel extends UiService {
 
-    private final DomainEventHandler domainEventHandler;
-
     private final SettingsService settingsService;
 
     private final ObjectProperty<Settings> settingsPropertyInternal = new SimpleObjectProperty<>();
@@ -33,15 +31,10 @@ public class SettingsViewModel extends UiService {
 
         super(executor);
 
-        this.domainEventHandler = domainEventHandler;
         this.settingsService = settingsService;
 
         this.settingsPropertyInternal.setValue(loadSettings());
 
-        registerEventConsumer();
-    }
-
-    private void registerEventConsumer() {
         domainEventHandler.register(SettingsChangedEvent.class, this::onSettingsChanged);
     }
 

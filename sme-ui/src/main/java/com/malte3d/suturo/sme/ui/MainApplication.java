@@ -52,10 +52,6 @@ public class MainApplication extends Application implements Provider<HostService
         this.domainEventHandler = injector.getInstance(DomainEventHandler.class);
         this.viewFactory = injector.getInstance(MainApplicationViewFactory.class);
 
-        registerEventConsumer();
-    }
-
-    private void registerEventConsumer() {
         domainEventHandler.register(ExitApplicationEvent.class, MainApplication::exit);
     }
 

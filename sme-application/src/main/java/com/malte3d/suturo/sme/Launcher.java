@@ -13,6 +13,7 @@ import com.malte3d.suturo.sme.domain.service.DomainServiceModule;
 import com.malte3d.suturo.sme.ui.InjectorProvider;
 import com.malte3d.suturo.sme.ui.MainApplication;
 import com.malte3d.suturo.sme.ui.UiModule;
+import com.malte3d.suturo.sme.ui.viewmodel.ViewModelModule;
 import javafx.application.Application;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +62,7 @@ public class Launcher {
                 new DomainServiceModule(),
                 new PersistenceAdapterModule(),
                 new IntegrationAdapterModule(),
+                new ViewModelModule(),
                 new UiModule()
         );
 

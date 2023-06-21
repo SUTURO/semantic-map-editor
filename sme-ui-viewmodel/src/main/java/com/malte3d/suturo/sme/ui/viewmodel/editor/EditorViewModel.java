@@ -1,20 +1,16 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
 import com.google.common.base.Preconditions;
-import com.jme3.app.state.AppState;
 import com.jme3.scene.Node;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
 import com.malte3d.suturo.commons.javafx.service.GlobalExecutor;
 import com.malte3d.suturo.commons.javafx.service.UiService;
-import com.malte3d.suturo.sme.application.service.settings.SettingsService;
-import com.malte3d.suturo.sme.domain.model.application.settings.Settings;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugModeChangedEvent;
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviour;
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviourChangedEvent;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObject;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.TransformModeChangedEvent;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymap;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymapBlender;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymapCinema4D;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.transform.TransformMode;
@@ -23,112 +19,87 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.List;
+import javax.inject.Provider;
 import java.util.concurrent.Executor;
 
 /**
  * View model for the 3D-Editor.
  */
 @Slf4j
-@Singleton
 public class EditorViewModel extends UiService {
 
     private final DomainEventHandler domainEventHandler;
 
-    private final SettingsService settingsService;
-
-    private Editor editor;
+    @NonNull
+    private final Provider<Editor> editorProvider;
 
     @Inject
     public EditorViewModel(
             @NonNull @GlobalExecutor Executor executor,
             @NonNull DomainEventHandler domainEventHandler,
-            @NonNull SettingsService settingsService) {
+            @NonNull Provider<Editor> editorProvider) {
 
         super(executor);
 
         this.domainEventHandler = domainEventHandler;
-        this.settingsService = settingsService;
+        this.editorProvider = editorProvider;
 
-        registerEventConsumer();
-    }
-
-    private void registerEventConsumer() {
         domainEventHandler.register(DebugModeChangedEvent.class, this::onDebugModeChanged);
         domainEventHandler.register(CameraBehaviourChangedEvent.class, this::onCameraBehaviourChanged);
     }
 
-    /**
-     * Initializes the editor.
-     *
-     * <p>
-     * Should only be called once.
-     * </p>
-     *
-     * @return The editor instance.
-     */
-    public Editor initializeEditor() {
-
-        if (editor != null)
-            throw new IllegalStateException("Editor already initialized.");
-
-        Settings settings = settingsService.get();
-        DebugMode debugMode = settings.getAdvanced().getDebugMode();
-
-        List<AppState> initialAppStates = new ArrayList<>();
-
-        if (debugMode.isEnabled())
-            initialAppStates.add(new DebugAppState(editor.getStateManager()));
-
-        CameraBehaviour cameraBehaviour = settings.getKeymap().getCameraBehaviour();
-        Class<? extends CameraKeymap> cameraKeymap = cameraBehaviour == CameraBehaviour.BLENDER ? CameraKeymapBlender.class : CameraKeymapCinema4D.class;
-
-        this.editor = Editor.create(domainEventHandler, debugMode, cameraKeymap, initialAppStates);
-
-        return editor;
-    }
-
-    public void addObjectToScene(@NonNull SmObject object) {
-        editor.enqueue(() -> editor.addObjectToScene(object));
+    public Editor getEditor() {
+        return editorProvider.get();
     }
 
     public Node getScenegraph() {
-        return editor.getScenegraph();
+        return getEditor().getScenegraph();
     }
 
     public void setScenegraph(@NonNull Node scenegraph) {
-        editor.enqueue(() -> editor.setScenegraph(scenegraph));
+        runInJme3Thread(() -> getEditor().setScenegraph(scenegraph));
     }
 
     public void setTransformMode(@NonNull TransformMode transformMode) {
-        editor.getTransformHandler().setTransformMode(transformMode);
+        getEditor().getTransformHandler().setTransformMode(transformMode);
         domainEventHandler.raise(new TransformModeChangedEvent(transformMode));
+    }
+
+    public void addObjectToScene(@NonNull SmObject object) {
+       runInJme3Thread(() -> getEditor().addObjectToScene(object));
     }
 
     private void onDebugModeChanged(DebugModeChangedEvent event) {
 
-        Preconditions.checkNotNull(editor, "Editor must be initialized before debug mode can be changed.");
+        Preconditions.checkNotNull(getEditor(), "Editor must be initialized before debug mode can be changed.");
 
         DebugMode debugMode = event.getNewDebugMode();
 
         if (debugMode.isEnabled())
-            editor.getStateManager().attach(new DebugAppState(editor.getStateManager()));
+            getEditor().getStateManager().attach(new DebugAppState());
         else
-            editor.getStateManager().detach(editor.getStateManager().getState(DebugAppState.class));
+            getEditor().getStateManager().detach(getEditor().getStateManager().getState(DebugAppState.class));
     }
 
     private void onCameraBehaviourChanged(CameraBehaviourChangedEvent event) {
 
-        Preconditions.checkNotNull(editor, "Editor must be initialized before camera behaviour can be changed.");
+        Preconditions.checkNotNull(getEditor(), "Editor must be initialized before camera behaviour can be changed.");
 
         CameraBehaviour cameraBehaviour = event.getNewCameraBehaviour();
 
         if (cameraBehaviour == CameraBehaviour.BLENDER)
-            editor.setCameraKeymap(CameraKeymapBlender.class);
+            getEditor().setCameraKeymap(CameraKeymapBlender.class);
         else
-            editor.setCameraKeymap(CameraKeymapCinema4D.class);
+            getEditor().setCameraKeymap(CameraKeymapCinema4D.class);
+    }
+
+    /**
+     * Runs the given runnable in the JME3 thread.
+     *
+     * @param runnable The runnable to be executed in the JME3 thread.
+     */
+    private void runInJme3Thread(Runnable runnable) {
+        getEditor().enqueue(runnable);
     }
 
 }

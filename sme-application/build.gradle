@@ -13,6 +13,7 @@ dependencies {
     implementation project(":commons-javafx")
 
     implementation project(":sme-ui")
+    implementation project(":sme-ui-viewmodel")
     implementation project(":sme-domain-model")
     implementation project(":sme-domain-service")
     implementation project(":sme-application-service")
