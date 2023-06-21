@@ -14,7 +14,7 @@ import javafx.scene.image.ImageView;
  * Displays the name of the object and an icon representing the object type.
  * </p>
  */
-public class ScenegraphViewCell extends TreeTableCell<Spatial, String> {
+public class ScenegraphViewObjectCell extends TreeTableCell<Spatial, String> {
 
     private static final int ICON_SIZE = 16;
 

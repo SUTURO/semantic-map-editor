@@ -15,6 +15,7 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Cylinder;
@@ -64,7 +65,7 @@ public class TransformHandler implements AnalogListener, ActionListener {
      * The currently selected object. Might be null.
      */
     @Getter
-    private Optional<Spatial> selection;
+    private Optional<Spatial> selection = Optional.empty();
 
     public TransformHandler(
             @NonNull DomainEventHandler domainEventHandler,
@@ -89,12 +90,8 @@ public class TransformHandler implements AnalogListener, ActionListener {
 
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
-
-        if (!isBlocked && isPressed && TRANSFORM_SELECT.equals(name)) {
-
-            this.selection = getSelectionTarget();
-            domainEventHandler.raise(new ObjectSelectedEvent(selection, ObjectSelectedEvent.Origin.EDITOR));
-        }
+        if (isPressed && TRANSFORM_SELECT.equals(name) && !isBlocked)
+            setSelection(getSelectionTarget());
     }
 
     @Override
@@ -109,13 +106,18 @@ public class TransformHandler implements AnalogListener, ActionListener {
 
     private void onObjectSelected(ObjectSelectedEvent event) {
 
-        if (ObjectSelectedEvent.Origin.SCENEGRAPH_VIEW.equals(event.getOrigin()))
-            this.selection = event.getSelectedObject();
+        if (!ObjectSelectedEvent.Origin.EDITOR.equals(event.getOrigin()))
+            setSelection(event.getSelectedObject());
     }
 
     private void setSelection(Optional<Spatial> selection) {
-        if (!this.selection.equals(selection))
+
+        if (!this.selection.equals(selection)) {
+
             this.selection = selection;
+
+            domainEventHandler.raise(new ObjectSelectedEvent(selection, ObjectSelectedEvent.Origin.EDITOR));
+        }
     }
 
     /**
@@ -148,11 +150,19 @@ public class TransformHandler implements AnalogListener, ActionListener {
         return Optional.of(closestCollision.getGeometry());
     }
 
-    private Node createTransformNode() {
+    private Node createTransformNode(Vector3f axis) {
+
         Node transformNode = new Node("TransformNode");
-        Cylinder arrowTail = new Cylinder(32, 32, 0.05f, 1f, true);
+        Cylinder arrowTail = new Cylinder(32, 32, 0.05f, axis.length(), true);
         Dome arrowHead = new Dome(Vector3f.ZERO, 2, 32, 0.05f, false);
 
+        Geometry arrowTailGeom = new Geometry("TransformArrowTail", arrowTail);
+        arrowTailGeom.setMaterial(createDefaultUnshadedMaterial(ColorRGBA.Red));
+        Geometry arrowHeadGeom = new Geometry("TransformArrowHead", arrowHead);
+        arrowHeadGeom.setMaterial(createDefaultUnshadedMaterial(ColorRGBA.Red));
+
+        transformNode.attachChild(arrowTailGeom);
+        transformNode.attachChild(arrowHeadGeom);
 
         return transformNode;
     }

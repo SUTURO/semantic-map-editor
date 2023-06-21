@@ -36,6 +36,9 @@ public class Icons {
     public static final Image OBJECT_CYLINDER = svgToImage("cylinder.svg");
     public static final Image OBJECT_PLANE = svgToImage("plane.svg");
 
+    public static final Image VISIBLE = svgToImage("visible.svg");
+    public static final Image INVISIBLE = svgToImage("invisible.svg");
+
     private static Image svgToImage(@NonNull String path) {
 
         BufferedImageTranscoder transcoder = new BufferedImageTranscoder();

@@ -10,6 +10,7 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.event.ObjectSelectedEvent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
@@ -46,7 +47,7 @@ public class ScenegraphView {
     private TreeTableColumn<Spatial, String> objectColumn;
 
     @FXML
-    private TreeTableColumn<Spatial, String> visibilityColumn;
+    private TreeTableColumn<Spatial, Boolean> visibilityColumn;
 
     private TreeItem<Spatial> root;
 
@@ -55,10 +56,6 @@ public class ScenegraphView {
 
     public void initialize() {
 
-        domainEventHandler.register(EditorInitializedEvent.class, event -> Platform.runLater(() -> onEditorInitialized(event)));
-        domainEventHandler.register(ObjectAttachedEvent.class, event -> Platform.runLater(() -> onObjectAttached(event)));
-        domainEventHandler.register(ObjectSelectedEvent.class, event -> Platform.runLater(() -> onObjectSelected(event)));
-
         scenegraphTable.prefHeightProperty().bind(view.heightProperty());
         scenegraphTable.prefWidthProperty().bind(view.widthProperty());
         scenegraphTable.setShowRoot(false);
@@ -66,22 +63,29 @@ public class ScenegraphView {
         scenegraphTable.setRowFactory(this::rowFactory);
 
         scenegraphTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        scenegraphTable.getSelectionModel().setCellSelectionEnabled(true);
+        scenegraphTable.getSelectionModel().setCellSelectionEnabled(false);
         scenegraphTable.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection) -> {
-
-            if (newSelection != null)
-                domainEventHandler.raise(new ObjectSelectedEvent(Optional.ofNullable(newSelection.getValue()), ObjectSelectedEvent.Origin.SCENEGRAPH_VIEW));
-            else
-                domainEventHandler.raise(new ObjectSelectedEvent(Optional.empty(), ObjectSelectedEvent.Origin.SCENEGRAPH_VIEW));
+            if (newSelection != null) {
+                if (!newSelection.equals(scenegraphTable.getSelectionModel().getSelectedItem())) {
+                    domainEventHandler.raise(new ObjectSelectedEvent(Optional.ofNullable(newSelection.getValue()), ObjectSelectedEvent.Origin.SCENEGRAPH_VIEW));
+                }
+            }
         });
 
         objectColumn.setCellValueFactory(param -> new ReadOnlyStringWrapper(param.getValue().getValue().getName()));
-        objectColumn.setCellFactory(param -> new ScenegraphViewCell());
+        objectColumn.setCellFactory(param -> new ScenegraphViewObjectCell());
+
+        visibilityColumn.setCellValueFactory(param -> new ReadOnlyBooleanWrapper(true));
+        visibilityColumn.setCellFactory(param -> new ScenegraphViewObjectPropertiesCell());
 
         objectColumn.prefWidthProperty().bind(view.widthProperty().multiply(0.7));
         visibilityColumn.prefWidthProperty().bind(view.widthProperty().multiply(0.25));
 
         setupScrolling();
+
+        domainEventHandler.register(EditorInitializedEvent.class, event -> Platform.runLater(() -> onEditorInitialized(event)));
+        domainEventHandler.register(ObjectAttachedEvent.class, event -> Platform.runLater(() -> onObjectAttached(event)));
+        domainEventHandler.register(ObjectSelectedEvent.class, event -> Platform.runLater(() -> onObjectSelected(event)));
     }
 
     private void onEditorInitialized(EditorInitializedEvent event) {
@@ -104,16 +108,19 @@ public class ScenegraphView {
 
     private void onObjectSelected(ObjectSelectedEvent event) {
 
-        if (ObjectSelectedEvent.Origin.EDITOR.equals(event.getOrigin())) {
+        if (!ObjectSelectedEvent.Origin.SCENEGRAPH_VIEW.equals(event.getOrigin())) {
 
             event.getSelectedObject().ifPresentOrElse(spatial -> {
 
                 findTreeItem(root, spatial).ifPresent(item -> {
 
-                    int row = scenegraphTable.getRow(item);
-                    scenegraphTable.requestFocus();
-                    scenegraphTable.getSelectionModel().select(row);
-                    scenegraphTable.scrollTo(row);
+                    if (!item.equals(scenegraphTable.getSelectionModel().getSelectedItem())) {
+
+                        int row = scenegraphTable.getRow(item);
+                        scenegraphTable.requestFocus();
+                        scenegraphTable.getSelectionModel().select(row);
+                        scenegraphTable.scrollTo(row);
+                    }
                 });
 
             }, () -> scenegraphTable.getSelectionModel().clearSelection());
@@ -123,11 +130,6 @@ public class ScenegraphView {
     private TreeTableRow<Spatial> rowFactory(TreeTableView<Spatial> view) {
 
         TreeTableRow<Spatial> row = new TreeTableRow<>();
-
-        row.selectedProperty().addListener((observable, oldValue, isSelected) -> {
-            row.updateSelected(true);
-            log.info("Selected: {}", row);
-        });
 
         row.setOnDragDetected(event -> {
 
