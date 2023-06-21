@@ -299,7 +299,7 @@ public class ScenegraphView {
      */
     private boolean isParent(TreeItem<Spatial> parent, TreeItem<Spatial> child) {
 
-        if (parent.equals(child))
+        if (parent == null || parent.equals(child))
             return true;
 
         boolean result = false;
