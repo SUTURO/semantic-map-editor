@@ -256,14 +256,14 @@ public class MainView {
                 mainViewModel.toggleDebugMode();
         });
 
-        mainViewModel.getDomainEventHandler().register(EditorInitializedEvent.class, () -> editorViewProgress.setVisible(false));
+       domainEventHandler.register(EditorInitializedEvent.class, () -> editorViewProgress.setVisible(false));
 
-        mainViewModel.loadEditor().thenConsume(editor -> {
+        editorViewModel.loadEditor().thenConsume(editor -> {
 
             EditorFxImageView editorImageView = editor.getImageView();
 
             editorView.getChildren().add(editorImageView);
-            mainViewModel.getDomainEventHandler().raise(new EditorInitializedEvent());
+            domainEventHandler.raise(new EditorInitializedEvent());
         });
     }
 

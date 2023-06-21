@@ -3,6 +3,7 @@ package com.malte3d.suturo.sme.ui.viewmodel.editor;
 import com.google.common.base.Preconditions;
 import com.jme3.scene.Node;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
+import com.malte3d.suturo.commons.javafx.service.CompletableFutureTask;
 import com.malte3d.suturo.commons.javafx.service.GlobalExecutor;
 import com.malte3d.suturo.commons.javafx.service.UiService;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
@@ -24,6 +25,10 @@ import java.util.concurrent.Executor;
 
 /**
  * View model for the 3D-Editor.
+ *
+ * <p>
+ * Handles everything related to the 3D-Editor.
+ * </p>
  */
 @Slf4j
 public class EditorViewModel extends UiService {
@@ -48,6 +53,17 @@ public class EditorViewModel extends UiService {
         domainEventHandler.register(CameraBehaviourChangedEvent.class, this::onCameraBehaviourChanged);
     }
 
+    /**
+     * @return a {@link CompletableFutureTask} that loads the 3D-Editor and returns it.
+     */
+    public CompletableFutureTask<Editor> loadEditor() {
+
+        return this.<Editor>createFutureTask()
+                .withNotificationMessageOnError("Application.Main.Editor.Initialization.Error")
+                .withLoggerMessageOnError("Error while initializing the 3D-Editor")
+                .withTask(this::getEditor);
+    }
+
     public Editor getEditor() {
         return editorProvider.get();
     }
@@ -66,7 +82,7 @@ public class EditorViewModel extends UiService {
     }
 
     public void addObjectToScene(@NonNull SmObject object) {
-       runInJme3Thread(() -> getEditor().addObjectToScene(object));
+        runInJme3Thread(() -> getEditor().addObjectToScene(object));
     }
 
     private void onDebugModeChanged(DebugModeChangedEvent event) {

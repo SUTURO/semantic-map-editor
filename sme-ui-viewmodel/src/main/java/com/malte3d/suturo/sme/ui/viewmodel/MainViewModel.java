@@ -21,6 +21,13 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The view model of the main view.
+ *
+ * <p>
+ * Handles most of the actions of the main menu.
+ * </p>
+ */
 @Slf4j
 @Getter
 public class MainViewModel extends UiService {
@@ -50,18 +57,6 @@ public class MainViewModel extends UiService {
 
         this.hostServices = hostServices;
     }
-
-    /**
-     * @return a {@link CompletableFutureTask} that loads the 3D-Editor and returns it.
-     */
-    public CompletableFutureTask<Editor> loadEditor() {
-
-        return this.<Editor>createFutureTask()
-                .withNotificationMessageOnError("Application.Main.Editor.Initialization.Error")
-                .withLoggerMessageOnError("Error while initializing 3D-Editor")
-                .withTask(editorViewModel::getEditor);
-    }
-
 
     /**
      * Raises an {@link ExitApplicationEvent} to exit the application.
