@@ -174,7 +174,7 @@ public class Editor extends AbstractJmeApplication {
 
         stateManager.attach(new EditorCameraAppState(domainEventHandler, cameraKeymap, scenegraph, guiNode));
 
-        transformHandler = new TransformHandler(domainEventHandler, cam, inputManager, scenegraph);
+        transformHandler = new TransformHandler(domainEventHandler, cam, inputManager, assetManager, scenegraph);
 
         viewPort.setBackgroundColor(BACKGROUND_COLOR);
 

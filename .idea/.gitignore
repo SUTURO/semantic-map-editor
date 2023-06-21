@@ -6,3 +6,5 @@
 /compiler.xml
 /gradle.xml
 /uiDesigner.xml
+
+!/inspectionProfiles/Project_Default.xml
