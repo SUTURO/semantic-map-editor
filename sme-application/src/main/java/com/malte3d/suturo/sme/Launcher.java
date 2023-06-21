@@ -3,6 +3,7 @@ package com.malte3d.suturo.sme;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.malte3d.suturo.commons.exception.UncaughtExceptionLogger;
 import com.malte3d.suturo.sme.adapter.integration.IntegrationAdapterModule;
 import com.malte3d.suturo.sme.adapter.persistence.PersistenceAdapterModule;
 import com.malte3d.suturo.sme.application.service.ApplicationServiceModule;
@@ -26,6 +27,8 @@ import java.util.Set;
 public class Launcher {
 
     public static void main(String[] args) {
+
+        UncaughtExceptionLogger.install();
 
         initInjector();
         initSettings(args);
