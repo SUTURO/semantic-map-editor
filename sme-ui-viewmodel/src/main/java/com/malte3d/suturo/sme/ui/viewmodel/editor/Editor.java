@@ -5,6 +5,7 @@ import com.jayfella.jfx.embedded.AbstractJmeApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.ModelKey;
 import com.jme3.asset.plugins.FileLocator;
+import com.jme3.export.binary.BinaryExporter;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
@@ -40,6 +41,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -227,6 +229,33 @@ public class Editor extends AbstractJmeApplication {
         rootNode.detachChild(this.scenegraph);
         this.scenegraph = scenegraph;
         rootNode.attachChild(this.scenegraph);
+    }
+
+
+    /**
+     * Imports a scene from the given file.
+     *
+     * @param file The file from which the scene should be imported
+     */
+    public void importScene(@NonNull File file) {
+
+        assetManager.registerLocator(file.getParent(), FileLocator.class);
+
+        rootNode.detachChild(scenegraph);
+        this.scenegraph = (Node) assetManager.loadModel(file.getName());
+        rootNode.attachChild(scenegraph);
+    }
+
+    /**
+     * Exports the current scene to the given file.
+     *
+     * @param file The file to which the scene should be exported
+     * @throws IOException If an error occurs while exporting the scene
+     */
+    public void exportScene(@NonNull File file) throws IOException {
+
+        BinaryExporter exporter = BinaryExporter.getInstance();
+        exporter.save(scenegraph, file);
     }
 
     /**

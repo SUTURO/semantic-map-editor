@@ -215,16 +215,16 @@ public class MainView {
 
         menuFileClose.setOnAction(event -> showHelloWorldNotification());
 
-        menuFileImport.setOnAction(event -> openImportFileDialog());
+        menuFileOpen.setOnAction(event -> openOpenDialog());
+        menuFileSave.setOnAction(event -> openSaveDialog());
+        menuFileImport.setOnAction(event -> openImportDialog());
 
         menuFileSettings.setOnAction(event -> openSettings());
         menuFileExit.setOnAction(event -> mainViewModel.exitApplication());
 
         /* TODO: Actual implementation for file menu  */
         menuFileNew.setDisable(true);
-        menuFileOpen.setDisable(true);
         menuFileOpenRecent.setDisable(true);
-        menuFileSave.setDisable(true);
         menuFileExport.setDisable(true);
     }
 
@@ -279,7 +279,41 @@ public class MainView {
         btnScale.pseudoClassStateChanged(SELECTED, transformMode == TransformMode.SCALE);
     }
 
-    private void openImportFileDialog() {
+    private void openOpenDialog() {
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(Messages.getString("Application.Menu.Main.Open.Dialog.Title"));
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter(Messages.getString("Application.Menu.Main.Open.Dialog.ExtensionFilter.SME.Description"), "*.j3o")
+        );
+
+        File file = fileChooser.showOpenDialog(getMainWindow());
+
+        if (file != null)
+            editorViewModel.importScene(file);
+        else
+            log.error("No file selected for open semantic map editor file");
+    }
+
+    private void openSaveDialog() {
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(Messages.getString("Application.Menu.Main.Save.Dialog.Title"));
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter(Messages.getString("Application.Menu.Main.Save.Dialog.ExtensionFilter.SME.Description"), "*.j3o")
+        );
+
+        File file = fileChooser.showSaveDialog(getMainWindow());
+
+        if (file != null)
+            editorViewModel.exportScene(file);
+        else
+            log.error("No file selected for import");
+    }
+
+    private void openImportDialog() {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(Messages.getString("Application.Menu.Main.Import.Dialog.Title"));

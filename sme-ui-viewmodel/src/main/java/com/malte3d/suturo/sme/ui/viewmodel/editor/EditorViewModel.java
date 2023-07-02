@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.Executor;
 
 /**
@@ -85,6 +86,21 @@ public class EditorViewModel extends UiService {
     public void setTransformMode(@NonNull TransformMode transformMode) {
         runInJme3Thread(() -> getEditor().getTransformHandler().setTransformMode(transformMode));
         domainEventHandler.raise(new TransformModeChangedEvent(transformMode));
+    }
+
+    public void importScene(@NonNull File file) {
+        runInJme3Thread(() -> getEditor().importScene(file));
+    }
+
+    public void exportScene(@NonNull File file) {
+
+        runInJme3Thread(() -> {
+            try {
+                getEditor().exportScene(file);
+            } catch (IOException e) {
+                log.error("Error while exporting scene to file: {}", file, e);
+            }
+        });
     }
 
     public void addObjectToScene(@NonNull SmObject object) {
