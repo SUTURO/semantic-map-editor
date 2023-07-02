@@ -12,8 +12,10 @@ dependencies {
     implementation project(":sme-domain-model")
 
     // jMonkeyEngine
+    implementation project(":jmonkeyengine-javafx")
     implementation "org.jmonkeyengine:jme3-core:$versions.jmonkeyengine"
     implementation "org.jmonkeyengine:jme3-desktop:$versions.jmonkeyengine"
     implementation "org.jmonkeyengine:jme3-lwjgl3:$versions.jmonkeyengine"
-    implementation project(":jmonkeyengine-javafx")
+    implementation "org.jmonkeyengine:jme3-plugins:$versions.jmonkeyengine"
+    implementation "org.jmonkeyengine:jme3-blender:$versions.jme3Blender"
 }
