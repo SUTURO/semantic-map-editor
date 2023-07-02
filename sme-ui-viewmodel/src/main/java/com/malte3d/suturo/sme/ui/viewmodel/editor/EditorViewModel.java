@@ -1,6 +1,7 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
 import com.google.common.base.Preconditions;
+import com.google.common.io.Files;
 import com.jme3.scene.Node;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
 import com.malte3d.suturo.commons.javafx.service.CompletableFutureTask;
@@ -11,6 +12,10 @@ import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMo
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviour;
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviourChangedEvent;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObject;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectName;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.imported.ImportObject;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.imported.ImportObjectPath;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.imported.ImportObjectType;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.TransformModeChangedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymapBlender;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymapCinema4D;
@@ -65,7 +70,7 @@ public class EditorViewModel extends UiService {
                 .withTask(this::getEditor);
     }
 
-    public Editor getEditor() {
+    protected Editor getEditor() {
         return editorProvider.get();
     }
 
@@ -78,7 +83,7 @@ public class EditorViewModel extends UiService {
     }
 
     public void setTransformMode(@NonNull TransformMode transformMode) {
-        getEditor().getTransformHandler().setTransformMode(transformMode);
+        runInJme3Thread(() -> getEditor().getTransformHandler().setTransformMode(transformMode));
         domainEventHandler.raise(new TransformModeChangedEvent(transformMode));
     }
 
@@ -87,7 +92,14 @@ public class EditorViewModel extends UiService {
     }
 
     public void importFile(@NonNull File selectedFile) {
-        throw new UnsupportedOperationException("Not implemented yet");
+
+        SmObjectName objectName = SmObjectName.of(selectedFile.getName());
+        ImportObjectType objectType = ImportObjectType.of(Files.getFileExtension(selectedFile.getName()));
+        ImportObjectPath objectPath = ImportObjectPath.of(selectedFile.getAbsolutePath());
+
+        ImportObject importObject = new ImportObject(objectName, objectType, objectPath);
+
+        addObjectToScene(importObject);
     }
 
     private void onDebugModeChanged(DebugModeChangedEvent event) {

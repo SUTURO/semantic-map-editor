@@ -3,6 +3,7 @@ package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
 import com.jayfella.jfx.embedded.AbstractJmeApplication;
 import com.jme3.app.state.AppState;
+import com.jme3.asset.ModelKey;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -26,6 +27,7 @@ import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMo
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.Position;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObject;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
+import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.imported.ImportObject;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.ObjectAttachedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymap;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.EditorCameraAppState;
@@ -244,6 +246,8 @@ public class Editor extends AbstractJmeApplication {
             attachCylinder(cylinder);
         else if (object instanceof com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.primitive.Plane plane)
             attachPlane(plane);
+        else if (object instanceof com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.imported.ImportObject importObject)
+            attachImportObject(importObject);
         else
             log.error("Unsupported object type: {}", object.getType());
     }
@@ -302,6 +306,25 @@ public class Editor extends AbstractJmeApplication {
 
         attachObjectToScenegraph(geometry);
     }
+
+    private void attachImportObject(@NonNull ImportObject object) {
+
+        String modelPath = object.getPath().getValue();
+        File file = new File(modelPath);
+
+        assetManager.registerLocator(file.getParent(), FileLocator.class);
+
+        ModelKey modelKey = new ModelKey(file.getName());
+        Spatial model = assetManager.loadModel(modelKey);
+        model.setUserData(OBJECT_TYPE, object.getType().eternalId);
+
+//        Material material = createDefaultMaterial();
+//        material.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
+//        model.setMaterial(material);
+
+        attachObjectToScenegraph(model);
+    }
+
 
     private void attachObjectToScenegraph(Spatial object) {
 

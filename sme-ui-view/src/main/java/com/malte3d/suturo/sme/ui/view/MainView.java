@@ -285,7 +285,7 @@ public class MainView {
         fileChooser.setTitle(Messages.getString("Application.Menu.Main.Import.Dialog.Title"));
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter(Messages.getString("Application.Menu.Main.Import.Dialog.ExtensionFilter.Description"), "*.obj", "*.blend", "*.gltf")
+                new FileChooser.ExtensionFilter(Messages.getString("Application.Menu.Main.Import.Dialog.ExtensionFilter.Description"), "*.obj", "*.blend", "*.glb")
         );
 
         File selectedFile = fileChooser.showOpenDialog(getMainWindow());
