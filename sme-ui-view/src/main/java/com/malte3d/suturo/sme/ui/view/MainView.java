@@ -33,10 +33,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
+import java.io.File;
 import java.time.Year;
 
 
@@ -213,6 +215,8 @@ public class MainView {
 
         menuFileClose.setOnAction(event -> showHelloWorldNotification());
 
+        menuFileImport.setOnAction(event -> openImportFileDialog());
+
         menuFileSettings.setOnAction(event -> openSettings());
         menuFileExit.setOnAction(event -> mainViewModel.exitApplication());
 
@@ -220,7 +224,6 @@ public class MainView {
         menuFileNew.setDisable(true);
         menuFileOpen.setDisable(true);
         menuFileOpenRecent.setDisable(true);
-        menuFileImport.setDisable(true);
         menuFileSave.setDisable(true);
         menuFileExport.setDisable(true);
     }
@@ -256,7 +259,7 @@ public class MainView {
                 mainViewModel.toggleDebugMode();
         });
 
-       domainEventHandler.register(EditorInitializedEvent.class, () -> editorViewProgress.setVisible(false));
+        domainEventHandler.register(EditorInitializedEvent.class, () -> editorViewProgress.setVisible(false));
 
         editorViewModel.loadEditor().thenConsume(editor -> {
 
@@ -274,6 +277,23 @@ public class MainView {
         btnMove.pseudoClassStateChanged(SELECTED, transformMode == TransformMode.MOVE);
         btnRotate.pseudoClassStateChanged(SELECTED, transformMode == TransformMode.ROTATE);
         btnScale.pseudoClassStateChanged(SELECTED, transformMode == TransformMode.SCALE);
+    }
+
+    private void openImportFileDialog() {
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(Messages.getString("Application.Menu.Main.Import.Dialog.Title"));
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter(Messages.getString("Application.Menu.Main.Import.Dialog.ExtensionFilter.Description"), "*.obj", "*.blend", "*.gltf")
+        );
+
+        File selectedFile = fileChooser.showOpenDialog(getMainWindow());
+
+        if (selectedFile != null)
+            editorViewModel.importFile(selectedFile);
+        else
+            log.error("No file selected for import");
     }
 
     private void showHelloWorldNotification() {

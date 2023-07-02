@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.io.File;
 import java.util.concurrent.Executor;
 
 /**
@@ -83,6 +84,10 @@ public class EditorViewModel extends UiService {
 
     public void addObjectToScene(@NonNull SmObject object) {
         runInJme3Thread(() -> getEditor().addObjectToScene(object));
+    }
+
+    public void importFile(@NonNull File selectedFile) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     private void onDebugModeChanged(DebugModeChangedEvent event) {
