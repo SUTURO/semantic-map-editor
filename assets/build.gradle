@@ -1,0 +1,13 @@
+plugins {
+    id 'java'
+}
+
+buildDir = rootProject.file("build/assets")
+
+sourceSets {
+    main {
+        resources {
+            srcDir '.'
+        }
+    }
+}

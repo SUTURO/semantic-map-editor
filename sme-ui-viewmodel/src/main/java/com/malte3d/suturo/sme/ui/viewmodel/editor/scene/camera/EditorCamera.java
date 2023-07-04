@@ -7,7 +7,12 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
-import com.jme3.math.*;
+import com.jme3.math.FastMath;
+import com.jme3.math.Plane;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture2D;
@@ -98,7 +103,7 @@ public class EditorCamera implements AnalogListener, ActionListener {
         cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
 
         /* Create crosshair */
-        Texture2D texture = (Texture2D) assetManager.loadTexture("camera/crosshair.png");
+        Texture2D texture = (Texture2D) assetManager.loadTexture("Camera/crosshair.png");
         this.crosshair = new Picture("EditorCamera Crosshair");
         this.crosshair.setTexture(assetManager, texture, true);
         this.crosshair.setWidth(texture.getImage().getWidth());
@@ -302,8 +307,8 @@ public class EditorCamera implements AnalogListener, ActionListener {
      * Calculates the rotation target based on the cursor position.
      *
      * <p>
-     * It casts a ray from the cursor position and returns the first collision point with the objects of the scene
-     * graph. If no collision is found, it returns the {@link #getDefaultRotationTarget()}.
+     * It casts a ray from the cursor position and returns the first collision point with the objects of the scene graph. If no collision is found, it returns
+     * the {@link #getDefaultRotationTarget()}.
      * </p>
      *
      * @return The rotation target
@@ -329,8 +334,7 @@ public class EditorCamera implements AnalogListener, ActionListener {
     }
 
     /**
-     * The default rotation target is maximum {@link #DEFAULT_TARGET_DISTANCE}  units away from the camera, but
-     * preferably on the floor.
+     * The default rotation target is maximum {@link #DEFAULT_TARGET_DISTANCE}  units away from the camera, but preferably on the floor.
      *
      * @return The default rotation target of the camera.
      */
