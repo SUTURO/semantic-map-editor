@@ -1,7 +1,10 @@
+import com.github.jk1.license.filter.LicenseBundleNormalizer
+import com.github.jk1.license.render.InventoryHtmlReportRenderer
+
 plugins {
     id 'java'
-    id 'maven-publish'
     id 'com.palantir.git-version' version '3.0.0'
+    id 'com.github.jk1.dependency-license-report' version '2.5'
 }
 
 apply from: "versions.gradle"
@@ -17,4 +20,21 @@ allprojects {
 
     group 'com.malte3d.suturo'
     version = gitVersion()
+}
+
+licenseReport {
+
+    outputDir = "${project.buildDir}/license-report/licenses"
+
+    projects = [project] + project.subprojects
+
+    configurations = ['runtimeClasspath']
+
+    excludeGroups = []
+    excludes = []
+    excludeOwnGroup = true
+    excludeBoms = true
+
+    filters = [new LicenseBundleNormalizer(bundlePath: "${project.rootDir}/dependency-license-bundle.json")]
+    renderers = [new InventoryHtmlReportRenderer('dependency-license-report.html')]
 }
