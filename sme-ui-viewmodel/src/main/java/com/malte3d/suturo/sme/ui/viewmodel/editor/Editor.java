@@ -1,6 +1,10 @@
 package com.malte3d.suturo.sme.ui.viewmodel.editor;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+
 import com.jayfella.jfx.embedded.AbstractJmeApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.ModelKey;
@@ -8,6 +12,7 @@ import com.jme3.asset.plugins.FileLocator;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.light.LightProbe;
 import com.jme3.material.Material;
 import com.jme3.material.Materials;
 import com.jme3.material.RenderState.FaceCullMode;
@@ -30,6 +35,7 @@ import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjec
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.SmObjectType;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.imported.ImportObject;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.ObjectAttachedEvent;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.event.SceneChangedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymap;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.EditorCameraAppState;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.coordinateaxes.HudCoordinateAxes;
@@ -39,10 +45,6 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.util.EditorUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
 
 /**
  * The Editor is the main entry point for the 3D-Editor.
@@ -185,6 +187,11 @@ public class Editor extends AbstractJmeApplication {
         AmbientLight ambientLight = new AmbientLight(ColorRGBA.Gray);
         DirectionalLight directionalLight = new DirectionalLight(new Vector3f(-1.3f, -1.1f, -1.2f), ColorRGBA.White);
 
+        LightProbe probeLight = (LightProbe) assetManager.loadModel("Probes/Parking_Lot.j3o").getLocalLightList().get(0);
+        probeLight.setPosition(Vector3f.ZERO);
+        probeLight.getArea().setRadius(1000f);
+
+        rootNode.addLight(probeLight);
         rootNode.addLight(ambientLight);
         rootNode.addLight(directionalLight);
 
@@ -244,6 +251,8 @@ public class Editor extends AbstractJmeApplication {
         rootNode.detachChild(scenegraph);
         this.scenegraph = (Node) assetManager.loadModel(file.getName());
         rootNode.attachChild(scenegraph);
+        
+        domainEventHandler.raise(new SceneChangedEvent(scenegraph));
     }
 
     /**
@@ -346,10 +355,6 @@ public class Editor extends AbstractJmeApplication {
         ModelKey modelKey = new ModelKey(file.getName());
         Spatial model = assetManager.loadModel(modelKey);
         model.setUserData(OBJECT_TYPE, object.getType().eternalId);
-
-//        Material material = createDefaultMaterial();
-//        material.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
-//        model.setMaterial(material);
 
         attachObjectToScenegraph(model);
     }

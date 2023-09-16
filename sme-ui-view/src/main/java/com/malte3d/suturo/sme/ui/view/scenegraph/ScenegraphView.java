@@ -1,5 +1,9 @@
 package com.malte3d.suturo.sme.ui.view.scenegraph;
 
+import java.util.Optional;
+
+import javax.inject.Inject;
+
 import com.jme3.scene.Spatial;
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
 import com.malte3d.suturo.sme.domain.model.semanticmap.scenegraph.object.general.NullObject;
@@ -7,6 +11,7 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.EditorViewModel;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.EditorInitializedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.ObjectAttachedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.ObjectSelectedEvent;
+import com.malte3d.suturo.sme.ui.viewmodel.editor.event.SceneChangedEvent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -15,14 +20,20 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.input.*;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableRow;
+import javafx.scene.control.TreeTableView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.inject.Inject;
-import java.util.Optional;
 
 @Slf4j
 public class ScenegraphView {
@@ -86,6 +97,7 @@ public class ScenegraphView {
         domainEventHandler.register(EditorInitializedEvent.class, event -> Platform.runLater(() -> onEditorInitialized(event)));
         domainEventHandler.register(ObjectAttachedEvent.class, event -> Platform.runLater(() -> onObjectAttached(event)));
         domainEventHandler.register(ObjectSelectedEvent.class, event -> Platform.runLater(() -> onObjectSelected(event)));
+        domainEventHandler.register(SceneChangedEvent.class, event -> Platform.runLater(() -> onSceneChanged(event)));
     }
 
     private void onEditorInitialized(EditorInitializedEvent event) {
@@ -124,6 +136,34 @@ public class ScenegraphView {
                 });
 
             }, () -> scenegraphTable.getSelectionModel().clearSelection());
+        }
+    }
+
+
+    private void onSceneChanged(SceneChangedEvent event) {
+
+        com.jme3.scene.Node scenegraph = event.getScenegraph();
+        root.setValue(scenegraph);
+        addChildrenToTree(root, scenegraph);
+
+        scenegraphTable.refresh();
+    }
+
+    /**
+     * Recursively adds children and their sub-children to the tree
+     *
+     * @param parentItem    the parent item to which the children should be added
+     * @param parentSpatial the parent spatial whose children should be added
+     */
+    private void addChildrenToTree(TreeItem<Spatial> parentItem, com.jme3.scene.Node parentSpatial) {
+
+        for (Spatial child : parentSpatial.getChildren()) {
+
+            TreeItem<Spatial> item = new TreeItem<>(child);
+            parentItem.getChildren().add(item);
+
+            if (child instanceof com.jme3.scene.Node grandchild)
+                addChildrenToTree(item, grandchild);
         }
     }
 

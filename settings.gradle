@@ -19,3 +19,4 @@ include 'sme-ui-viewmodel'
 
 /* jMonkeyEngine */
 include 'jmonkeyengine-javafx'
+include 'assets'
