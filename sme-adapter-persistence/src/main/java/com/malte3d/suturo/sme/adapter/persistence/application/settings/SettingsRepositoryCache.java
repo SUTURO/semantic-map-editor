@@ -5,9 +5,9 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.malte3d.suturo.sme.domain.model.application.settings.Settings;
 import com.malte3d.suturo.sme.domain.service.application.settings.SettingsRepository;
+import jakarta.inject.Inject;
 import lombok.NonNull;
 
-import javax.inject.Inject;
 
 public class SettingsRepositoryCache implements SettingsRepository {
 

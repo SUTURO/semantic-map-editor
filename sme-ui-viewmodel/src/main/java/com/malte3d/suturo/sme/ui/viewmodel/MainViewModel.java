@@ -1,25 +1,21 @@
 package com.malte3d.suturo.sme.ui.viewmodel;
 
-import java.util.concurrent.Executor;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-
 import com.malte3d.suturo.commons.ddd.event.domain.DomainEventHandler;
-import com.malte3d.suturo.commons.javafx.service.CompletableFutureTask;
 import com.malte3d.suturo.commons.javafx.service.GlobalExecutor;
 import com.malte3d.suturo.commons.javafx.service.UiService;
 import com.malte3d.suturo.commons.messages.Messages;
 import com.malte3d.suturo.sme.application.service.settings.SettingsService;
 import com.malte3d.suturo.sme.domain.model.application.settings.Settings;
 import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMode;
-import com.malte3d.suturo.sme.ui.viewmodel.editor.Editor;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.EditorViewModel;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import javafx.application.HostServices;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.Executor;
 
 /**
  * The view model of the main view.

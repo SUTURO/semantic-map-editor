@@ -19,6 +19,7 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.EditorViewModel;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.EditorInitializedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.event.TransformModeChangedEvent;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.transform.TransformMode;
+import jakarta.inject.Inject;
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
@@ -37,7 +38,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.time.Year;
 

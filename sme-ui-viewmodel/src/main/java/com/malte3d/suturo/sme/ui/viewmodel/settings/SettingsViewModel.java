@@ -6,13 +6,13 @@ import com.malte3d.suturo.commons.javafx.service.UiService;
 import com.malte3d.suturo.sme.application.service.settings.SettingsService;
 import com.malte3d.suturo.sme.domain.model.application.settings.Settings;
 import com.malte3d.suturo.sme.domain.model.application.settings.SettingsChangedEvent;
+import jakarta.inject.Inject;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import lombok.Getter;
 import lombok.NonNull;
 
-import javax.inject.Inject;
 import java.util.concurrent.Executor;
 
 public class SettingsViewModel extends UiService {

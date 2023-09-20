@@ -10,12 +10,11 @@ import com.malte3d.suturo.sme.domain.model.application.settings.appearance.Appea
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.KeymapSettings;
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviour;
 import com.malte3d.suturo.sme.ui.viewmodel.settings.SettingsViewModel;
+import jakarta.inject.Inject;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.inject.Inject;
 
 @Slf4j
 public class SettingsView {

@@ -5,8 +5,7 @@ import com.google.inject.Provides;
 import com.malte3d.suturo.sme.adapter.persistence.application.settings.SettingsRepositoryCache;
 import com.malte3d.suturo.sme.adapter.persistence.application.settings.SettingsRepositoryImpl;
 import com.malte3d.suturo.sme.domain.service.application.settings.SettingsRepository;
-
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 public class PersistenceAdapterModule extends AbstractModule {
 
@@ -15,5 +14,5 @@ public class PersistenceAdapterModule extends AbstractModule {
     public SettingsRepository settingsRepository() {
         return new SettingsRepositoryCache(new SettingsRepositoryImpl());
     }
-    
+
 }

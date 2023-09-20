@@ -14,9 +14,9 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymap;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymapBlender;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymapCinema4D;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.util.DebugAppState;
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class ViewModelModule extends AbstractModule {
     public Editor editor(
             @NonNull DomainEventHandler domainEventHandler,
             @NonNull SettingsService settingsService
-            ) {
+    ) {
 
         Settings settings = settingsService.get();
         DebugMode debugMode = settings.getAdvanced().getDebugMode();

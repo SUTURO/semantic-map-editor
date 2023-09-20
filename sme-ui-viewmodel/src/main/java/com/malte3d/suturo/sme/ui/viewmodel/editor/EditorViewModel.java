@@ -21,11 +21,11 @@ import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymapBlend
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.camera.CameraKeymapCinema4D;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.scene.transform.TransformMode;
 import com.malte3d.suturo.sme.ui.viewmodel.editor.util.DebugAppState;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.Executor;

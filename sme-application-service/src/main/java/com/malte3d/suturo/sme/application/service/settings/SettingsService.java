@@ -9,10 +9,9 @@ import com.malte3d.suturo.sme.domain.model.application.settings.advanced.DebugMo
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviour;
 import com.malte3d.suturo.sme.domain.model.application.settings.keymap.editor.CameraBehaviourChangedEvent;
 import com.malte3d.suturo.sme.domain.service.application.settings.SettingsRepository;
+import jakarta.inject.Inject;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
-import javax.inject.Inject;
 
 /**
  * Service for managing the application settings.
@@ -38,7 +37,8 @@ public class SettingsService {
     }
 
     /**
-     * Saves the given settings and raises a {@link SettingsChangedEvent} and possible other more specific events if necessary.
+     * Saves the given settings and raises a {@link SettingsChangedEvent} and possible other more specific events if
+     * necessary.
      *
      * @param settings the settings to save
      */
